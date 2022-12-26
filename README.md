@@ -1,3 +1,4 @@
 # Discox
 Virbox Discord Bot community project ^_^
-Written in *blazingly easy* Python.
+
+Written in -blazingly fast- **effective** Python.
