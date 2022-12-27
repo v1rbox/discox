@@ -26,7 +26,7 @@ class cmd(Command):
       'Funtoo',
       'Garuda',
       'Gentoo',
-      'GNUGuix'
+      'GNUGuix',
       'Haiku',
       'Kali',
       'Kubuntu',
@@ -151,7 +151,7 @@ class cmd(Command):
               if role in self.whitelist:
                 max += 1
             if max >= self.max_distro:
-              embed = Embed(title="Distro", description="You have reached the max distro roles.\n\nTo see your current distro roles, use: \n\n`v!distro roles` \n\nTo remove a distro role, use:\n\n`v!distro remove` <Your Unix-Like/Windows Distribution>")
+              embed = Embed(title="Distro", description="You have reached the max distro roles.\n\nTo see your current distro roles, use: \n\n`v!distro roles` \n\nTo remove a distro role, use:\n\n`v!distro remove <Your Unix-Like/Windows Distribution>`")
               await message.channel.send(embed=embed)
               return
             # Checks if role exists, if not, creates role
