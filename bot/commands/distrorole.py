@@ -134,7 +134,7 @@ class cmd(Command):
           ### "add" ARG: adds user to role ###
           ##
           #
-          elif arguments[0] == "add":
+          elif arguments[0] == "add" and len(arguments) > 1:
             # Checks if role is whitelisted
             if arguments[1] not in self.whitelist:
               embed = Embed(title="Distro", description="Invalid distro.\n\nTo see valid distros, use:\n\n `v!distro whitelist`")
@@ -168,7 +168,7 @@ class cmd(Command):
           ### "remove" ARG: removes user from role ###
           ##
           #
-          elif arguments[0] == "remove":
+          elif arguments[0] == "remove" and len(arguments) > 1:
             # Checks if user has role and role is whitelisted
             if arguments[1] not in self.whitelist or arguments[1] not in user_roles_names:
               embed = Embed(title="Distro", description=f"You do not have that distro role, or distro is not whitelisted.\n\nTo your see current distro roles, use: \n\n`v!distro roles`\n\nTo see whitelisted distro roles, use:\n\n`v!distro whitelist`")
