@@ -1,11 +1,12 @@
 import discord
 
-from typing import Callable, Dict, Iterator, List, Type, TypeAlias
+from typing import Callable, Dict, Iterator, List, Type, TypeAlias, Optional
 
 # putting this here to avoid circular imports
 Manager: TypeAlias = "CommandsManager"
 
 from .base import Command
+from .category import Category
 
 class CommandsManager:
     """ Manage all commands. """
@@ -13,23 +14,40 @@ class CommandsManager:
     def __init__(self, bot: discord.Client) -> None:
         self.bot = bot
 
+        pkg = __import__("bot.category", globals(), locals(), ["*"], 0)
+        self.categories: List[Category] = [
+            getattr(pkg, i)() for i in dir(pkg) 
+            if i.endswith("Category") and i != "Category"]
+
         self.commands: List[Command] = []
 
+        self.categories_map: Callable[..., Dict[str, Category]] = lambda: {
+            category.name: category for category in self.categories if category.name
+        }
         self.commands_map: Callable[..., Dict[str, Command]] = lambda: {
             command.name: command for command in iter(self) if command.name
         }
 
-    def register(self, command: Type[Command]) -> None:
+    def register(self, command: Type[Command], category: Optional[str] = None) -> None:
         """ Register a command. """
 
         if command.name in self.commands_map().keys():
             raise ValueError(f"Command {command.name} is already registered")
+
+        if category is not None:
+            cat: Category = self.get_category(category)
+            cat.commands.append(command)
+            command.category = cat
 
         self.commands.append(command(self.bot, self))
 
     def get(self, name: str) -> Command:
         """ Get a command by name. """
         return self.commands_map()[name]
+
+    def get_category(self, name: str) -> List[Command]:
+        """ Get a category by name. """
+        return self.categories_map()[name]
     
     def __getitem__(self, name: str) -> Command:
         """ Get a command by name. """
