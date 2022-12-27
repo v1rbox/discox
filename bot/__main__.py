@@ -45,9 +45,21 @@ def main() -> None:
         logger.log("Prefix:", config.prefix)
         logger.newline()
 
-        commands = [i.split(".")[0] for i in os.listdir(os.path.join("bot", "commands")) if not i.startswith("__")]
-        for cmd in commands:
-            manager.register(__import__(f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0).cmd)
+        # Load the commands
+        entries = [i for i in os.listdir(os.path.join("bot", "commands")) if not i.startswith("__")]
+        for entry in entries:
+            cmd = entry.split(".")[0]
+            if os.path.isfile(os.path.join("bot", "commands", entry)):
+                manager.register(__import__(f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0).cmd)
+                print(entry)
+            else:
+                # Current entry is a category
+                for cmd in [
+                    i.split(".")[0] for i in 
+                    os.listdir(os.path.join("bot", "commands", entry)) 
+                    if not i.startswith("__")
+                ]:
+                    manager.register(__import__(f"bot.commands.{entry}.{cmd}", globals(), locals(), ["cmd"], 0).cmd, entry)
 
         logger.log("Registered commands")
         for idx, command in enumerate(manager.commands, 1):
@@ -79,6 +91,12 @@ def main() -> None:
             logger.error("Command not found")
             await logger.send_error(f"Commad {command} not found", message)
             return
+
+        if manager[command].category is not None:
+            if not manager[command].category.check_permissions(message):
+                logger.error("Insufficient permissions.")
+                await logger.send_error("Insufficient permissions.", message)
+                return
 
         try:
             await manager[command].execute(arguments, message)

@@ -15,6 +15,7 @@ class Command(ABC):
     usage: Optional[str] = None
     description: Optional[str] = None
     hidden: bool = False
+    category: Optional[str] = None 
 
     logger = Logger()
 

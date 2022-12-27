@@ -23,10 +23,11 @@ class Embed(DiscordEmbed):
 
     def set_color(self, color: str) -> None:
         """ Set a color from the default colorlist. """
-        self.color = self.colors.get(color)
+        self.color = self.colors[color]
 
 
 class Config:
-    token = ""
-    prefix = "v!"
+    token: str = ""
+    prefix: str = "v!"
+    mod_role_id: int = 1057253751699816459
 
