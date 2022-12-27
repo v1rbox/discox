@@ -5,6 +5,18 @@ Virbox Discord Bot community project ^\_^
 
 Written in ~~blazingly fast~~ **effective** Python.
 
+## Installation
+
+1. Follow the instructions [here](https://discordpy.readthedocs.io/en/stable/discord.html) to add a Discord Bot to your test server.
+2. After the bot is added clone the project repo.
+3. Copy the Bot Token from Disocrd Developer Portal.
+5. Create a environment variable and pass it in the config.py file under the token data member of the Config Class. You can also directly copy paste the token but be sure to remove it while committing. 
+6. Go to the project repo and run
+  > python3 -m bot
+
+
+This will start the bot, you can now work with it in the test servers.
+
 ## Getting started
 
 Want to add a command to the project? This is the best place to start!
