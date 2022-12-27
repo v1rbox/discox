@@ -9,7 +9,7 @@ Written in ~~blazingly fast~~ **effective** Python.
 
 1. Follow the instructions [here](https://discordpy.readthedocs.io/en/stable/discord.html) to add a Discord Bot to your test server.
 2. After the bot is added clone the project repo.
-3. Copy the Bot Token from Disocrd Developer Portal.
+3. Copy the Bot Token from Discord Developer Portal.
 5. Create a environment variable and pass it in the config.py file under the token data member of the Config Class. You can also directly copy paste the token but be sure to remove it while committing. 
 6. Go to the project repo and run
   > python3 -m bot
