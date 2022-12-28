@@ -26,7 +26,7 @@ The bot is written using a package called discord-py, you can find its documenta
 Firstly to create a command lets look at a quickstart example
 
 ```py
-# bot/commands/ping.py
+# /bot/commands/ping.py
 from bot.config import Config, Embed
 from bot.base import Command
 
@@ -88,3 +88,31 @@ self.logger.send_error("That didnt work :(", message)
 raise ValueError("I am not happy!")
 ## Same result as above, an emebed will be sent in the channel the command was triggered
 ```
+
+## Setting up events
+
+All events live in /bot/events, the filename you use can be anything eg. `reaction_add`, `member_join` etc.
+
+To register an event define a class within your file named `event`, here is an example
+
+```py
+# /bot/events/reaction_add.py
+from bot.config import Config, Embed
+from bot.base import Event
+
+class event(Event):
+    """ A discord event instance. """
+
+    name = "on_raw_reaction_add"
+
+    async def execute(self, payload) -> None:
+        print(payload)
+```
+
+Here we define a `on_raw_reaction_add` event that gets triggered every time a reaction is added to a message.
+
+The name is the name of the event that it should listen on.
+
+In the object a `self.bot` and `self.manager` is also exposed in case you need to access those.
+
+The execute function gets called every time the event name is triggered, you should add what ever arguments are listed in the documentation just remember to add self as the first argument.

@@ -7,9 +7,10 @@ from rich.console import Console
 
 from .logger import Logger
 from .config import Config
-from .manager import CommandsManager
+from .manager import CommandsManager, EventsManager
 
 import traceback
+import aiosqlite
 import re
 import os
 
@@ -27,13 +28,21 @@ def main() -> None:
     logger = Logger()
     config = Config()
 
-    manager = CommandsManager(bot)
+    db = None
+
+    manager = CommandsManager(bot, db)
+    event_manager = EventsManager(bot, db)
+
 
     @bot.event
     async def on_ready():
         """ When the bot is connected. """
         if bot.user is None:
             raise RuntimeError("Bot user is None")
+
+        db = await aiosqlite.connect("bot/assets/main.db")
+        manager.db = db
+        event_manager.db = db
 
         logger.log("Bot is ready!")
         logger.log(f"Logged in as {bot.user}")
@@ -51,7 +60,6 @@ def main() -> None:
             cmd = entry.split(".")[0]
             if os.path.isfile(os.path.join("bot", "commands", entry)):
                 manager.register(__import__(f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0).cmd)
-                print(entry)
             else:
                 # Current entry is a category
                 for cmd in [
@@ -66,9 +74,18 @@ def main() -> None:
             logger.custom(
                     str(idx), f"{config.prefix}{command.name} :", command.description
             )
+
+        logger.newline()
+        logger.log("Registered events")
+        entries = [i.split(".")[0] for i in os.listdir(os.path.join("bot", "events")) if not i.startswith("__")]
+        for idx, entry in zip(range(1, len(entries) + 1, 1), entries):
+            event = __import__(f"bot.events.{entry}", globals(), locals(), ["event"], 0).event
+            event_manager.register(event)
+            logger.custom(str(idx), f"{event.name} ")
+
         logger.newline()
 
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"Watching Virbox videos"))
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"Virbox videos"))
 
     @bot.event
     async def on_message(message: discord.Message):
