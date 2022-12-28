@@ -5,7 +5,7 @@ from typing import Callable, Dict, Iterator, List, Type, TypeAlias, Optional
 # putting this here to avoid circular imports
 Manager: TypeAlias = "CommandsManager"
 
-from .base import Command
+from .base import Command, Event
 from .category import Category
 
 class CommandsManager:
@@ -60,3 +60,46 @@ class CommandsManager:
     def __len__(self) -> int:
         """ Get the number of commands. """
         return len(self.commands)
+
+
+class EventsManager:
+    """ Manage all event listneres. """
+
+    def __init__(self, bot: discord.Client) -> None:
+        self.bot = bot
+        self.events: List[Event] = []
+
+        self.event_map: Callable[..., Dict[str, Event]] = lambda: {
+            event.name: event for event in iter(self) if event.name
+        }
+
+    def register(self, event: Event) -> discord.Client:
+        if not event.name.startswith("on_"):
+            raise NameError(f"Not a valid listner name '{event.name}'.")
+
+        if event.name in self.event_map().keys():
+            raise ValueError(f"Event {event.name} is already registered")
+
+        event = event(self.bot, self)
+
+        setattr(self.bot, event.name, event.execute)
+        self.events.append(event)
+
+        return self.bot
+
+    def get(self, name: str) -> Event:
+        """ Get a event by name. """
+        return self.event_map()[name]
+
+    def __getitem__(self, name: str) -> Event:
+        """ Get a event by name. """
+        return self.get(name)
+
+    def __iter__(self) -> Iterator[Event]:
+        """ Iterate over all events. """
+        return iter(self.events)
+
+    def __len__(self) -> int:
+        """ Get the number of events. """
+        return len(self.events)
+

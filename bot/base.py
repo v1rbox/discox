@@ -8,6 +8,7 @@ from typing import Optional, List
 from .logger import Logger
 from .manager import Manager
 
+
 class Command(ABC):
     """ Base abstrct class for all commands. """
 
@@ -41,3 +42,24 @@ class Command(ABC):
     async def execute(self, arguments: List[str], message: discord.Message) -> None:
         """ Execute the command. """
         raise NotImplementedError("Command execute method is required")
+
+
+class Event(ABC):
+    """ Base abstrct class for all events. """
+
+    name: Optional[str] = None
+    logger = Logger()
+
+    def __init__(self, bot: discord.Client, manager: Manager) -> None:
+        """ Initialize the command. """
+
+        self.bot = bot
+        self.manager = manager
+
+        if not self.name:
+            raise ValueError("Command name is required")
+
+    @abstractmethod
+    async def execute(self) -> None:
+        """ Execute the event. """
+        raise NotImplementedError("Event execute method is required")

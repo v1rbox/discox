@@ -7,7 +7,7 @@ from rich.console import Console
 
 from .logger import Logger
 from .config import Config
-from .manager import CommandsManager
+from .manager import CommandsManager, EventsManager
 
 import traceback
 import re
@@ -28,6 +28,7 @@ def main() -> None:
     config = Config()
 
     manager = CommandsManager(bot)
+    event_manager = EventsManager(bot)
 
     @bot.event
     async def on_ready():
@@ -51,7 +52,6 @@ def main() -> None:
             cmd = entry.split(".")[0]
             if os.path.isfile(os.path.join("bot", "commands", entry)):
                 manager.register(__import__(f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0).cmd)
-                print(entry)
             else:
                 # Current entry is a category
                 for cmd in [
@@ -66,6 +66,15 @@ def main() -> None:
             logger.custom(
                     str(idx), f"{config.prefix}{command.name} :", command.description
             )
+
+        logger.newline()
+        logger.log("Registered events")
+        entries = [i.split(".")[0] for i in os.listdir(os.path.join("bot", "events")) if not i.startswith("__")]
+        for idx, entry in zip(range(1, len(entries) + 1, 1), entries):
+            event = __import__(f"bot.events.{entry}", globals(), locals(), ["event"], 0).event
+            event_manager.register(event)
+            logger.custom(str(idx), f"{event.name} ")
+
         logger.newline()
 
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"Watching Virbox videos"))
