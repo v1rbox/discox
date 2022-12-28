@@ -8,3 +8,4 @@ class event(Event):
 
     async def execute(self, payload) -> None:
         print(payload)
+        print(self.db)

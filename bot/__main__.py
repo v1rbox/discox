@@ -10,6 +10,7 @@ from .config import Config
 from .manager import CommandsManager, EventsManager
 
 import traceback
+import aiosqlite
 import re
 import os
 
@@ -27,14 +28,21 @@ def main() -> None:
     logger = Logger()
     config = Config()
 
-    manager = CommandsManager(bot)
-    event_manager = EventsManager(bot)
+    db = None
+
+    manager = CommandsManager(bot, db)
+    event_manager = EventsManager(bot, db)
+
 
     @bot.event
     async def on_ready():
         """ When the bot is connected. """
         if bot.user is None:
             raise RuntimeError("Bot user is None")
+
+        db = await aiosqlite.connect("bot/assets/main.db")
+        manager.db = db
+        event_manager.db = db
 
         logger.log("Bot is ready!")
         logger.log(f"Logged in as {bot.user}")
@@ -77,7 +85,7 @@ def main() -> None:
 
         logger.newline()
 
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"Watching Virbox videos"))
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"Virbox videos"))
 
     @bot.event
     async def on_message(message: discord.Message):
