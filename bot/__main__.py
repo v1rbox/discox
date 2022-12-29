@@ -2,7 +2,6 @@ import re
 import os
 import traceback
 import aiosqlite
-from datetime import datetime
 
 import discord
 
@@ -19,29 +18,6 @@ from .base import Command
 
 logger = Logger()
 config = Config()
-rich_console = Console()
-
-
-def get_time(formatting: str = "%m/%d/%Y  %H:%M:%S") -> str:
-    """Get time function
-
-    [Args]:
-        formatting (str): date formatting. Default to  "%m/%d/%Y  %H:%M:%S"
-
-    [Returns]:
-        (str): formatted time
-    """
-
-    return datetime.now().strftime(formatting)
-
-
-def debug(msg: str) -> None:
-    rich_console.print(f"[[magenta][bold]DEBUG[/][/]] [bold]-[/] [bold][{get_time()}][/]: [bold]{msg}[/]")
-
-
-def info(msg: str) -> None:
-    rich_console.print(f"[[blue][bold]INFOS[/][/]] [bold]-[/] [bold][{get_time()}][/]: [bold]{msg}[/]")
-
 
 
 
