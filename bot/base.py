@@ -1,10 +1,11 @@
 import discord
 import asyncio
 import aiosqlite
+import re
 
 from abc import ABC, abstractmethod
 
-from typing import Optional, List
+from typing import Optional, List, Tuple
 
 from .logger import Logger
 from .manager import Manager
@@ -37,6 +38,18 @@ class Command(ABC):
 
         if not self.usage:
             raise ValueError("Command usage is required")
+        else:
+            args: List[Tuple[str,str]] = re.findall(f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', self.usage)
+            args: List[str] = [f"<{i[1]}>" if i[1] else f"[{i[0]}]" for i in args]
+
+            # Verify the integredy of the usage arguments
+            last_arg = "< "
+            for arg in args:
+                if arg[0] == "<" and last_arg[0] == "[":
+                    raise ValueError("Cannot have a positional argument after an optional argument.")
+                if last_arg[1] == "*":
+                    raise ValueError("Cannot have a command argument after a *arg.")
+                last_arg = arg
 
         if not asyncio.iscoroutinefunction(self.execute):
             raise TypeError("Command execute() method must be a coroutine")

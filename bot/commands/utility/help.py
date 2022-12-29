@@ -5,7 +5,7 @@ class cmd(Command):
     """ Help command. """
 
     name = "help"
-    usage = "help <command>"
+    usage = "help [command]"
     description = "The command you just ran, shows a help embed."
 
     async def execute(self, arguments, message) -> None:
