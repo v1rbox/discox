@@ -4,6 +4,7 @@ import aiosqlite
 import re
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 from typing import Optional, List, Tuple
 
@@ -11,8 +12,9 @@ from .logger import Logger
 from .manager import Manager
 
 
+# @dataclass
 class Command(ABC):
-    """ Base abstrct class for all commands. """
+    """ Base abstract class for all commands. """
 
     name: Optional[str] = None
     usage: Optional[str] = None
@@ -24,7 +26,18 @@ class Command(ABC):
     logger = Logger()
 
     def __init__(self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection) -> None:
-        """ Initialize the command. """
+        """Initialize the command.
+
+        [Args]:
+            bot (discord.Client): bot on which we'll use the command
+            manager: (Manager): ?
+            db (aiosqlite.Connection): command database connection
+
+        [Raises]:
+            ValueError: if 'name' field is empty
+            ValueError: if 'description' field is empty
+            ValueError: if 'usage' field is empty
+        """
 
         self.bot = bot
         self.manager = manager
@@ -56,12 +69,21 @@ class Command(ABC):
 
     @abstractmethod
     async def execute(self, arguments: List[str], message: discord.Message) -> None:
-        """ Execute the command. """
+        """Execute the command.
+
+        [Args]:
+            arguments (List[str]): command arguments
+            message (discord.Message): message which called the command
+
+        [Raises]:
+            NotImplementedError: because this method is still not implemented
+        """
+
         raise NotImplementedError("Command execute method is required")
 
 
 class Event(ABC):
-    """ Base abstrct class for all events. """
+    """Base abstract class for all events."""
 
     name: Optional[str] = None
 
@@ -69,7 +91,16 @@ class Event(ABC):
     logger = Logger()
 
     def __init__(self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection) -> None:
-        """ Initialize the command. """
+        """Initialize the command.
+
+        [Args]:
+            bot (discord.Client): discord client
+            manager (Manager): ?
+            db (aiosqlite.Connection): event database connection
+
+        [Raises]:
+            ValueError: if 'name' field is empty
+        """
 
         self.bot = bot
         self.manager = manager
@@ -78,7 +109,13 @@ class Event(ABC):
         if not self.name:
             raise ValueError("Command name is required")
 
+
     @abstractmethod
     async def execute(self) -> None:
-        """ Execute the event. """
+        """Execute the event.
+
+        [Raises]:
+            NotImplementedError: because this method is still not implemented
+        """
+
         raise NotImplementedError("Event execute method is required")
