@@ -1,3 +1,8 @@
+import re
+import os
+import traceback
+import aiosqlite
+
 import discord
 
 from typing import List, Tuple
@@ -10,37 +15,53 @@ from .config import Config, Embed
 from .manager import CommandsManager, EventsManager
 from .base import Command
 
-import traceback
-import aiosqlite
-import re
-import os
 
 logger = Logger()
 config = Config()
 
 
+
 def parse_user_input(user_input: str) -> Tuple[str, List[str]]:
-    """ Parse user input. """
+    """Parse user input
+
+    [Args]:
+        user_input (str): user input
+
+    [Returns]:
+        command_name (str): the command name
+        args (List[str]): command args
+    """
+
     command_name, *args = user_input.split()
     args = [
-            tuple(group for group in tpl if group)[0] 
-            for tpl in re.findall(
-                r'"([^"]+)"|\'([^\']+)\'|\`\`\`([^\']+)\`\`\`|(\S+)', 
-                " ".join(args)
-            )]
+        tuple(group for group in tpl if group)[0] 
+
+        for tpl in re.findall(
+            r'"([^"]+)"|\'([^\']+)\'|\`\`\`([^\']+)\`\`\`|(\S+)', 
+            " ".join(args)
+        )
+    ]
 
     return command_name, args
 
 
-async def parse_usage_text(usage: str, args: List[str], message: discord.Message) -> None:
-    """ Get the usage of a command into a more workable format """
+# TODO for 'args', do a struct 'Argument' with a 'required' bool field
+async def parse_usage_text(usage: str, args: List[str], message: discord.Message) -> bool:
+    """Get the usage of a command into a more workable format
+    
+    [Args]:
+        usage (str): command usage (help)
+        args (List[str]): command arguments
+        message (discord.Message): discord message
+
+    [Returns]:
+        (bool): True if all went good, False otherwise
+    """
+
     required: List[str] = re.findall(f'<([^"]+)>', usage)
     optional: List[str] = re.findall(f'\[([^"]+)\]', usage)
 
-    usage_args: List[Tuple[str,str]] = re.findall(
-            f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', 
-            usage
-        )
+    usage_args: List[Tuple[str,str]] = re.findall(f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', usage)
     args_raw: List[str] = [f"<{i[1]}>" if i[1] else f"[{i[0]}]" for i in usage_args]
 
     # Check for missing required arguments
@@ -66,9 +87,9 @@ async def parse_usage_text(usage: str, args: List[str], message: discord.Message
 
 def main() -> None:
     """ Main setup function. """
-    bot = discord.Client(intents=discord.Intents.all())
 
     db = None
+    bot = discord.Client(intents=discord.Intents.all())
 
     manager = CommandsManager(bot, db)
     event_manager = EventsManager(bot, db)
@@ -76,6 +97,7 @@ def main() -> None:
     @bot.event
     async def on_ready():
         """ When the bot is connected. """
+
         if bot.user is None:
             raise RuntimeError("Bot user is None")
 
@@ -177,4 +199,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
