@@ -6,33 +6,72 @@ from rich.table import Table
 from rich.console import Console
 
 from .logger import Logger
-from .config import Config
+from .config import Config, Embed
 from .manager import CommandsManager, EventsManager
+from .base import Command
 
 import traceback
 import aiosqlite
 import re
 import os
 
+logger = Logger()
+config = Config()
+
 
 def parse_user_input(user_input: str) -> Tuple[str, List[str]]:
     """ Parse user input. """
     command_name, *args = user_input.split()
-    args = [tuple(group for group in tpl if group)[0] for tpl in re.findall(r'"([^"]+)"|\'([^\']+)\'|(\S+)', " ".join(args))]
-    return command_name, list(args)
+    args = [
+            tuple(group for group in tpl if group)[0] 
+            for tpl in re.findall(
+                r'"([^"]+)"|\'([^\']+)\'|\`\`\`([^\']+)\`\`\`|(\S+)', 
+                " ".join(args)
+            )]
+
+    return command_name, args
+
+
+async def parse_usage_text(usage: str, args: List[str], message: discord.Message) -> None:
+    """ Get the usage of a command into a more workable format """
+    required: List[str] = re.findall(f'<([^"]+)>', usage)
+    optional: List[str] = re.findall(f'\[([^"]+)\]', usage)
+
+    usage_args: List[Tuple[str,str]] = re.findall(
+            f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', 
+            usage
+        )
+    args_raw: List[str] = [f"<{i[1]}>" if i[1] else f"[{i[0]}]" for i in usage_args]
+
+    # Check for missing required arguments
+    if len(args) < len(required):
+        missing = required[len(args)]
+        indx = usage.index(missing)
+        errmsg = f"{config.prefix}{usage}\n{' '*(indx+len(config.prefix)-1)}{'^'*(len(missing)+2)}"
+
+        embed = Embed(title="Error in command syntax", description=f"Missing required argument '{missing}'\n```{errmsg}```")
+        embed.set_color("red")
+        await message.channel.send(embed=embed)
+        return False
+
+    # Check if the given amount of arguments exceeds the expected amount
+    if len(args) > len(required) + len(optional) and args_raw[-1][1] != "*":
+        embed = Embed(title="Error in command syntax", description=f"Expected `{len(required) + len(optional)}` argument{'s' if len(required) + len(optional) > 1 else ''} but got `{len(args)}`.\nCommand usage: ```{config.prefix}{usage}```")
+        embed.set_color("red")
+        await message.channel.send(embed=embed)
+        return False
+
+    return True
 
 
 def main() -> None:
     """ Main setup function. """
     bot = discord.Client(intents=discord.Intents.all())
-    logger = Logger()
-    config = Config()
 
     db = None
 
     manager = CommandsManager(bot, db)
     event_manager = EventsManager(bot, db)
-
 
     @bot.event
     async def on_ready():
@@ -115,11 +154,24 @@ def main() -> None:
                 await logger.send_error("Insufficient permissions.", message)
                 return
 
-        try:
-            await manager[command].execute(arguments, message)
-        except Exception as e:
-            await logger.send_error(str(e), message)
-            print(traceback.format_exc())
+        # Join args
+        usage_args: List[Tuple[str,str]] = re.findall(
+                f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', 
+                manager[command].usage
+            )
+        args_raw: List[str] = [f"<{i[1]}>" if i[1] else f"[{i[0]}]" for i in usage_args]
+
+        if args_raw[-1][1] == "*":
+            args, tmp = (arguments[:len(args_raw)-1], arguments[len(args_raw)-1:])
+            arguments = args + [" ".join(tmp)]
+
+        # Check if a valid number of arguments have been passed
+        if await parse_usage_text(manager[command].usage, arguments, message):
+            try:
+                await manager[command].execute(arguments, message)
+            except Exception as e:
+                await logger.send_error(str(e), message)
+                print(traceback.format_exc())
 
     bot.run(config.token)
 
