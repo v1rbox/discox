@@ -13,10 +13,15 @@ class Category(ABC):
     """ Template for category classes. """
     
     name: Optional[str] = None 
+    prefix: Optional[str] = None 
     commands: List[Command] = []
 
     def __init__(self) -> None:
         """ Initialize the category. """
+        self.commands_map: Callable[..., Dict[str, Command]] = lambda: {
+            command.name: command for command in self.commands if command.name
+        }
+
         if not self.name:
             raise ValueError("Category name is required")
 
@@ -28,6 +33,7 @@ class Category(ABC):
 class FunCategory(Category):
     """ A command category instance. """
     name = "fun"
+    prefix = None
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
@@ -36,6 +42,7 @@ class FunCategory(Category):
 class UtilityCategory(Category):
     """ A command category instance. """
     name = "utility"
+    prefix = "utils"
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
@@ -44,6 +51,7 @@ class UtilityCategory(Category):
 class ModCategory(Category):
     """ A command category instance. """
     name = "mod"
+    prefix = None
 
     def check_permissions(self, message: discord.Message) -> bool:
         # Check for a specific role in the member

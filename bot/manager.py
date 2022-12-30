@@ -36,12 +36,14 @@ class CommandsManager:
         if command.name in self.commands_map().keys():
             raise ValueError(f"Command {command.name} is already registered")
 
+        cmd = command(self.bot, self, self.db)
+
         if category is not None:
             cat: Category = self.get_category(category)
-            cat.commands.append(command)
-            command.category = cat
-
-        self.commands.append(command(self.bot, self, self.db))
+            cat.commands.append(cmd)
+            cmd.category = cat
+        else:
+            self.commands.append(cmd)
 
     def get(self, name: str) -> Command:
         """ Get a command by name. """
