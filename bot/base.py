@@ -20,7 +20,7 @@ class Command(ABC):
     usage: Optional[str] = None
     description: Optional[str] = None
     hidden: Optional[bool] = False
-    category: Optional[str] = None 
+    category: Optional[str] = None
 
     db: Optional[aiosqlite.Connection] = None
     logger = Logger()
@@ -52,16 +52,20 @@ class Command(ABC):
         if not self.usage:
             raise ValueError("Command usage is required")
         else:
-            args: List[Tuple[str,str]] = re.findall(f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', self.usage)
-            args: List[str] = [f"<{i[1]}>" if i[1] else f"[{i[0]}]" for i in args]
+            args: List[Tuple[str, str]] = re.findall(
+                f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', self.usage)
+            args: List[str] = [f"<{i[1]}>" if i[1]
+                               else f"[{i[0]}]" for i in args]
 
             # Verify the integredy of the usage arguments
             last_arg = "< "
             for arg in args:
                 if arg[0] == "<" and last_arg[0] == "[":
-                    raise ValueError("Cannot have a positional argument after an optional argument.")
+                    raise ValueError(
+                        "Cannot have a positional argument after an optional argument.")
                 if last_arg[1] == "*":
-                    raise ValueError("Cannot have a command argument after a *arg.")
+                    raise ValueError(
+                        "Cannot have a command argument after a *arg.")
                 last_arg = arg
 
         if not asyncio.iscoroutinefunction(self.execute):
@@ -108,7 +112,6 @@ class Event(ABC):
 
         if not self.name:
             raise ValueError("Command name is required")
-
 
     @abstractmethod
     async def execute(self) -> None:
