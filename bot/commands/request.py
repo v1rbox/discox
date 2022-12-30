@@ -46,6 +46,7 @@ class cmd(Command):
         await cursor.close()
         await db.close()
 
-        await message.channel.send("A request has been added!")
+        embed = Embed(title="A request has been added!")
+        await message.channel.send(embed=embed)
 
         self.db = await aiosqlite.connect("bot\\assets\\main.db")
