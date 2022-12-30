@@ -1,11 +1,12 @@
 from bot.config import Config, Embed
 from bot.base import Command
 
+
 class cmd(Command):
     """ Help command. """
 
     name = "help"
-    usage = "help <command>"
+    usage = "help [command]"
     description = "The command you just ran, shows a help embed."
 
     async def execute(self, arguments, message) -> None:
@@ -28,7 +29,7 @@ class cmd(Command):
                 cmd = self.manager.get(arguments[0])
             except KeyError:
                 raise KeyError(f"Command {arguments[0]} not found.")
-            
+
             embed = Embed(
                 title=cmd.name.capitalize(),
                 description=f"{cmd.description}\nUsage: `{Config.prefix}{cmd.usage}`",
