@@ -9,7 +9,7 @@ class cmd(Command):
     """Gets a Random Leet Code Problem"""
     
     name = "leetcode"
-    usage = "`leetcode <command>` use info to find total number of problem, use gen to generate a new problem"
+    usage = "leetcode <command>"
     description = "Generates a random leetcode problem"
     
     async def execute(self, arguments, message) -> None:
@@ -17,11 +17,11 @@ class cmd(Command):
         problem_data = requests.get(url = leet_code_api_url).json()
         total_problem = problem_data['num_total']
         
-        if  arguments[0] == "info":
+        if len(arguments) == 0 :
             embed = Embed(title="Leet Code Problem",description=f"Total number of problems generated : {total_problem}.\nRun `{Config.prefix}leetcode gen` to generate random problem. Happy Coding :))")
             await message.channel.send(embed = embed)
         
-        elif arguments[0] == "gen":
+        elif len(arguments) == 1 and arguments[0] == "gen":
             
             #Picks a random number betwwn 0 and total number of problem in leetcode - 1
             problem_index = random.randint(0,total_problem - 1)
