@@ -169,29 +169,44 @@ def main() -> None:
         command, arguments = parse_user_input(
             message.content[len(config.prefix):])
 
+        prefixes: List[str] = [i.prefix for i in manager.categories]
+        if command in prefixes:
+            print({i.prefix: i for i in manager.categories if i.prefix is not None})
+            try:
+                cmdobj = {i.prefix: i for i in manager.categories if i.prefix is not None}[command] \
+                    .commands_map()[arguments[0]]
+            except KeyError:
+                await logger.send_error(f"Commad '{command} {arguments[0]}' not found", message)
+                return
+            except IndexError:
+                await logger.send_error(f"No subcommand found, use '{config.prefix}help {command}' for more information", message)
+                return
+
+            command = arguments[0]
+            arguments = arguments[1:]
+        else:
+            try:
+                cmdobj = manager[command]
+            except KeyError:
+                await logger.send_error(f"Commad '{command}' not found", message)
+
         logger.log(
             f"'{message.author}' issued command '{command}'",
             f"with arguments: {arguments}"
         )
 
-        if command not in manager.commands_map().keys():
-            logger.error("Command not found")
-            await logger.send_error(f"Commad {command} not found", message)
-            return
-
-        if manager[command].category is not None:
-            if not manager[command].category.check_permissions(message):
+        if cmdobj.category is not None:
+            if not cmdobj.category.check_permissions(message):
                 logger.error("Insufficient permissions.")
                 await logger.send_error("Insufficient permissions.", message)
                 return
 
         # Join args
-        usage_args: List[Tuple[str, str]] = re.findall(
-            f'\[([^\[\]]+)\]|\<([^\<\>]+)\>',
-            manager[command].usage
-        )
-        args_raw: List[str] = [f"<{i[1]}>" if i[1]
-                               else f"[{i[0]}]" for i in usage_args]
+        usage_args: List[Tuple[str,str]] = re.findall(
+                f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', 
+                cmdobj.usage
+            )
+        args_raw: List[str] = [f"<{i[1]}>" if i[1] else f"[{i[0]}]" for i in usage_args]
 
         if args_raw[-1][1] == "*":
             args, tmp = (arguments[:len(args_raw)-1],
@@ -199,9 +214,9 @@ def main() -> None:
             arguments = args + [" ".join(tmp)]
 
         # Check if a valid number of arguments have been passed
-        if await parse_usage_text(manager[command].usage, arguments, message):
+        if await parse_usage_text(cmdobj.usage, arguments, message):
             try:
-                await manager[command].execute(arguments, message)
+                await cmdobj.execute(arguments, message)
             except Exception as e:
                 await logger.send_error(str(e), message)
                 print(traceback.format_exc())
