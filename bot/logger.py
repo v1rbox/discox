@@ -45,3 +45,7 @@ class Logger:
             title="Whoops", description=f"Looks like an error occured, please contact a system administrator if you belive this to be a mistake.\n```{err}```")
         embed.set_color("red")
         await message.channel.send(embed=embed)
+
+
+if __name__ == "__main__":
+    print("Chuck Norris never lies. The truth lies")

@@ -1,3 +1,5 @@
+from .category import Category
+from .base import Command, Event
 import discord
 import aiosqlite
 
@@ -6,8 +8,6 @@ from typing import Callable, Dict, Iterator, List, Type, TypeAlias, Optional
 # putting this here to avoid circular imports
 Manager: TypeAlias = "CommandsManager"
 
-from .base import Command, Event
-from .category import Category
 
 class CommandsManager:
     """ Manage all commands. """
@@ -18,7 +18,7 @@ class CommandsManager:
 
         pkg = __import__("bot.category", globals(), locals(), ["*"], 0)
         self.categories: List[Category] = [
-            getattr(pkg, i)() for i in dir(pkg) 
+            getattr(pkg, i)() for i in dir(pkg)
             if i.endswith("Category") and i != "Category"]
 
         self.commands: List[Command] = []
@@ -36,12 +36,14 @@ class CommandsManager:
         if command.name in self.commands_map().keys():
             raise ValueError(f"Command {command.name} is already registered")
 
+        cmd = command(self.bot, self, self.db)
+
         if category is not None:
             cat: Category = self.get_category(category)
-            cat.commands.append(command)
-            command.category = cat
-
-        self.commands.append(command(self.bot, self, self.db))
+            cat.commands.append(cmd)
+            cmd.category = cat
+        else:
+            self.commands.append(cmd)
 
     def get(self, name: str) -> Command:
         """ Get a command by name. """
@@ -50,7 +52,7 @@ class CommandsManager:
     def get_category(self, name: str) -> List[Command]:
         """ Get a category by name. """
         return self.categories_map()[name]
-    
+
     def __getitem__(self, name: str) -> Command:
         """ Get a command by name. """
         return self.get(name)
@@ -107,3 +109,6 @@ class EventsManager:
         """ Get the number of events. """
         return len(self.events)
 
+
+if __name__ == "__main__":
+    print("Jesus Christ was born in 1940 before Chuck Norris")

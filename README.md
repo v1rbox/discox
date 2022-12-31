@@ -1,6 +1,7 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://stand-with-ukraine.pp.ua)
 
 # Discox
+
 Virbox Discord Bot community project ^\_^
 
 Written in ~~blazingly fast~~ **effective** Python.
@@ -10,10 +11,8 @@ Written in ~~blazingly fast~~ **effective** Python.
 1. Follow the instructions [here](https://discordpy.readthedocs.io/en/stable/discord.html) to add a Discord Bot to your test server.
 2. After the bot is added clone the project repo.
 3. Copy the Bot Token from Discord Developer Portal.
-5. Create a environment variable and pass it in the config.py file under the token data member of the Config Class. You can also directly copy paste the token but be sure to remove it while committing. 
-6. Go to the project repo and run
-  > python3 -m bot
-
+4. Create a environment variable and pass it in the config.py file under the token data member of the Config Class. You can also directly copy paste the token but be sure to remove it while committing.
+5. Go to the project repo and run `python3 -m bot`
 
 This will start the bot, you can now work with it in the test servers.
 
@@ -30,7 +29,7 @@ Firstly to create a command lets look at a quickstart example
 from bot.config import Config, Embed
 from bot.base import Command
 
-class cmd(Command):
+class Cmd(Command):
     """ A discord command instance. """
 
     name = "ping"
@@ -41,6 +40,7 @@ class cmd(Command):
         embed = Embed(title="Hello world!", description="This is a test embed")
         await message.channel.send("Im alive!!", embed=embed)
 ```
+
 In this example we create a class with the name ping, to execute the command we will use `<prefix>ping`
 
 The usage attribude descirbes how to use the command, this is usefull info for our help system and argument parser. A element wrapped in `[]` is requred while `<>` is optional.
@@ -66,7 +66,7 @@ The embed object will now be red. Supported colors currently are `green` and `re
 
 ### Using the inbuild logger module
 
-Here are a few basic examples
+Here are a few basic examples (all methods documentation are disponible in actual python file)
 
 ```py
 self.logger.log("That worked!")
