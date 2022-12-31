@@ -11,8 +11,8 @@ config = Config()
 
 class Category(ABC):
     """ Template for category classes. """
-    
-    name: Optional[str] = None 
+
+    name: Optional[str] = None
     commands: List[Command] = []
 
     def __init__(self) -> None:
@@ -49,3 +49,10 @@ class ModCategory(Category):
         # Check for a specific role in the member
         return any([i.id == config.mod_role_id for i in message.author.roles])
 
+
+class RequestCategory(Category):
+    """ A command category instance. """
+    name = "request"
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
