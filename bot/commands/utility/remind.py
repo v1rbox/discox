@@ -12,7 +12,7 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         embed = Embed(title="New Reminder", description="Reminder set!")
-        await message.channel.send(embed=embed)
+        await message.reply(embed=embed)
         minutes = float(arguments[2])
         hours = float(arguments[1])
         if hours == None:
@@ -23,4 +23,4 @@ class cmd(Command):
             time = 60*60*hours+60*minutes
         await sleep(time)
         embed = Embed(title=arguments[0], description="This is your reminder.")
-        await message.channel.send(embed=embed)
+        await message.channel.send(f"<@{message.author.id}>", embed=embed)
