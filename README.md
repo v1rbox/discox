@@ -11,8 +11,7 @@ Written in ~~blazingly fast~~ **effective** Python.
 2. After the bot is added clone the project repo.
 3. Copy the Bot Token from Discord Developer Portal.
 5. Create a environment variable and pass it in the config.py file under the token data member of the Config Class. You can also directly copy paste the token but be sure to remove it while committing. 
-6. Go to the project repo and run
-  > python3 -m bot
+6. Go to the project repo and run `python3 -m bot`
 
 
 This will start the bot, you can now work with it in the test servers.
@@ -30,7 +29,7 @@ Firstly to create a command lets look at a quickstart example
 from bot.config import Config, Embed
 from bot.base import Command
 
-class cmd(Command):
+class Cmd(Command):
     """ A discord command instance. """
 
     name = "ping"
@@ -66,7 +65,7 @@ The embed object will now be red. Supported colors currently are `green` and `re
 
 ### Using the inbuild logger module
 
-Here are a few basic examples
+Here are a few basic examples (all methods documentation are disponible in actual python file)
 
 ```py
 self.logger.log("That worked!")
