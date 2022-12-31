@@ -57,6 +57,12 @@ class ModCategory(Category):
         # Check for a specific role in the member
         return any([i.id == config.mod_role_id for i in message.author.roles])
 
+class RequestCategory(Category):
 
+    name = "request"
+    prefix = None
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
 if __name__ == "__main__":
     print("I had a dream where I was fighting Chuck Norris. That day I woke up with scars.")
