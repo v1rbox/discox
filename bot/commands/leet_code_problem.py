@@ -3,25 +3,26 @@ import random
 from bot.config import Config, Embed
 from bot.base import Command
 
-leet_code_api_url = "https://leetcode.com/api/problems/all" 
 
 class cmd(Command):
     """Gets a Random Leet Code Problem"""
     
     name = "leetcode"
-    usage = "leetcode <command>"
+    usage = "`leetcode <command>` use info to find total number of problem, use gen to generate a new problem"
     description = "Generates a random leetcode problem"
+    
+    leet_code_api_url = "https://leetcode.com/api/problems/all" 
     
     async def execute(self, arguments, message) -> None:
         
-        problem_data = requests.get(url = leet_code_api_url).json()
+        problem_data = requests.get(url = self.leet_code_api_url).json()
         total_problem = problem_data['num_total']
         
-        if len(arguments) == 0 :
+        if  arguments[0] == "info":
             embed = Embed(title="Leet Code Problem",description=f"Total number of problems generated : {total_problem}.\nRun `{Config.prefix}leetcode gen` to generate random problem. Happy Coding :))")
             await message.channel.send(embed = embed)
         
-        elif len(arguments) == 1 and arguments[0] == "gen":
+        elif arguments[0] == "gen":
             
             #Picks a random number betwwn 0 and total number of problem in leetcode - 1
             problem_index = random.randint(0,total_problem - 1)

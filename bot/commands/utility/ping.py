@@ -1,6 +1,7 @@
 from bot.config import Config, Embed
 from bot.base import Command
 
+
 class cmd(Command):
     """ A discord command instance. """
 
@@ -10,7 +11,9 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         if arguments[0] == "print":
-            embed = Embed(title="Hello world!", description=f"This is a test embed\nYou typed `{arguments[1]}`")
+            embed = Embed(
+                title="Hello world!", description=f"This is a test embed\nYou typed `{arguments[1]}`")
         else:
-            embed = Embed(title="Hello world!", description=f"This is a test embed")
+            embed = Embed(title="Hello world!",
+                          description=f"This is a test embed")
         await message.channel.send("Im alive!!", embed=embed)
