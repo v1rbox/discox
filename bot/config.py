@@ -23,7 +23,7 @@ class Embed(DiscordEmbed):
             "black": Colour(int("000000", 16)),
             "white": Colour(int("ffffff", 16)),
             "cyan": Colour(int("00ffff", 16)),
-            "grey": Colour(int("696969", 16)), # yeah the funny number is grey
+            "grey": Colour(int("696969", 16)),  # yeah the funny number is grey
 
             "lightgreen": Colour(int("89f292", 16)),
             "lightred": Colour(int("ff7171", 16)),
