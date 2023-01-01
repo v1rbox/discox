@@ -157,5 +157,3 @@ class cmd(Command):
         # Send the result:
         await message.channel.send(f"_{expression}_ = **{result:g}**")
         
-        # Nice.
-        
