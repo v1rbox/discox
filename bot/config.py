@@ -23,7 +23,7 @@ class Embed(DiscordEmbed):
             "black": Colour(int("000000", 16)),
             "white": Colour(int("ffffff", 16)),
             "cyan": Colour(int("00ffff", 16)),
-            "grey": Colour(int("696969", 16)), # yeah the funny number is grey
+            "grey": Colour(int("696969", 16)),  # yeah the funny number is grey
 
             "lightgreen": Colour(int("89f292", 16)),
             "lightred": Colour(int("ff7171", 16)),
@@ -50,7 +50,7 @@ class Embed(DiscordEmbed):
 
 
 class Config:
-    token: str = ""
+    token: str = "MTA1NzI2NzI1Mjg5NTk2MTA4OA.GxHnmD.DzkeJZ9bv1eoHw4gaXjEdLg5IJOOBp86xaWkYE"
     prefix: str = "v!"
     mod_role_id: int = 1057253751699816459
 
