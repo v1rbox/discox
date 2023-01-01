@@ -138,8 +138,8 @@ class Calculator:
 class cmd(Command):
     # The command.
     name = "calc"
-    usage = "<*expression>"
-    description = "Calculates the given expression and sends the result."
+    usage = "calc <*expression>"
+    description = "Calculates the given expression and sends the result. Valid operators are: +, -, /, *, and ()."
     
     async def execute(self, arguments, message) -> None:
         # First smush all arguments into one in order to
