@@ -14,7 +14,8 @@ class cmd(Command):
         await cursor.execute("SELECT * FROM request WHERE Number_id = 1")
         row = await cursor.fetchone()
         if not row:
-            await message.channel.send("Couldn't find anything in database")
+            embed = Embed(title="Couldn't find anything in the database")
+            await message.channel.send(embed=embed)
         else:
             await cursor.execute("SELECT * FROM request")
             rows = await cursor.fetchall()
