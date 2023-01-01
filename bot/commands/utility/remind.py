@@ -8,7 +8,7 @@ class cmd(Command):
     """ A discord command instance. """
 
     name = "remind"
-    usage = "remind <*time> <reminder>"
+    usage = "remind <time> <*reminder>"
     description = "Reminds the user of something."
 
     async def execute(self, arguments, message) -> None:
