@@ -20,13 +20,10 @@ class cmd(Command):
         cursor = await db.cursor()
 
         await cursor.execute(
-            "INSERT INTO request(Member_id, Title, Description) VALUES(?, ?)", (member_id, title, text_info))
+            "INSERT INTO request(Member_id, Title, Description) VALUES(?, ?, ?)", (member_id, title, text_info))
         await db.commit()
 
         await cursor.close()
-        await db.close()
 
         embed = Embed(title="A request has been added!")
         await message.channel.send(embed=embed)
-
-        self.db = await aiosqlite.connect("bot\\assets\\main.db")
