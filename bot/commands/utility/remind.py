@@ -28,5 +28,5 @@ class cmd(Command):
         url = await message.reply(embed=embed).jump_url()
         await sleep(reminderTime)
         embed = Embed(title=arguments[1], description=f"""This is your reminder.
-        If you wan't to know the context, here is the link: {url}""")
+        If you wan't to know the context, [here]({url}) is the link.""")
         await message.channel.send(f"<@{message.author.id}>", embed=embed)
