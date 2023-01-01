@@ -14,6 +14,7 @@ class cmd(Command):
     max_distro = 3
     whitelist = [
         'Alma',
+        'Alpine',
         'Arch',
         'Arco',
         'Artix',
