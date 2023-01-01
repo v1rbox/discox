@@ -189,6 +189,7 @@ def main() -> None:
                 cmdobj = manager[command]
             except KeyError:
                 await logger.send_error(f"Commad '{command}' not found", message)
+                return
 
         logger.log(
             f"'{message.author}' issued command '{command}'",
