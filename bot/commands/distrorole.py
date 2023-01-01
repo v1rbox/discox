@@ -15,6 +15,7 @@ class cmd(Command):
     whitelist = [
         'Alma',
         'Alpine',
+        'Android',
         'Arch',
         'Arco',
         'Artix',
