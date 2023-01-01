@@ -9,7 +9,8 @@ class cmd(Command):
 
     name = "remind"
     usage = "remind <time> <*reminder>"
-    description = "Reminds the user of something."
+    description = """Reminds the user of something.
+    The time is formatted with: 1d2h10m5s for 1 day, 2 hours, etc. You can also just use 2h for 2 hours."""
 
     async def execute(self, arguments, message) -> None:
         timeStr = arguments[0]
