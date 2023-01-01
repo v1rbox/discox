@@ -117,6 +117,10 @@ def main() -> None:
         logger.log("Guilds:", f"{len(bot.guilds)}")
         logger.log("Prefix:", config.prefix)
         logger.newline()
+        
+        # Stop the bot attempting to load the commands multiple times
+        if manager.commands:
+            return
 
         # Load the commands
         entries = [i for i in os.listdir(os.path.join(
@@ -169,6 +173,7 @@ def main() -> None:
         command, arguments = parse_user_input(
             message.content[len(config.prefix):])
 
+        # Check for category
         prefixes: List[str] = [i.prefix for i in manager.categories]
         if command in prefixes:
             print({i.prefix: i for i in manager.categories if i.prefix is not None})
