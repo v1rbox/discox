@@ -34,6 +34,7 @@ class FunCategory(Category):
     """ A command category instance. """
     name = "fun"
     prefix = None
+    commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
@@ -43,6 +44,7 @@ class UtilityCategory(Category):
     """ A command category instance. """
     name = "utility"
     prefix = "utils"
+    commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
@@ -52,6 +54,7 @@ class ModCategory(Category):
     """ A command category instance. """
     name = "mod"
     prefix = None
+    commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:
         # Check for a specific role in the member

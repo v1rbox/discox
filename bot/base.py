@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import aiosqlite
+import subprocess
 import re
 
 from abc import ABC, abstractmethod
@@ -21,6 +22,7 @@ class Command(ABC):
     description: Optional[str] = None
     hidden: Optional[bool] = False
     category: Optional[str] = None
+    file: Optional[str] = None
 
     db: Optional[aiosqlite.Connection] = None
     logger = Logger()
@@ -84,6 +86,10 @@ class Command(ABC):
         """
 
         raise NotImplementedError("Command execute method is required")
+
+    async def get_contribuders(self) -> str:
+        users = subprocess.run(["git", "shortlog", "-n", "-s", "--", f"bot/commands/{self.file}"], capture_output=True).stdout.decode()
+        return users.strip("\n")
 
 
 class Event(ABC):

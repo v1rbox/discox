@@ -30,13 +30,14 @@ class CommandsManager:
             command.name: command for command in iter(self) if command.name
         }
 
-    def register(self, command: Type[Command], category: Optional[str] = None) -> None:
+    def register(self, command: Type[Command], category: Optional[str] = None, file: Optional[str]= None) -> None:
         """ Register a command. """
 
         if command.name in self.commands_map().keys():
             raise ValueError(f"Command {command.name} is already registered")
 
         cmd = command(self.bot, self, self.db)
+        cmd.file = file
 
         if category is not None:
             cat: Category = self.get_category(category)

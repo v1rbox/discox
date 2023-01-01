@@ -129,7 +129,7 @@ def main() -> None:
             cmd = entry.split(".")[0]
             if os.path.isfile(os.path.join("bot", "commands", entry)):
                 manager.register(__import__(
-                    f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0).cmd)
+                    f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0).cmd, file=entry)
             else:
                 # Current entry is a category
                 for cmd in [
@@ -138,7 +138,7 @@ def main() -> None:
                     if not i.startswith("__")
                 ]:
                     manager.register(__import__(
-                        f"bot.commands.{entry}.{cmd}", globals(), locals(), ["cmd"], 0).cmd, entry)
+                        f"bot.commands.{entry}.{cmd}", globals(), locals(), ["cmd"], 0).cmd, entry, file=os.path.join(entry, cmd+".py"))
 
         logger.log("Registered commands")
         for idx, command in enumerate(manager.commands, 1):

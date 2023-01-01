@@ -8,8 +8,8 @@ class cmd(Command):
     """Gets a Random Leet Code Problem"""
     
     name = "leetcode"
-    usage = "`leetcode <command>` use info to find total number of problem, use gen to generate a new problem"
-    description = "Generates a random leetcode problem"
+    usage = "leetcode <command>"
+    description = "Generates a random leetcode problem, use info to find total number of problem, use gen to generate a new problem"
     
     leet_code_api_url = "https://leetcode.com/api/problems/all" 
     

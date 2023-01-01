@@ -62,8 +62,8 @@ class cmd(Command):
     ]
 
     name = "distro"
-    usage = "distro <command> [distro] \n\ncommands: add, remove, whitelist, roles, leaderboard, help"
-    description = f"Assigns user a role based on selected distro, max of {max_distro} distro roles per user.\n"
+    usage = "distro <command> [distro]"
+    description = f"Assigns user a role based on selected distro, max of {max_distro} distro roles per user. \nCommands: add, remove, whitelist, roles, leaderboard, help"
 
     #
     ##

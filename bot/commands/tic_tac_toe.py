@@ -8,8 +8,8 @@ class cmd(Command):
     """Allows us to play tic tac toe with the bot""" 
 
     name = "tic-tac-toe"
-    usage = "tic-tac-toe <command> use 'info' to learn how to play, and use 'single-player' to generate a new board to play against bot, use 'multi-player' to play against a friend"
-    description = "Allows us to play tic tac toe with the bot"
+    usage = "tic-tac-toe <command>"
+    description = "Allows us to play tic tac toe with the bot\nUse 'info' to learn how to play, and use 'single-player' to generate a new board to play against bot, use 'multi-player' to play against a friend"
 
 
     # Takes a character and returns corresponding emoji
