@@ -158,7 +158,10 @@ def main() -> None:
 
         logger.newline()
 
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"Virbox videos"))
+        activity = discord.Activity(type=discord.ActivityType.watching, name=f"Virbox videos")
+        await bot.change_presence(activity=activity)
+        bot.current_activity = activity
+        bot.current_status = discord.Status.online
 
     @bot.event
     async def on_message(message: discord.Message):
