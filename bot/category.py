@@ -47,6 +47,14 @@ class UtilityCategory(Category):
     def check_permissions(self, message: discord.Message) -> bool:
         return True
 
+class DistroCategory(Category):
+    """ A command category instance. """
+    name = "distroroles"
+    prefix = "distro"
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
+
 
 class ModCategory(Category):
     """ A command category instance. """
