@@ -122,17 +122,22 @@ class cmd(Command):
             player = "X"
 
             #Set up the Embed
-            embed = Embed(title="Tic Tac Toe",description=self.draw_board(board))
+            embed = Embed(title="Tic Tac Toe",description="Generating board please wait...")
             message = await message.channel.send(embed=embed)
             id = int(message.id) 
+            
+            #adds reaction so that user has to not search for it
+            for i in range(len(board)):
+                await message.add_reaction(self.switch_to_emoji(i + 1))
+    
 
             #game loop
             while is_playing:
 
                 is_playing, winner = self.check_win(board,player)
                 if is_playing == False:
-                    embed = Embed(title=f"{winner} won the game, thanks for playing!")
-                    if winner == None: embed = Embed(title=f"It's a draw thanks for playing")
+                    embed = Embed(title=f"{winner} won the game, thanks for playing!",description=self.draw_board(board))
+                    if winner == None: embed = Embed(title=f"It's a draw thanks for playing",description=self.draw_board(board))
                     await message.edit(content="",embed=embed)
                     break
 
@@ -175,17 +180,22 @@ class cmd(Command):
            player = "X"
 
            #Set up the Embed
-           embed = Embed(title="Tic Tac Toe",description=f"`{player}'s turn`\n{self.draw_board(board)}")
+           embed = Embed(title="Tic Tac Toe",description="Generating board please wait...")
            message = await message.channel.send(embed=embed)
            id = int(message.id)
+           
 
+           #adds reaction so that user has to not search for it
+           for i in range(len(board)):
+               await message.add_reaction(self.switch_to_emoji(i + 1))
+    
            #game loop
            while is_playing:
 
                is_playing, winner = self.check_win(board,player)
                if is_playing == False:
-                   embed = Embed(title=f"{winner} won the game, thanks for playing!")
-                   if winner == None: embed = Embed(title=f"It's a draw thanks for playing")
+                   embed = Embed(title=f"{winner} won the game, thanks for playing!",description=self.draw_board(board))
+                   if winner == None: embed = Embed(title=f"It's a draw thanks for playing",description=self.draw_board(board))
                    await message.edit(content="",embed=embed)
                    break
 
