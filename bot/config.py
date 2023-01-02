@@ -6,14 +6,13 @@ import datetime
 
 class Embed(DiscordEmbed):
     """ Custom implementation of a discord embed object. """
-
     def __init__(self, *args, **kwargs) -> None:
         DiscordEmbed.__init__(self, *args, **kwargs)
 
         # No need to make it public, so we make it private
         self.__colors = {
-            "green": Colour(int("3eff00", 16)),
-            "red": Colour(int("ff0000", 16)),
+            "green": Colour(int("38842c", 16)),
+            "red": Colour(int("bf3036", 16)),
             "blue": Colour(int("0d00ff", 16)),
             "yellow": Colour(int("f2ff00", 16)),
             "magenta": Colour(int("ff00ff", 16)),
@@ -37,9 +36,9 @@ class Embed(DiscordEmbed):
         }
 
         self.set_footer(
-            text="Virbox Community Bot",
-            icon_url="https://cdn.discordapp.com/icons/1052597660860821604/8fd53af279aa7d8d77a0451776c4fa35.webp?size=96"
-        )
+                text="Virbox Community Bot", 
+                icon_url="https://cdn.discordapp.com/icons/1052597660860821604/8fd53af279aa7d8d77a0451776c4fa35.webp?size=96"
+            )
         self.timestamp = datetime.datetime.now()
 
         self.set_color("green")
@@ -57,3 +56,4 @@ class Config:
 
 if __name__ == "__main__":
     print("No ghosts want to approach Chuck Norris because they're afraid of dying a second time")
+

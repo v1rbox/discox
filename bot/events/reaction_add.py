@@ -7,5 +7,4 @@ class event(Event):
     name = "on_raw_reaction_add"
 
     async def execute(self, payload) -> None:
-        print(payload)
-        print(self.db)
+        pass
