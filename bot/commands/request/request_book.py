@@ -9,6 +9,10 @@ class cmd(Command):
     description = "List of every requests in order if the <number_id> == 0. Otherwise, just shown up the information in that number_id row"
 
     def display_row(self, row: tuple) -> str:
+
+        """
+        Display tuple (represented of the row in the table)
+        """
         # implement number_id
         number_id = row[0]
 
@@ -77,7 +81,7 @@ class cmd(Command):
             db = self.db
 
             cursor = await db.cursor()
-            await cursor.execute(f"SELECT * FROM request WHERE Number_id = {arguments[0]}")
+            await cursor.execute(f"SELECT * FROM request WHERE Number_id = ?", (arguments[0], ))
             row = await cursor.fetchone()
 
             if not row:
@@ -88,6 +92,7 @@ class cmd(Command):
                 return
 
             final_message = self.display_row(row)
+            final_message += f"\nDescription: ```{row[3]}```"
             embed = Embed(
                 title=f"Show the information of the row with the given number_id: `{arguments[0]}`", description=final_message)
             await message.channel.send(embed=embed)
