@@ -1,5 +1,6 @@
 from bot.config import Config, Embed
 from bot.base import Command
+import discord
 
 class cmd(Command):
     """ A discord command instance. """
