@@ -80,7 +80,7 @@ class cmd(Command):
                     data = await command.get_contribuders()
 
                     await msg.clear_reactions()
-                    embed = Embed(title=f"{command.name.capitalize()} command", description=f"Usage:\n`{Config.prefix}{cat_tag}{command.usage}`\n{command.description}\n\nContribuders for this command```     Amt  Usr\n{data}```")
+                    embed = Embed(title=f"{command.name.capitalize()} command", description=f"Usage:\n`{Config.prefix}{cat_tag}{command.usage}`\n{command.description}\n\nContributors for this command```Commits  User\n{data}```")
                     await msg.edit(content="", embed=embed)
                     await msg.add_reaction("↩️")
 
@@ -97,18 +97,23 @@ class cmd(Command):
                     for i in ['◀️', '🔼', '🔽', '▶️', '🔍']:
                         await msg.add_reaction(i)
 
-
                 await reaction.remove(message.author)
 
         else:
-            try:
-                cmd = self.manager.get(arguments[0])
-            except KeyError:
-                raise KeyError(f"Command {arguments[0]} not found.")
+            if len(arguments[0].split(" ")) == 1:
+                cat = ""
+                try:
+                    cmd = self.manager.get(arguments[0])
+                except KeyError:
+                    raise KeyError(f"Command {arguments[0]} not found.")
+            else:
+                cat, command = arguments.split(" ")
+                cmd = {i.prefix: i for i in self.manager.categories 
+                          if i.prefix is not None}[cat] \
+                          .commands_map()[command]
 
-            embed = Embed(
-                title=cmd.name.capitalize(),
-                description=f"{cmd.description}\nUsage: `{Config.prefix}{cmd.usage}`",
-            )
+            data = await cmd.get_contribuders()
+
+            embed = Embed(title=f"{cmd.name.capitalize()} command", description=f"Usage:\n`{Config.prefix}{cat}{cmd.usage}`\n{cmd.description}\n\nContributors for this command```Commits  User\n{data}```")
 
             await message.channel.send(embed=embed)

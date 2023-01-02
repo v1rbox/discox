@@ -88,8 +88,11 @@ class Command(ABC):
         raise NotImplementedError("Command execute method is required")
 
     async def get_contribuders(self) -> str:
-        users = subprocess.run(["git", "shortlog", "-n", "-s", "--", f"bot/commands/{self.file}"], capture_output=True).stdout.decode()
-        return users.strip("\n")
+        res = subprocess.run(["git", "shortlog", "-n", "-s", "--", f"bot/commands/{self.file}"], capture_output=True).stdout.decode().strip("\n")
+        lines = res.split("\n")
+        colums = [i.strip().split() for i in lines]
+        text = "\n".join([f"{i[0]:<9}{i[1]}" for i in colums])
+        return text
 
 
 class Event(ABC):

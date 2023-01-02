@@ -43,7 +43,7 @@ class FunCategory(Category):
 class UtilityCategory(Category):
     """ A command category instance. """
     name = "utility"
-    prefix = "utils"
+    prefix = None
     commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:

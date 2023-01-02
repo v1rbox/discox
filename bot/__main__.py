@@ -176,10 +176,10 @@ def main() -> None:
         # Check for category
         prefixes: List[str] = [i.prefix for i in manager.categories]
         if command in prefixes:
-            print({i.prefix: i for i in manager.categories if i.prefix is not None})
             try:
-                cmdobj = {i.prefix: i for i in manager.categories if i.prefix is not None}[command] \
-                    .commands_map()[arguments[0]]
+                cmdobj = {i.prefix: i for i in manager.categories 
+                          if i.prefix is not None}[command] \
+                          .commands_map()[arguments[0]]
             except KeyError:
                 await logger.send_error(f"Commad '{command} {arguments[0]}' not found", message)
                 return
@@ -193,7 +193,12 @@ def main() -> None:
             try:
                 cmdobj = manager[command]
             except KeyError:
-                await logger.send_error(f"Commad '{command}' not found", message)
+                try:
+                    cmdobj = [[c for c in i.commands if c.name == command] for i in manager.categories if i.prefix is None]
+                    cmdobj = [i for i in cmdobj if len(i) != 0][0][0]
+                except IndexError:
+                    await logger.send_error(f"Commad '{command}' not found", message)
+                    return
 
         logger.log(
             f"'{message.author}' issued command '{command}'",
