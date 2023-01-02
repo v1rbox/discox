@@ -51,13 +51,15 @@ class UtilityCategory(Category):
 class ModCategory(Category):
     """ A command category instance. """
     name = "mod"
-    prefix = None
+    prefix = "mod"
 
     def check_permissions(self, message: discord.Message) -> bool:
-        # Check for a specific role in the member
-        return any([i.id == config.mod_role_id for i in message.author.roles])
+        # Checking for everyone who are a mod in the server. Usually the server has more mod roles than just one
+        for i in message.author.roles:
+            if i.id in config.mod_role_id:
+                return True
 
-
+        return False
 class RequestCategory(Category):
 
     name = "request"
