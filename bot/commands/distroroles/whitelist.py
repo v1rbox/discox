@@ -18,4 +18,5 @@ class cmd(Command):
         await message.channel.send(embed=embed)
       else:
         embed = Embed(title="Distro", description="**No distros currently whitelisted**")
+        embed.set_color("red")
         await message.channel.send(embed=embed)

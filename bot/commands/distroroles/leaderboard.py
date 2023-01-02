@@ -24,6 +24,7 @@ class cmd(Command):
         # Returns if there are no distro roles
         if leaderboard == []:
             embed = Embed(title="Distro",description="**No distro roles yet**")
+            embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Sorts by highest member count

@@ -19,6 +19,7 @@ class cmd(Command):
         # Checks if user has role and role is whitelisted
         if arguments[0] not in Distro.whitelist or arguments[0] not in user_roles_names:
             embed = Embed(title="Distro", description=f"**`{name}` does not have that distro role, or `{arguments[0]}` is not whitelisted**\n\n*To your see current distro roles, use:* \n`v!distro roles`\n\n*To see whitelisted distro roles, use:*\n`v!distro whitelist`")
+            embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Removes role from user

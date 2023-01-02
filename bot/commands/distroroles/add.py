@@ -84,11 +84,13 @@ class cmd(Command):
         # Checks if role is whitelisted
         if arguments[0] not in self.whitelist:
             embed = Embed(title="Distro", description="**Invalid distro**\n\n*To see valid distros, use:*\n`v!distro whitelist`")
+            embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Checks if user already has the role
         if arguments[0] in user_roles_names:
             embed = Embed(title="Distro", description=f"**`{name}` already has that distro role**")
+            embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Checks if user has maximum distro roles
@@ -98,6 +100,7 @@ class cmd(Command):
                 max += 1
         if max >= self.max_distro:
             embed = Embed(title="Distro", description=f"**`{name}` has reached the max distro roles.**\n\n*To see your current distro roles, use:*\n`v!distro roles` \n\n*To remove a distro role, use:*\n`v!distro remove [Your distro]`")
+            embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Checks if role exists, if not, creates role

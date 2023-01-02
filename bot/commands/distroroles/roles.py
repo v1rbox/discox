@@ -25,6 +25,7 @@ class cmd(Command):
         # Checks if user has no distro roles
         if len(roles) == 0:
             embed = Embed(title="Distro",description=f"**`{name}` has no distro roles**")
+            embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Replies with current distro roles
