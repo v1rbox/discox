@@ -131,3 +131,7 @@ class Event(ABC):
         """
 
         raise NotImplementedError("Event execute method is required")
+
+
+if __name__ == "__main__":
+    print("Chuck Norris learnt to read with a book")

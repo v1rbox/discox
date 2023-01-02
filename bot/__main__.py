@@ -212,13 +212,14 @@ def main() -> None:
                 return
 
         # Join args
-        usage_args: List[Tuple[str,str]] = re.findall(
-                f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', 
-                cmdobj.usage
-            )
-        args_raw: List[str] = [f"<{i[1]}>" if i[1] else f"[{i[0]}]" for i in usage_args]
+        usage_args: List[Tuple[str, str]] = re.findall(
+            f'\[([^\[\]]+)\]|\<([^\<\>]+)\>',
+            cmdobj.usage
+        )
+        args_raw: List[str] = [f"<{i[1]}>" if i[1]
+                               else f"[{i[0]}]" for i in usage_args]
 
-        if args_raw[-1][1] == "*":
+        if len(args_raw) >= 1 and args_raw[-1][1] == "*":
             args, tmp = (arguments[:len(args_raw)-1],
                          arguments[len(args_raw)-1:])
             arguments = args + [" ".join(tmp)]

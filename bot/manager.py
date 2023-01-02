@@ -110,3 +110,6 @@ class EventsManager:
         """ Get the number of events. """
         return len(self.events)
 
+
+if __name__ == "__main__":
+    print("Jesus Christ was born in 1940 before Chuck Norris")
