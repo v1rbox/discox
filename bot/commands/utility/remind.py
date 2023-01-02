@@ -25,7 +25,8 @@ class cmd(Command):
         timestamp = int(time.time()) + reminderTime
         
         embed = Embed(title="New Reminder", description=f"Reminder set to <t:{timestamp}:f>, wich is in <t:{timestamp}:R>.")
-        url = await message.reply(embed=embed).jump_url()
+        msg = await message.reply(embed=embed)
+        url = msg.jump_url
         await sleep(reminderTime)
         embed = Embed(title=arguments[1], description=f"""This is your reminder.
         If you wan't to know the context, [here]({url}) is the link.""")
