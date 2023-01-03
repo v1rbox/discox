@@ -57,9 +57,9 @@ class DistroCategory(Category):
     def check_permissions(self, message: discord.Message) -> bool:
         return True
     
-class PresenceCatwgory(Category):
+class PresenceCategory(Category):
     """ A command category instance. """
-    name = "change_presence"
+    name = "changePresence"
     prefix = "change"
 
     def check_permissions(self, message: discord.Message) -> bool:
