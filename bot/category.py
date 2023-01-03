@@ -34,6 +34,7 @@ class FunCategory(Category):
     """ A command category instance. """
     name = "fun"
     prefix = None
+    commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
@@ -42,7 +43,8 @@ class FunCategory(Category):
 class UtilityCategory(Category):
     """ A command category instance. """
     name = "utility"
-    prefix = "utils"
+    prefix = None
+    commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
@@ -51,15 +53,27 @@ class DistroCategory(Category):
     """ A command category instance. """
     name = "distroroles"
     prefix = "distro"
+    commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
+    
+class PresenceCategory(Category):
+    """ A command category instance. """
+    name = "changePresence"
+    prefix = "change"
+    commands: List[Command] = []
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        # Check for a specific role in the member
+        return any([i.id == config.mod_role_id for i in message.author.roles])
 
 
 class ModCategory(Category):
     """ A command category instance. """
     name = "mod"
-    prefix = "mod"
+    prefix = None
+    commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:
         # Checking for everyone who are a mod in the server. Usually the server has more mod roles than just one

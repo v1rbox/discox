@@ -117,6 +117,10 @@ def main() -> None:
         logger.log("Guilds:", f"{len(bot.guilds)}")
         logger.log("Prefix:", config.prefix)
         logger.newline()
+        
+        # Stop the bot attempting to load the commands multiple times
+        if manager.commands:
+            return
 
         # Load the commands
         entries = [i for i in os.listdir(os.path.join(
@@ -125,7 +129,7 @@ def main() -> None:
             cmd = entry.split(".")[0]
             if os.path.isfile(os.path.join("bot", "commands", entry)):
                 manager.register(__import__(
-                    f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0).cmd)
+                    f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0).cmd, file=entry)
             else:
                 # Current entry is a category
                 for cmd in [
@@ -134,7 +138,7 @@ def main() -> None:
                     if not i.startswith("__")
                 ]:
                     manager.register(__import__(
-                        f"bot.commands.{entry}.{cmd}", globals(), locals(), ["cmd"], 0).cmd, entry)
+                        f"bot.commands.{entry}.{cmd}", globals(), locals(), ["cmd"], 0).cmd, entry, file=os.path.join(entry, cmd+".py"))
 
         logger.log("Registered commands")
         for idx, command in enumerate(manager.commands, 1):
@@ -154,7 +158,10 @@ def main() -> None:
 
         logger.newline()
 
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"Virbox videos"))
+        activity = discord.Activity(type=discord.ActivityType.watching, name=f"Virbox videos")
+        await bot.change_presence(activity=activity)
+        bot.current_activity = activity
+        bot.current_status = discord.Status.online
 
     @bot.event
     async def on_message(message: discord.Message):
@@ -169,12 +176,13 @@ def main() -> None:
         command, arguments = parse_user_input(
             message.content[len(config.prefix):])
 
+        # Check for category
         prefixes: List[str] = [i.prefix for i in manager.categories]
         if command in prefixes:
-            print({i.prefix: i for i in manager.categories if i.prefix is not None})
             try:
-                cmdobj = {i.prefix: i for i in manager.categories if i.prefix is not None}[command] \
-                    .commands_map()[arguments[0]]
+                cmdobj = {i.prefix: i for i in manager.categories 
+                          if i.prefix is not None}[command] \
+                          .commands_map()[arguments[0]]
             except KeyError:
                 await logger.send_error(f"Commad '{command} {arguments[0]}' not found", message)
                 return
@@ -188,8 +196,12 @@ def main() -> None:
             try:
                 cmdobj = manager[command]
             except KeyError:
-                await logger.send_error(f"Commad '{command}' not found", message)
-                return
+                try:
+                    cmdobj = [[c for c in i.commands if c.name == command] for i in manager.categories if i.prefix is None]
+                    cmdobj = [i for i in cmdobj if len(i) != 0][0][0]
+                except IndexError:
+                    await logger.send_error(f"Commad '{command}' not found", message)
+                    return
 
         logger.log(
             f"'{message.author}' issued command '{command}'",
