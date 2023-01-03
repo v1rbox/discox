@@ -6,8 +6,8 @@ from bot.base import Command
 class cmd(Command):
 
     name = "request"
-    usage = "request <title> [description]. Description here should be a code block."
-    description = "Add some recommendation to the server. Support multiple commands to deal with."
+    usage = "request <title> [description]"
+    description = "Add some recommendation to the server. Support multiple commands to deal with. \nThe [description] argument here should be a code block. "
 
     async def execute(self, arguments, message) -> None:
 
