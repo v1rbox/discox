@@ -3,6 +3,8 @@ from discord import Colour
 
 import datetime
 
+from typing import List
+
 
 class Embed(DiscordEmbed):
     """ Custom implementation of a discord embed object. """
@@ -50,7 +52,8 @@ class Embed(DiscordEmbed):
 class Config:
     token: str = ""
     prefix: str = "v!"
-    mod_role_id: list[int] = [1057253751699816459]
+    mod_role_id: List[int] = [1057253751699816459]
+    temp_channel: int = 1059921288354856990
 
 
 if __name__ == "__main__":

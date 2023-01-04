@@ -89,7 +89,9 @@ class EventsManager:
 
         event = event(self.bot, self, self.db)
 
-        setattr(self.bot, event.name, event.execute)
+        if event.name != "on_message":
+            setattr(self.bot, event.name, event.execute)
+
         self.events.append(event)
 
         return self.bot

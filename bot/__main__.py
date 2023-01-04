@@ -171,6 +171,7 @@ def main() -> None:
             or not message.content.startswith(config.prefix)
             or not bot.is_ready()
         ):
+            await event_manager.event_map()["on_message"].execute(message)
             return
 
         command, arguments = parse_user_input(
