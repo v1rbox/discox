@@ -2,6 +2,9 @@ import re
 import os
 import traceback
 import aiosqlite
+import urllib.parse as parse
+from asyncio import sleep
+from time import time
 
 import discord
 
@@ -85,8 +88,8 @@ async def parse_usage_text(usage: str, args: List[str], message: discord.Message
         await message.channel.send(embed=embed)
         return False
 
-    return True
-
+    return True        
+        
 
 def main() -> None:
     """ Main setup function. """
@@ -117,7 +120,7 @@ def main() -> None:
         logger.log("Guilds:", f"{len(bot.guilds)}")
         logger.log("Prefix:", config.prefix)
         logger.newline()
-        
+
         # Stop the bot attempting to load the commands multiple times
         if manager.commands:
             return
@@ -145,6 +148,7 @@ def main() -> None:
             logger.custom(
                 str(idx), f"{config.prefix}{command.name} :", command.description
             )
+          
 
         logger.newline()
         logger.log("Registered events")
@@ -162,6 +166,33 @@ def main() -> None:
         await bot.change_presence(activity=activity)
         bot.current_activity = activity
         bot.current_status = discord.Status.online
+      
+        # Fetch reminders
+        cursor = await db.cursor()
+        await cursor.execute(
+          """CREATE TABLE IF NOT EXISTS reminders(
+                User INT,
+                Timestamp INT PRIMARY KEY,
+                Reminder TEXT,
+                Channel INT,
+                Message INT
+          );"""
+        )
+        await cursor.execute(
+            "SELECT * FROM reminders ORDER BY Timestamp ASC"
+        )
+        reminders = await cursor.fetchall()
+        for reminder in reminders:
+            user, timestamp, remindMsg, channel, message = reminder
+            await sleep(timestamp - int(time()))
+            channelObj = await bot.fetch_channel(channel)
+            url = f"https://discord.com/channels/{channelObj.guild.id}/{channel}/{message}"
+            embed = Embed(title=parse.unquote(remindMsg), description=f"""This is your reminder.
+            If you wan't to know the context, [here]({url}) is the link.""")
+            await channelObj.send(f"<@{user}>", embed=embed)
+            await cursor.execute("DELETE FROM reminders WHERE User = ? AND Timestamp = ?", (user, timestamp))
+        await db.commit()
+        await cursor.close()
 
     @bot.event
     async def on_message(message: discord.Message):
