@@ -7,7 +7,7 @@ class cmd(Command):
     """ A discord command instance. """
 
     ### Allowed languages and max allowed code roles per user ###
-    code_roles_color = Color.from_rgb(239, 255, 0)
+    code_roles_color = Color.from_rgb(137, 204, 240)
     max_code = 3
     whitelist = [
         "Ada",
