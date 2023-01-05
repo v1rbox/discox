@@ -1,22 +1,22 @@
 from bot.config import Config, Embed
 from bot.base import Command
-from bot.commands.distroroles.add import cmd as Distro
+from bot.commands.coderoles.add import cmd as Code
 
 class cmd(Command):
     """ A discord command instance. """
   
     name = "whitelist"
     usage = "whitelist"
-    description = f"Shows available distro role options"
+    description = f"Shows available languages"
 
     async def execute(self, arguments, message) -> None:
-      if len(Distro.whitelist) > 0:
-        description = "**Available distro roles:**\n\n"
-        for i in Distro.whitelist:
+      if len(Code.whitelist) > 0:
+        description = "**Available languages:**\n\n"
+        for i in Code.whitelist:
             description += f'`{i}`\n'
-        embed = Embed(title="Distro", description=description)
+        embed = Embed(title="Code", description=description)
         await message.channel.send(embed=embed)
       else:
-        embed = Embed(title="Distro", description="**No distros currently whitelisted**")
+        embed = Embed(title="Code", description="**No languages currently whitelisted**")
         embed.set_color("red")
         await message.channel.send(embed=embed)

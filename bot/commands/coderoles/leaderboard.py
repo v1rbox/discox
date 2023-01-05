@@ -1,13 +1,13 @@
 from bot.config import Config, Embed
 from bot.base import Command
-from bot.commands.distroroles.add import cmd as Distro
+from bot.commands.coderoles.add import cmd as Code
 
 class cmd(Command):
     """ A discord command instance. """
 
     name = "leaderboard"
     usage = "leaderboard"
-    description = f"Leaderboard of most used distros in the server"
+    description = f"Leaderboard of most used languages in the server"
 
     async def execute(self, arguments, message) -> None:
         server_roles_names = []
@@ -17,21 +17,21 @@ class cmd(Command):
 
         leaderboard = []
         description = "**Leaderboard:**\n\n"
-        # Checks current distro roles in server
+        # Checks current code roles in server
         for role in server_roles_names:
-            if role in Distro.whitelist and len(Code.getRole(self, message, role).members) > 0:
-                leaderboard.append({"role": role, "count": len(Distro.getRole(self,message,role).members)})
-        # Returns if there are no distro roles
+            if role in Code.whitelist and len(Code.getRole(self, message, role).members) > 0:
+                leaderboard.append({"role": role, "count": len(Code.getRole(self,message,role).members)})
+        # Returns if there are no code roles
         if leaderboard == []:
-            embed = Embed(title="Distro",description="**No distro roles yet**")
+            embed = Embed(title="Code",description="**No code roles yet**")
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Sorts by highest member count
         leaderboard = sorted(leaderboard, key=lambda d: d['count'], reverse=True)
-        # Returns distro role leaderboard
+        # Returns code role leaderboard
         for role in leaderboard:
             description += f"**Current `{role['role']}` Users: `{role['count']}`**\n\n"
-        embed = Embed(title="Distro", description=description)
+        embed = Embed(title="Code", description=description)
         await message.channel.send(embed=embed)
         
