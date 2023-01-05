@@ -15,7 +15,13 @@ class cmd(Command):
 
         for role in message.author.roles:
             user_roles_names.append(role.name)
-        
+            
+        # Checks if role exists ignoring capitalization
+        if arguments[0] not in Distro.whitelist and arguments[0] in (i.lower() for i in Distro.whitelist if (guess := i).lower() == arguments[0]) and guess in user_roles_names:
+            embed = Embed(title="Distro", description=f"**Invalid distro**\nDid you mean to type ``{guess}`` ? \n\n*To see valid distros, use:*\n`v!distro whitelist`")
+            embed.set_color("red")
+            await message.channel.send(embed=embed)
+            return
         # Checks if user has role and role is whitelisted
         if arguments[0] not in Distro.whitelist or arguments[0] not in user_roles_names:
             embed = Embed(title="Distro", description=f"**`{name}` does not have that distro role, or `{arguments[0]}` is not whitelisted**\n\n*To your see current distro roles, use:* \n`v!distro roles`\n\n*To see whitelisted distro roles, use:*\n`v!distro whitelist`")

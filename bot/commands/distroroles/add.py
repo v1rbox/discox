@@ -81,6 +81,12 @@ class cmd(Command):
         for role in message.guild.roles:
             server_roles_names.append(role.name)
 
+        # Checks if role exists ignoring capitalization
+        if arguments[0] in (i.lower() for i in self.whitelist if (guess := i).lower() == arguments[0]):
+            embed = Embed(title="Distro", description=f"**Invalid distro**\nDid you mean to type ``{guess}`` ? \n\n*To see valid distros, use:*\n`v!distro whitelist`")
+            embed.set_color("red")
+            await message.channel.send(embed=embed)
+            return
         # Checks if role is whitelisted
         if arguments[0] not in self.whitelist:
             embed = Embed(title="Distro", description="**Invalid distro**\n\n*To see valid distros, use:*\n`v!distro whitelist`")
