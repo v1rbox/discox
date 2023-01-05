@@ -59,10 +59,11 @@ class cmd(Command):
         'Void',
         'Whonix',
         'Windows',
+        'Zorin',
     ]
 
     name = "add"
-    usage = "distro add <distibution>"
+    usage = "add <distibution>"
     description = f"Assigns user a role based on selected distro, max of {max_distro} distro roles per user."
 
     ### Gets Role Object with from a given name ###

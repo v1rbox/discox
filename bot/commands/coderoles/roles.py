@@ -1,13 +1,13 @@
 from bot.config import Config, Embed
 from bot.base import Command
-from bot.commands.distroroles.add import cmd as Distro
+from bot.commands.coderoles.add import cmd as Code
 
 class cmd(Command):
     """ A discord command instance. """
   
     name = "roles"
     usage = "roles"
-    description = f"Shows user's current distro roles"
+    description = f"Shows user's current code roles"
 
     async def execute(self, arguments, message) -> None:
         user_roles_names = []
@@ -17,21 +17,21 @@ class cmd(Command):
             user_roles_names.append(role.name)
 
         roles = []
-        description = f"**`{name}`'s current distro roles:**\n\n"
-        # Searches for users current distro roles
+        description = f"**`{name}`'s current code roles:**\n\n"
+        # Searches for users current code roles
         for role in user_roles_names:
-            if role in Distro.whitelist:
+            if role in Code.whitelist:
                 roles.append(role)
-        # Checks if user has no distro roles
+        # Checks if user has no code roles
         if len(roles) == 0:
-            embed = Embed(title="Distro",description=f"**`{name}` has no distro roles**")
+            embed = Embed(title="Code",description=f"**`{name}` has no code roles**")
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
-        # Replies with current distro roles
+        # Replies with current code roles
         for role in roles:
             description += f'`{role}`\n\n'
-        embed = Embed(title="Distro", description=description)
+        embed = Embed(title="Code", description=description)
         await message.channel.send(embed=embed)
 
         
