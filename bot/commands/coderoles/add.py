@@ -8,7 +8,7 @@ class cmd(Command):
 
     ### Allowed languages and max allowed code roles per user ###
     code_roles_color = Color.from_rgb(137, 204, 240)
-    max_code = 3
+    max_code = 5
     whitelist = [
         "Ada",
         "Assembly",
