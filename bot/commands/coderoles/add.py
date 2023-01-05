@@ -78,20 +78,14 @@ class cmd(Command):
         for role in message.guild.roles:
             server_roles_names.append(role.name)
 
-        # Checks if role exists ignoring capitalization
-        if arguments[0] in (i.lower() for i in self.whitelist if (guess := i).lower() == arguments[0]):
-            embed = Embed(title="Code", description=f"**Invalid language**\nDid you mean to type ``{guess}`` ? \n\n*To see valid languages, use:*\n`v!code whitelist`")
-            embed.set_color("red")
-            await message.channel.send(embed=embed)
-            return
         # Checks if role is whitelisted
-        if arguments[0] not in self.whitelist:
+        if arguments[0].lower() not in map(lambda lang: lang.lower(), self.whitelist):
             embed = Embed(title="Code", description="**Invalid language**\n\n*To see valid languages, use:*\n`v!code whitelist`")
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Checks if user already has the role
-        if arguments[0] in user_roles_names:
+        if arguments[0].lower() in map(lambda role: role.lower(), user_roles_names):
             embed = Embed(title="Code", description=f"**`{name}` already has that code role**")
             embed.set_color("red")
             await message.channel.send(embed=embed)
@@ -106,11 +100,15 @@ class cmd(Command):
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
+
+        role_name = self.whitelist[
+                list(map(lambda lang: lang.lower(), self.whitelist)).index(arguments[0].lower())
+        ]
         # Checks if role exists, if not, creates role
-        if arguments[0] not in server_roles_names:
-            await message.guild.create_role(name=arguments[0], mentionable=True, colour=self.code_roles_color)
+        if role_name not in server_roles_names:
+            await message.guild.create_role(name=role_name, mentionable=True, colour=self.code_roles_color)
         # Adds user to role
-        role = self.getRole(message, arguments[0])
+        role = self.getRole(message, role_name)
         await message.author.add_roles(role)
         embed = Embed(title="Code", description=f"**`{name}` has been added to the `{role.name}` code role**")
         await message.channel.send(embed=embed)

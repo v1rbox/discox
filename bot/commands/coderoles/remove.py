@@ -16,20 +16,18 @@ class cmd(Command):
         for role in message.author.roles:
             user_roles_names.append(role.name)
             
-        # Checks if role exists ignoring capitalization
-        if arguments[0] not in Code.whitelist and arguments[0] in (i.lower() for i in Code.whitelist if (guess := i).lower() == arguments[0]) and guess in user_roles_names:
-            embed = Embed(title="Code", description=f"**Invalid language**\nDid you mean to type ``{guess}`` ? \n\n*To see valid languages, use:*\n`v!code whitelist`")
-            embed.set_color("red")
-            await message.channel.send(embed=embed)
-            return
         # Checks if user has role and role is whitelisted
-        if arguments[0] not in Code.whitelist or arguments[0] not in user_roles_names:
+        if arguments[0].lower() not in map(lambda lang: lang.lower(), Code.whitelist) or arguments[0].lower() not in map(lambda role: role.lower(), user_roles_names):
             embed = Embed(title="Code", description=f"**`{name}` does not have that code role, or `{arguments[0]}` is not whitelisted**\n\n*To your see current code roles, use:* \n`v!code roles`\n\n*To see whitelisted languages, use:*\n`v!code whitelist`")
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
+
+        role_name = Code.whitelist[
+                list(map(lambda lang: lang.lower(), Code.whitelist)).index(arguments[0].lower())
+        ]
         # Removes role from user
-        role = Code.getRole(self,message, arguments[0])
+        role = Code.getRole(self,message, role_name)
         await message.author.remove_roles(role)
         # Removes role from server if role is empty
         if len(role.members) == 0:
