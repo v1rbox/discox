@@ -31,6 +31,9 @@ class cmd(Command):
         # Removes role from user
         role = Code.getRole(self,message, arguments[0])
         await message.author.remove_roles(role)
+        # Removes role from server if role is empty
+        if len(role.members) == 0:
+            await role.delete()
         embed = Embed(
             title="Code", description=f"**`{name}` has been removed from the `{role.name}` code role.**")
         await message.channel.send(embed=embed)

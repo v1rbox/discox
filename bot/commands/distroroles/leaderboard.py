@@ -19,7 +19,7 @@ class cmd(Command):
         description = "**Leaderboard:**\n\n"
         # Checks current distro roles in server
         for role in server_roles_names:
-            if role in Distro.whitelist and len(Code.getRole(self, message, role).members) > 0:
+            if role in Distro.whitelist and len(Distro.getRole(self, message, role).members) > 0:
                 leaderboard.append({"role": role, "count": len(Distro.getRole(self,message,role).members)})
         # Returns if there are no distro roles
         if leaderboard == []:
