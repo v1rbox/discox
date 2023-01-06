@@ -57,6 +57,15 @@ class DistroCategory(Category):
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
+
+class CodeCategory(Category):
+    """ A command category instance. """
+    name = "coderoles"
+    prefix = "code"
+    commands: List[Command] = []
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
     
 class PresenceCategory(Category):
     """ A command category instance. """
