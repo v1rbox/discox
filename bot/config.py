@@ -49,7 +49,7 @@ class Embed(DiscordEmbed):
 
 
 class Config:
-    token: str = "OTY4NTI5MzcyOTIxMzUyMjMz.G_OLSs.r7nypIaYVWHNLjJ54jsHpvuK4dRbD9GoIDjJ5o"
+    token: str = ""
     prefix: str = "v!"
     mod_role_id: list[int] = [1057253751699816459]
 
