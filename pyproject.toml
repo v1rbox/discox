@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "discox"
+version = "0.1.0"
+description = "Virbox Discord Bot community project ^_^"
+authors = ["Your Name <you@example.com>"]
+license = "GNU General Public License v3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+discord-py = "2.1.0"
+aiosqlite = "0.18.0"
+python-dotenv = "^0.21.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.12.0"
+isort = "^5.11.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
