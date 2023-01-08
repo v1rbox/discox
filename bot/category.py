@@ -99,9 +99,20 @@ class ModCategory(Category):
 
 
 class RequestCategory(Category):
+    """ A command category instance. """
 
     name = "request"
     prefix = "req"
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
+
+
+class LevelCategory(Category):
+    """ A command category instance. """
+
+    name = "levels"
+    prefix = None
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True

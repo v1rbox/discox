@@ -1,11 +1,12 @@
 from discord import Colour
 from discord.embeds import Embed as DiscordEmbed
 from dotenv import load_dotenv
-
 load_dotenv()
 
-import datetime
 import os
+import datetime
+
+from typing import List
 
 
 class Embed(DiscordEmbed):
@@ -14,13 +15,12 @@ class Embed(DiscordEmbed):
     def __init__(self, *args, **kwargs) -> None:
         DiscordEmbed.__init__(self, *args, **kwargs)
 
-        # No need to make it public, so we make it private
-        self.__colors = {
+        self.colors = {
             "green": Colour(int("38842c", 16)),
             "red": Colour(int("bf3036", 16)),
-            "blue": Colour(int("0d00ff", 16)),
-            "yellow": Colour(int("f2ff00", 16)),
-            "magenta": Colour(int("ff00ff", 16)),
+            "blue": Colour(int("303f9c", 16)),
+            "yellow": Colour(int("b0ba2a", 16)),
+            "magenta": Colour(int("a829b0", 16)),
             "brown": Colour(int("2b1313", 16)),
             "purple": Colour(int("5300b0", 16)),
             "pink": Colour(int("ff00fc", 16)),
@@ -53,13 +53,12 @@ class Embed(DiscordEmbed):
 
 
 class Config:
-    token: str = os.getenv("DISCOX_TOKEN")
-    prefix: str = os.getenv("DISCOX_PREFIX", "v!")
-    mod_role_id: list[int] = [1057253751699816459]
-    lavalink_host: str = os.getenv("LAVALINK_HOST")
-    lavalink_port: int = int(os.getenv("LAVALINK_PORT"))
-    lavalink_password: str = os.getenv("LAVALINK_PASSWORD")
-    lavalink_ssl: bool = bool(int(os.getenv("LAVALINK_SSL")))
+    token: str = os.getenv("DISCOX_TOKEN") # bot token
+    prefix: str = os.getenv("DISCOX_PREFIX", "v!") # prefix (default: v!)
+    mod_role_id: List[int] = [int(x) for x in os.getenv("DISCOX_MOD_ROLE_ID", "0,").split(",")] # mod role id
+    temp_channel: int = int(os.getenv("DISCOX_TEMP_CHANNEL", "0")) # temp channel id
+    channel_id: str = os.getenv("DISCOX_CHANNEL_ID", "UCCFVFyadjMuaR5O89yRToew") # channel id
+    youtube_announcement_id: int = int(os.getenv("DISCOX_YOUTUBE_ANNOUNCEMENT_ID", 1056990617357521009)) # youtube announcement id
 
 
 if __name__ == "__main__":
