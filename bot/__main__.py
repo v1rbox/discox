@@ -184,7 +184,7 @@ def main() -> None:
                           if i.prefix is not None}[command] \
                           .commands_map()[arguments[0]]
             except KeyError:
-                await logger.send_error(f"Commad '{command} {arguments[0]}' not found", message)
+                await logger.send_error(f"Command '{command} {arguments[0]}' not found", message)
                 return
             except IndexError:
                 await logger.send_error(f"No subcommand found, use '{config.prefix}help {command}' for more information", message)
@@ -200,7 +200,7 @@ def main() -> None:
                     cmdobj = [[c for c in i.commands if c.name == command] for i in manager.categories if i.prefix is None]
                     cmdobj = [i for i in cmdobj if len(i) != 0][0][0]
                 except IndexError:
-                    await logger.send_error(f"Commad '{command}' not found", message)
+                    await logger.send_error(f"Command '{command}' not found", message)
                     return
 
         logger.log(
