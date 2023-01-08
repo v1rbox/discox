@@ -2,11 +2,12 @@ import discord
 import aiosqlite
 
 from typing import Callable, Dict, Iterator, List, Type, TypeAlias, Optional
+from threading import Thread
 
 # putting this here to avoid circular imports
 Manager: TypeAlias = "CommandsManager"
 
-from .base import Command, Event
+from .base import Command, Event, Task
 from .category import Category
 
 class CommandsManager:
@@ -89,8 +90,47 @@ class EventsManager:
 
         event = event(self.bot, self, self.db)
 
-        setattr(self.bot, event.name, event.execute)
+        if event.name != "on_message":
+            setattr(self.bot, event.name, event.execute)
+
         self.events.append(event)
+
+        return self.bot
+
+    def get(self, name: str) -> Event:
+        """ Get a event by name. """
+        return self.event_map()[name]
+
+    def __getitem__(self, name: str) -> Event:
+        """ Get a event by name. """
+        return self.get(name)
+
+    def __iter__(self) -> Iterator[Event]:
+        """ Iterate over all events. """
+        return iter(self.events)
+
+    def __len__(self) -> int:
+        """ Get the number of events. """
+        return len(self.events)
+
+
+class TasksManager:
+    """ Manage all tasks. """
+
+    def __init__(self, bot: discord.Client, db: aiosqlite.Connection) -> None:
+        self.bot = bot
+        self.db = db
+
+        self.tasks: List[Task] = []
+
+        self.task_map: Callable[..., Dict[str, Event]] = lambda: {
+            task.name: task for task in iter(self)
+        }
+
+    def register(self, task: Task) -> discord.Client:
+        task = task(self.bot, self, self.db)
+        task.execute.start()
+        self.tasks.append(task)
 
         return self.bot
 
