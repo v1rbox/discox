@@ -1,6 +1,10 @@
 from discord.embeds import Embed as DiscordEmbed
 from discord import Colour
+from dotenv import load_dotenv
 
+load_dotenv()
+
+import os
 import datetime
 
 
@@ -49,9 +53,13 @@ class Embed(DiscordEmbed):
 
 
 class Config:
-    token: str = ""
-    prefix: str = "v!"
+    token: str = os.getenv("DISCOX_TOKEN")
+    prefix: str = os.getenv("DISCOX_PREFIX", "v!")
     mod_role_id: list[int] = [1057253751699816459]
+    lavalink_host: str = os.getenv("LAVALINK_HOST")
+    lavalink_port: int = int(os.getenv("LAVALINK_PORT"))
+    lavalink_password: str = os.getenv("LAVALINK_PASSWORD")
+    lavalink_ssl: bool = bool(int(os.getenv("LAVALINK_SSL")))
 
 
 if __name__ == "__main__":
