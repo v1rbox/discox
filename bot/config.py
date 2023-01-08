@@ -1,11 +1,11 @@
 from discord import Colour
 from discord.embeds import Embed as DiscordEmbed
 from dotenv import load_dotenv
+
 load_dotenv()
 
-import os
 import datetime
-
+import os
 from typing import List
 
 
@@ -53,12 +53,18 @@ class Embed(DiscordEmbed):
 
 
 class Config:
-    token: str = os.getenv("DISCOX_TOKEN") # bot token
-    prefix: str = os.getenv("DISCOX_PREFIX", "v!") # prefix (default: v!)
-    mod_role_id: List[int] = [int(x) for x in os.getenv("DISCOX_MOD_ROLE_ID", "0,").split(",")] # mod role id
-    temp_channel: int = int(os.getenv("DISCOX_TEMP_CHANNEL", "0")) # temp channel id
-    channel_id: str = os.getenv("DISCOX_CHANNEL_ID", "UCCFVFyadjMuaR5O89yRToew") # channel id
-    youtube_announcement_id: int = int(os.getenv("DISCOX_YOUTUBE_ANNOUNCEMENT_ID", 1056990617357521009)) # youtube announcement id
+    token: str = os.getenv("DISCOX_TOKEN")  # bot token
+    prefix: str = os.getenv("DISCOX_PREFIX", "v!")  # prefix (default: v!)
+    mod_role_id: List[int] = [
+        int(x) for x in os.getenv("DISCOX_MOD_ROLE_ID", "0,").split(",")
+    ]  # mod role id
+    temp_channel: int = int(os.getenv("DISCOX_TEMP_CHANNEL", "0"))  # temp channel id
+    channel_id: str = os.getenv(
+        "DISCOX_CHANNEL_ID", "UCCFVFyadjMuaR5O89yRToew"
+    )  # channel id
+    youtube_announcement_id: int = int(
+        os.getenv("DISCOX_YOUTUBE_ANNOUNCEMENT_ID", 1056990617357521009)
+    )  # youtube announcement id
 
 
 if __name__ == "__main__":

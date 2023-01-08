@@ -99,7 +99,7 @@ class ModCategory(Category):
 
 
 class RequestCategory(Category):
-    """ A command category instance. """
+    """A command category instance."""
 
     name = "request"
     prefix = "req"
@@ -109,7 +109,7 @@ class RequestCategory(Category):
 
 
 class LevelCategory(Category):
-    """ A command category instance. """
+    """A command category instance."""
 
     name = "levels"
     prefix = None
