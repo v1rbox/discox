@@ -215,17 +215,6 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
-name = "wavelink"
-version = "1.3.4"
-description = "A robust and powerful Lavalink wrapper for discord.py and derivatives."
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-aiohttp = ">=3.7.4,<4"
-
-[[package]]
 name = "yarl"
 version = "1.8.2"
 description = "Yet another URL library"
@@ -240,7 +229,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "e397b87ec88935722596f4d4c807e32e35e09146ea368fd8a227c0b61ad45854"
+content-hash = "086b3e032f1875eec7cdf57cf3af4e6f5ed11cf6a363bf1665bce86a86b1c621"
 
 [metadata.files]
 aiohttp = [
@@ -557,10 +546,6 @@ python-dotenv = [
 tomli = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
-]
-wavelink = [
-    {file = "wavelink-1.3.4-py3-none-any.whl", hash = "sha256:91a47681d6fdbab342753b52a49ea9f0470a10ef795d81709ed93f590c8fa853"},
-    {file = "wavelink-1.3.4.tar.gz", hash = "sha256:7040422c1b1552aa18a9c589d30d9d90a7c4e10ce7a2af2622177913eb21ca72"},
 ]
 yarl = [
     {file = "yarl-1.8.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:bb81f753c815f6b8e2ddd2eef3c855cf7da193b82396ac013c661aaa6cc6b0a5"},
