@@ -8,7 +8,6 @@ class event(Event):
     lastMsgAuthorId = None
 
     async def execute(self, message) -> None:
-        print(message)
         if not message.author.bot:
             if self.lastMsgAuthorId != message.author.id:
                 self.lastMsgAuthorId = message.author.id

@@ -24,7 +24,7 @@ def genarateBar(xp, level):
     draw.rectangle(((0, 16), (600, 25)), fill=TINT_COLOR+(OPACITY,))
 
 
-    draw.line((0, 20, proc, 20), fill=(255, 0, 61), width=5)
+    draw.line((0, 20, proc, 20), fill=(56, 132, 44), width=5)
     im.save('bot/assets/tmp/image.png', quality=95)
 
 
@@ -39,7 +39,7 @@ class cmd(Command):
         if arguments[0] == "":
             user = message.author
         else:
-            user = await message.guild.get_member_named(arguments[0])
+            user = message.guild.get_member_named(arguments[0])
 
         async with message.channel.typing():
 

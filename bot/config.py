@@ -54,6 +54,8 @@ class Config:
     prefix: str = "v!"
     mod_role_id: List[int] = [1057253751699816459]
     temp_channel: int = 1059921288354856990
+    channel_id: str = "UCCFVFyadjMuaR5O89yRToew" # Virbox channel id
+    youtube_announcement_id: int = 1056990617357521009
 
 
 if __name__ == "__main__":
