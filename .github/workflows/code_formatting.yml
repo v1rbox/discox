@@ -1,0 +1,29 @@
+name: Code formatting
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions: write-all
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Install code beautifier
+      run: make install-beautifier
+      
+    - name: Magik
+      run: make beauty
+
+    - name: Commit those back
+      uses: EndBug/add-and-commit@v7.5.0
+      with:
+        message: "Beautified"
+        author_name: "Code beautifier"

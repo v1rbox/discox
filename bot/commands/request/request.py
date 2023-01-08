@@ -1,6 +1,7 @@
 import aiosqlite
-from bot.config import Config, Embed
+
 from bot.base import Command
+from bot.config import Config, Embed
 
 
 class cmd(Command):
@@ -20,7 +21,9 @@ class cmd(Command):
         cursor = await db.cursor()
 
         await cursor.execute(
-            "INSERT INTO request(Member_id, Title, Description) VALUES(?, ?, ?)", (member_id, title, text_info))
+            "INSERT INTO request(Member_id, Title, Description) VALUES(?, ?, ?)",
+            (member_id, title, text_info),
+        )
         await db.commit()
 
         await cursor.close()

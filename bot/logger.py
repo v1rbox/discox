@@ -1,8 +1,9 @@
+from datetime import datetime
+
 import discord
-from .config import Embed
 from rich.console import Console
 
-from datetime import datetime
+from .config import Embed
 
 
 class Logger:
@@ -22,11 +23,17 @@ class Logger:
 
     def debug(self, msg: str, *args, **kwargs) -> None:
         self.rich_console.print(
-            f"[[magenta][bold]DEBUG[/][/]] [bold]-[/] [bold][{self.get_time()}][/]: [bold]{msg}[/]", *args, **kwargs)
+            f"[[magenta][bold]DEBUG[/][/]] [bold]-[/] [bold][{self.get_time()}][/]: [bold]{msg}[/]",
+            *args,
+            **kwargs,
+        )
 
     def info(self, msg: str, *args, **kwargs) -> None:
         self.rich_console.print(
-            f"[[blue][bold]INFOS[/][/]] [bold]-[/] [bold][{self.get_time()}][/]: [bold]{msg}[/]", *args, **kwargs)
+            f"[[blue][bold]INFOS[/][/]] [bold]-[/] [bold][{self.get_time()}][/]: [bold]{msg}[/]",
+            *args,
+            **kwargs,
+        )
 
     def get_time(self, formatting: str = "%m/%d/%Y  %H:%M:%S") -> str:
         """Get time function
@@ -42,7 +49,9 @@ class Logger:
 
     async def send_error(self, err: str, message: discord.Message) -> None:
         embed = Embed(
-            title="Whoops", description=f"Looks like an error occured, please contact a system administrator if you belive this to be a mistake.\n```{err}```")
+            title="Whoops",
+            description=f"Looks like an error occured, please contact a system administrator if you belive this to be a mistake.\n```{err}```",
+        )
         embed.set_color("red")
         await message.channel.send(embed=embed)
 

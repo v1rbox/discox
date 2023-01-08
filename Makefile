@@ -14,3 +14,10 @@ init:
 
 run:
 	$(PYTHON) bot.py
+
+install-beautifier:
+	pip install black isort
+
+beautify:
+	black .
+	isort .

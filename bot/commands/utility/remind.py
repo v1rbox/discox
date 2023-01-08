@@ -1,12 +1,14 @@
 # /bot/commands/ping.py
-from bot.config import Config, Embed
-from bot.base import Command
+import time
 from asyncio import sleep
 from re import match
-import time
+
+from bot.base import Command
+from bot.config import Config, Embed
+
 
 class cmd(Command):
-    """ A discord command instance. """
+    """A discord command instance."""
 
     name = "remind"
     usage = "remind <time> <*reminder>"
@@ -23,11 +25,17 @@ class cmd(Command):
         s = int(times["seconds"]) if times["seconds"] else 0
         reminderTime = d * 24 * 3600 + h * 3600 + m * 60 + s
         timestamp = int(time.time()) + reminderTime
-        
-        embed = Embed(title="New Reminder", description=f"Reminder set to <t:{timestamp}:f>, wich is in <t:{timestamp}:R>.")
+
+        embed = Embed(
+            title="New Reminder",
+            description=f"Reminder set to <t:{timestamp}:f>, wich is in <t:{timestamp}:R>.",
+        )
         msg = await message.reply(embed=embed)
         url = msg.jump_url
         await sleep(reminderTime)
-        embed = Embed(title=arguments[1], description=f"""This is your reminder.
-        If you wan't to know the context, [here]({url}) is the link.""")
+        embed = Embed(
+            title=arguments[1],
+            description=f"""This is your reminder.
+        If you wan't to know the context, [here]({url}) is the link.""",
+        )
         await message.channel.send(f"<@{message.author.id}>", embed=embed)

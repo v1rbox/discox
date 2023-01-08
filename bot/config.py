@@ -1,15 +1,16 @@
-from discord.embeds import Embed as DiscordEmbed
 from discord import Colour
+from discord.embeds import Embed as DiscordEmbed
 from dotenv import load_dotenv
 
 load_dotenv()
 
-import os
 import datetime
+import os
 
 
 class Embed(DiscordEmbed):
-    """ Custom implementation of a discord embed object. """
+    """Custom implementation of a discord embed object."""
+
     def __init__(self, *args, **kwargs) -> None:
         DiscordEmbed.__init__(self, *args, **kwargs)
 
@@ -27,7 +28,6 @@ class Embed(DiscordEmbed):
             "white": Colour(int("ffffff", 16)),
             "cyan": Colour(int("00ffff", 16)),
             "grey": Colour(int("696969", 16)),  # yeah the funny number is grey
-
             "lightgreen": Colour(int("89f292", 16)),
             "lightred": Colour(int("ff7171", 16)),
             "lightblue": Colour(int("807bff", 16)),
@@ -40,15 +40,15 @@ class Embed(DiscordEmbed):
         }
 
         self.set_footer(
-                text="Virbox Community Bot", 
-                icon_url="https://cdn.discordapp.com/icons/1052597660860821604/8fd53af279aa7d8d77a0451776c4fa35.webp?size=96"
-            )
+            text="Virbox Community Bot",
+            icon_url="https://cdn.discordapp.com/icons/1052597660860821604/8fd53af279aa7d8d77a0451776c4fa35.webp?size=96",
+        )
         self.timestamp = datetime.datetime.now()
 
         self.set_color("green")
 
     def set_color(self, color: str) -> None:
-        """ Set a color from the default colorlist. """
+        """Set a color from the default colorlist."""
         self.color = self.__colors[color]
 
 
@@ -63,5 +63,6 @@ class Config:
 
 
 if __name__ == "__main__":
-    print("No ghosts want to approach Chuck Norris because they're afraid of dying a second time")
-
+    print(
+        "No ghosts want to approach Chuck Norris because they're afraid of dying a second time"
+    )

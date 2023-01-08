@@ -1,66 +1,67 @@
-from bot.config import Config, Embed
-from bot.base import Command
 from discord import Color
+
+from bot.base import Command
+from bot.config import Config, Embed
 
 
 class cmd(Command):
-    """ A discord command instance. """
+    """A discord command instance."""
 
     ### Allowed distros and max allowed distro roles per user ###
     distro_roles_color = Color.from_rgb(185, 137, 240)
     max_distro = 3
     whitelist = [
-        'Alma',
-        'Alpine',
-        'Android',
-        'Arch',
-        'Arco',
-        'Artix',
-        'Bedrock',
-        'CentOS',
-        'Debian',
-        'Elementary',
-        'EndeavourOS',
-        'Fedora',
-        'FreeBSD',
-        'Funtoo',
-        'Garuda',
-        'Gentoo',
-        'GNUGuix',
-        'Haiku',
-        'iOS',
-        'Kali',
-        'Kubuntu',
-        'Lubuntu',
-        'MacOS',
-        'Manjaro',
-        'Mint',
-        'MX',
-        'NetBSD',
-        'NixOS',
-        'Nobara',
-        'OpenBSD',
-        'OpenMediaVault',
-        'OpenSUSE',
-        'Oracle',
-        'Parrot',
-        'Pop!OS',
-        'ReactOS',
-        'RedHat',
-        'Rocky',
-        'Slackware',
-        'Solaris',
-        'SUSE',
-        'Tails',
-        'TempleOS',
-        'TrueNAS',
-        'Ubuntu',
-        'Ultramarine',
-        'UwUntu',
-        'Void',
-        'Whonix',
-        'Windows',
-        'Zorin',
+        "Alma",
+        "Alpine",
+        "Android",
+        "Arch",
+        "Arco",
+        "Artix",
+        "Bedrock",
+        "CentOS",
+        "Debian",
+        "Elementary",
+        "EndeavourOS",
+        "Fedora",
+        "FreeBSD",
+        "Funtoo",
+        "Garuda",
+        "Gentoo",
+        "GNUGuix",
+        "Haiku",
+        "iOS",
+        "Kali",
+        "Kubuntu",
+        "Lubuntu",
+        "MacOS",
+        "Manjaro",
+        "Mint",
+        "MX",
+        "NetBSD",
+        "NixOS",
+        "Nobara",
+        "OpenBSD",
+        "OpenMediaVault",
+        "OpenSUSE",
+        "Oracle",
+        "Parrot",
+        "Pop!OS",
+        "ReactOS",
+        "RedHat",
+        "Rocky",
+        "Slackware",
+        "Solaris",
+        "SUSE",
+        "Tails",
+        "TempleOS",
+        "TrueNAS",
+        "Ubuntu",
+        "Ultramarine",
+        "UwUntu",
+        "Void",
+        "Whonix",
+        "Windows",
+        "Zorin",
     ]
 
     name = "add"
@@ -84,14 +85,21 @@ class cmd(Command):
             server_roles_names.append(role.name)
 
         # Checks if role is whitelisted
-        if arguments[0].lower() not in map(lambda distro: distro.lower(), self.whitelist):
-            embed = Embed(title="Distro", description="**Invalid distro**\n\n*To see valid distros, use:*\n`v!distro whitelist`")
+        if arguments[0].lower() not in map(
+            lambda distro: distro.lower(), self.whitelist
+        ):
+            embed = Embed(
+                title="Distro",
+                description="**Invalid distro**\n\n*To see valid distros, use:*\n`v!distro whitelist`",
+            )
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Checks if user already has the role
         if arguments[0].lower() in map(lambda role: role.lower(), user_roles_names):
-            embed = Embed(title="Distro", description=f"**`{name}` already has that distro role**")
+            embed = Embed(
+                title="Distro", description=f"**`{name}` already has that distro role**"
+            )
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
@@ -101,21 +109,29 @@ class cmd(Command):
             if role in self.whitelist:
                 max += 1
         if max >= self.max_distro:
-            embed = Embed(title="Distro", description=f"**`{name}` has reached the max distro roles.**\n\n*To see your current distro roles, use:*\n`v!distro roles` \n\n*To remove a distro role, use:*\n`v!distro remove [Your distro]`")
+            embed = Embed(
+                title="Distro",
+                description=f"**`{name}` has reached the max distro roles.**\n\n*To see your current distro roles, use:*\n`v!distro roles` \n\n*To remove a distro role, use:*\n`v!distro remove [Your distro]`",
+            )
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
 
         role_name = self.whitelist[
-                list(map(lambda distro: distro.lower(), self.whitelist)).index(arguments[0].lower())
+            list(map(lambda distro: distro.lower(), self.whitelist)).index(
+                arguments[0].lower()
+            )
         ]
         # Checks if role exists, if not, creates role
         if role_name not in server_roles_names:
-            await message.guild.create_role(name=role_name, mentionable=True, colour=self.distro_roles_color)
+            await message.guild.create_role(
+                name=role_name, mentionable=True, colour=self.distro_roles_color
+            )
         # Adds user to role
         role = self.getRole(message, role_name)
         await message.author.add_roles(role)
-        embed = Embed(title="Distro", description=f"**`{name}` has been added to the `{role.name}` distro role**")
+        embed = Embed(
+            title="Distro",
+            description=f"**`{name}` has been added to the `{role.name}` distro role**",
+        )
         await message.channel.send(embed=embed)
-        
-
