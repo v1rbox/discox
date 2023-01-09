@@ -13,7 +13,7 @@ init:
 	poetry install
 
 run:
-	$(PYTHON) bot.py
+	$(PYTHON) -m bot
 
 install-beautifier:
 	pip install black isort
