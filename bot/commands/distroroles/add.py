@@ -110,8 +110,8 @@ class cmd(Command):
                 list(map(lambda distro: distro.lower(), self.whitelist)).index(arguments[0].lower())
         ]
         # Checks if role exists, if not, creates role
-        if arguments[0] not in server_roles_names:
-            await message.guild.create_role(name=arguments[0], colour=self.distro_roles_color)
+        if role_name not in server_roles_names:
+            await message.guild.create_role(name=role_name, colour=self.distro_roles_color)
         # Adds user to role
         role = self.getRole(message, role_name)
         await message.author.add_roles(role)
