@@ -169,11 +169,15 @@ def main() -> None:
         # Setup events
         logger.newline()
         logger.log("Registered events")
-        entries = [i.split(".")[0] for i in os.listdir(
-            os.path.join("bot", "events")) if not i.startswith("__")]
+        entries = [
+            i.split(".")[0]
+            for i in os.listdir(os.path.join("bot", "events"))
+            if not i.startswith("__")
+        ]
         for idx, entry in zip(range(1, len(entries) + 1, 1), entries):
-            event = __import__(f"bot.events.{entry}", globals(), locals(), [
-                               "event"], 0).event
+            event = __import__(
+                f"bot.events.{entry}", globals(), locals(), ["event"], 0
+            ).event
             event_manager.register(event)
             logger.custom(str(idx), f"{event.name} ")
 
@@ -181,24 +185,26 @@ def main() -> None:
 
         # Setup tasks
         logger.log("Registered tasks")
-        entries = [i.split(".")[0] for i in os.listdir(
-            os.path.join("bot", "tasks")) if not i.startswith("__")]
+        entries = [
+            i.split(".")[0]
+            for i in os.listdir(os.path.join("bot", "tasks"))
+            if not i.startswith("__")
+        ]
         for idx, entry in zip(range(1, len(entries) + 1, 1), entries):
             imp = __import__(f"bot.tasks.{entry}", globals(), locals(), ["*"], 0)
-            task = [getattr(imp, i) for i in dir(imp)
-                     if i.endswith("Loop")][0]
+            task = [getattr(imp, i) for i in dir(imp) if i.endswith("Loop")][0]
 
             tasks_manager.register(task)
             logger.custom(str(idx), f"{event.name} ")
 
         logger.newline()
 
-
-        activity = discord.Activity(type=discord.ActivityType.watching, name=f"Virbox videos")
+        activity = discord.Activity(
+            type=discord.ActivityType.watching, name=f"Virbox videos"
+        )
         await bot.change_presence(activity=activity)
         bot.current_activity = activity
         bot.current_status = discord.Status.online
-
 
     @bot.event
     async def on_message(message: discord.Message):

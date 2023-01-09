@@ -1,8 +1,8 @@
+from threading import Thread
 from typing import Callable, Dict, Iterator, List, Optional, Type, TypeAlias
 
 import aiosqlite
 import discord
-from threading import Thread
 
 # putting this here to avoid circular imports
 Manager: TypeAlias = "CommandsManager"
@@ -123,7 +123,7 @@ class EventsManager:
 
 
 class TasksManager:
-    """ Manage all tasks. """
+    """Manage all tasks."""
 
     def __init__(self, bot: discord.Client, db: aiosqlite.Connection) -> None:
         self.bot = bot
@@ -160,7 +160,7 @@ class TasksManager:
 
 
 class TasksManager:
-    """ Manage all tasks. """
+    """Manage all tasks."""
 
     def __init__(self, bot: discord.Client, db: aiosqlite.Connection) -> None:
         self.bot = bot
@@ -180,19 +180,19 @@ class TasksManager:
         return self.bot
 
     def get(self, name: str) -> Event:
-        """ Get a event by name. """
+        """Get a event by name."""
         return self.event_map()[name]
 
     def __getitem__(self, name: str) -> Event:
-        """ Get a event by name. """
+        """Get a event by name."""
         return self.get(name)
 
     def __iter__(self) -> Iterator[Event]:
-        """ Iterate over all events. """
+        """Iterate over all events."""
         return iter(self.events)
 
     def __len__(self) -> int:
-        """ Get the number of events. """
+        """Get the number of events."""
         return len(self.events)
 
 

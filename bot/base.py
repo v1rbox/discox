@@ -152,7 +152,9 @@ class Task(ABC):
     db: Optional[aiosqlite.Connection] = None
     logger = Logger()
 
-    def __init__(self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection) -> None:
+    def __init__(
+        self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection
+    ) -> None:
         """Initialize the task.
 
         [Args]:
@@ -173,7 +175,6 @@ class Task(ABC):
         """
 
         raise NotImplementedError("Task execute method is required")
-
 
 
 if __name__ == "__main__":
