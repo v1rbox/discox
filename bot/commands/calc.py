@@ -154,6 +154,10 @@ class cmd(Command):
         # Get the result.
         result = calculator.expr()
         
+        expression = expression.translate(
+            str.maketrans({ "*": "\\*" })
+        ) # escape '*' characters in expression
+        
         # Send the result:
         await message.channel.send(f"_{expression}_ = **{result:g}**")
         
