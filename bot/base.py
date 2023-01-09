@@ -89,7 +89,7 @@ class Command(ABC):
 
         raise NotImplementedError("Command execute method is required")
 
-    async def get_contribuders(self) -> str:
+    async def get_contributers(self) -> str:
         res = (
             subprocess.run(
                 ["git", "shortlog", "-n", "-s", "--", f"bot/commands/{self.file}"],
