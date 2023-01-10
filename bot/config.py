@@ -3,19 +3,20 @@ from discord import Colour
 
 import datetime
 
+from typing import List
+
 
 class Embed(DiscordEmbed):
     """ Custom implementation of a discord embed object. """
     def __init__(self, *args, **kwargs) -> None:
         DiscordEmbed.__init__(self, *args, **kwargs)
 
-        # No need to make it public, so we make it private
-        self.__colors = {
+        self.colors = {
             "green": Colour(int("38842c", 16)),
             "red": Colour(int("bf3036", 16)),
-            "blue": Colour(int("0d00ff", 16)),
-            "yellow": Colour(int("f2ff00", 16)),
-            "magenta": Colour(int("ff00ff", 16)),
+            "blue": Colour(int("303f9c", 16)),
+            "yellow": Colour(int("b0ba2a", 16)),
+            "magenta": Colour(int("a829b0", 16)),
             "brown": Colour(int("2b1313", 16)),
             "purple": Colour(int("5300b0", 16)),
             "pink": Colour(int("ff00fc", 16)),
@@ -45,13 +46,16 @@ class Embed(DiscordEmbed):
 
     def set_color(self, color: str) -> None:
         """ Set a color from the default colorlist. """
-        self.color = self.__colors[color]
+        self.color = self.colors[color]
 
 
 class Config:
     token: str = ""
     prefix: str = "v!"
-    mod_role_id: list[int] = [1057253751699816459]
+    mod_role_id: List[int] = [1057253751699816459]
+    temp_channel: int = 1059921288354856990
+    channel_id: str = "UCCFVFyadjMuaR5O89yRToew" # Virbox channel id
+    youtube_announcement_id: int = 1056990617357521009
 
 
 if __name__ == "__main__":

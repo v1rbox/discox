@@ -4,6 +4,7 @@ import traceback
 import aiosqlite
 
 import discord
+from discord.ext import tasks
 
 from typing import List, Tuple
 
@@ -12,7 +13,7 @@ from rich.console import Console
 
 from .logger import Logger
 from .config import Config, Embed
-from .manager import CommandsManager, EventsManager
+from .manager import CommandsManager, EventsManager, TasksManager
 from .base import Command
 
 
@@ -96,6 +97,7 @@ def main() -> None:
 
     manager = CommandsManager(bot, db)
     event_manager = EventsManager(bot, db)
+    tasks_manager = TasksManager(bot, db)
 
     @bot.event
     async def on_ready():
@@ -107,6 +109,7 @@ def main() -> None:
         db = await aiosqlite.connect("bot/assets/main.db")
         manager.db = db
         event_manager.db = db
+        tasks_manager.db = db
 
         logger.log("Bot is ready!")
         logger.log(f"Logged in as {bot.user}")
@@ -146,6 +149,7 @@ def main() -> None:
                 str(idx), f"{config.prefix}{command.name} :", command.description
             )
 
+        # Setup events
         logger.newline()
         logger.log("Registered events")
         entries = [i.split(".")[0] for i in os.listdir(
@@ -158,10 +162,26 @@ def main() -> None:
 
         logger.newline()
 
+        # Setup tasks
+        logger.log("Registered tasks")
+        entries = [i.split(".")[0] for i in os.listdir(
+            os.path.join("bot", "tasks")) if not i.startswith("__")]
+        for idx, entry in zip(range(1, len(entries) + 1, 1), entries):
+            imp = __import__(f"bot.tasks.{entry}", globals(), locals(), ["*"], 0)
+            task = [getattr(imp, i) for i in dir(imp)
+                     if i.endswith("Loop")][0]
+
+            tasks_manager.register(task)
+            logger.custom(str(idx), f"{event.name} ")
+
+        logger.newline()
+
+
         activity = discord.Activity(type=discord.ActivityType.watching, name=f"Virbox videos")
         await bot.change_presence(activity=activity)
         bot.current_activity = activity
         bot.current_status = discord.Status.online
+
 
     @bot.event
     async def on_message(message: discord.Message):
@@ -171,6 +191,7 @@ def main() -> None:
             or not message.content.startswith(config.prefix)
             or not bot.is_ready()
         ):
+            await event_manager.event_map()["on_message"].execute(message)
             return
 
         command, arguments = parse_user_input(

@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from typing import Optional, List, Tuple
+from discord.ext import tasks
 
 from .logger import Logger
 from .manager import Manager
@@ -131,6 +132,38 @@ class Event(ABC):
         """
 
         raise NotImplementedError("Event execute method is required")
+
+
+class Task(ABC):
+    """Base abstract class for all events."""
+
+    name: Optional[str] = None
+
+    db: Optional[aiosqlite.Connection] = None
+    logger = Logger()
+
+    def __init__(self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection) -> None:
+        """Initialize the task.
+
+        [Args]:
+            bot (discord.Client): discord client
+            manager (Manager): ?
+            db (aiosqlite.Connection): event database connection
+        """
+
+        self.bot = bot
+        self.manager = manager
+        self.db = db
+
+    async def execute(self) -> None:
+        """Execute the task.
+
+        [Raises]:
+            NotImplementedError: because this method is still not implemented
+        """
+
+        raise NotImplementedError("Task execute method is required")
+
 
 
 if __name__ == "__main__":
