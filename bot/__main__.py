@@ -227,9 +227,7 @@ def main() -> None:
                     i.prefix: i for i in manager.categories if i.prefix is not None
                 }[command].commands_map()[arguments[0]]
             except KeyError:
-                await logger.send_error(
-                    f"Command '{command} {arguments[0]}' not found", message
-                )
+                await logger.send_error(f"Command '{command} {arguments[0]}' not found", message)
                 return
             except IndexError:
                 await logger.send_error(
