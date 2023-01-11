@@ -159,4 +159,4 @@ class Generator:
         return discord.File(final_bytes, filename="profile.png")
 
 
-generate_profile = Generator().
+generate_profile = Generator().generate_profile

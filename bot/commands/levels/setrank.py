@@ -26,7 +26,7 @@ class cmd(Command):
 
         cursor = await self.db.cursor()
 
-        await cursor.execute(f"DELETE FROM levels WHERE user_id = ?", (arguments[0],))
+        await cursor.execute(f"DELETE FROM levels WHERE user_id = ?", (arguments[0],)) # could use update here?
         await self.db.commit()
 
         sql = ("INSERT INTO levels(exp, level, user_id) VALUES (?,?,?)")
