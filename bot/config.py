@@ -4,7 +4,7 @@ from discord import Colour
 import datetime
 
 from typing import List
-
+import os
 
 class Embed(DiscordEmbed):
     """ Custom implementation of a discord embed object. """

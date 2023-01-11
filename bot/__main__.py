@@ -2,6 +2,8 @@ import re
 import os
 import traceback
 import aiosqlite
+import sys
+import signal
 
 import discord
 from discord.ext import tasks
@@ -15,7 +17,6 @@ from .logger import Logger
 from .config import Config, Embed
 from .manager import CommandsManager, EventsManager, TasksManager
 from .base import Command
-
 
 logger = Logger()
 config = Config()
