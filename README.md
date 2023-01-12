@@ -9,4 +9,6 @@ Documentation and installation guide can be found at our [wiki](https://github.c
 
 ## Contributors & Authors
 
-[![](https://contrib.rocks/image?repo=v1rbox/discox)](https://github.com/v1rbox/discox/graphs/contributors)
+<a href="https://github.com/v1rbox/discox/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=v1rbox/discox" />
+</a>
