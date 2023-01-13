@@ -1,21 +1,18 @@
-import re
 import os
+import re
 import traceback
-import aiosqlite
-
-import discord
-from discord.ext import tasks
-
 from typing import List, Tuple
 
-from rich.table import Table
+import aiosqlite
+import discord
+from discord.ext import tasks
 from rich.console import Console
+from rich.table import Table
 
-from .logger import Logger
-from .config import Config, Embed
-from .manager import CommandsManager, EventsManager, TasksManager
 from .base import Command
-
+from .config import Config, Embed
+from .logger import Logger
+from .manager import CommandsManager, EventsManager, TasksManager
 
 logger = Logger()
 config = Config()
@@ -35,10 +32,8 @@ def parse_user_input(user_input: str) -> Tuple[str, List[str]]:
     command_name, *args = user_input.split()
     args = [
         tuple(group for group in tpl if group)[0]
-
         for tpl in re.findall(
-            r'"([^"]+)"|\'([^\']+)\'|\`\`\`([^\']+)\`\`\`|(\S+)',
-            " ".join(args)
+            r'"([^"]+)"|\'([^\']+)\'|\`\`\`([^\']+)\`\`\`|(\S+)', " ".join(args)
         )
     ]
 
@@ -46,7 +41,9 @@ def parse_user_input(user_input: str) -> Tuple[str, List[str]]:
 
 
 # TODO for 'args', do a struct 'Argument' with a 'required' bool field
-async def parse_usage_text(usage: str, args: List[str], message: discord.Message) -> bool:
+async def parse_usage_text(
+    usage: str, args: List[str], message: discord.Message
+) -> bool:
     """Get the usage of a command into a more workable format
 
     [Args]:
@@ -62,9 +59,9 @@ async def parse_usage_text(usage: str, args: List[str], message: discord.Message
     optional: List[str] = re.findall(f'\[([^"]+)\]', usage)
 
     usage_args: List[Tuple[str, str]] = re.findall(
-        f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', usage)
-    args_raw: List[str] = [f"<{i[1]}>" if i[1]
-                           else f"[{i[0]}]" for i in usage_args]
+        f"\[([^\[\]]+)\]|\<([^\<\>]+)\>", usage
+    )
+    args_raw: List[str] = [f"<{i[1]}>" if i[1] else f"[{i[0]}]" for i in usage_args]
 
     # Check for missing required arguments
     if len(args) < len(required):
@@ -72,16 +69,20 @@ async def parse_usage_text(usage: str, args: List[str], message: discord.Message
         indx = usage.index(missing)
         errmsg = f"{config.prefix}{usage}\n{' '*(indx+len(config.prefix)-1)}{'^'*(len(missing)+2)}"
 
-        embed = Embed(title="Error in command syntax",
-                      description=f"Missing required argument '{missing}'\n```{errmsg}```")
+        embed = Embed(
+            title="Error in command syntax",
+            description=f"Missing required argument '{missing}'\n```{errmsg}```",
+        )
         embed.set_color("red")
         await message.channel.send(embed=embed)
         return False
 
     # Check if the given amount of arguments exceeds the expected amount
     if len(args) > len(required) + len(optional) and args_raw[-1][1] != "*":
-        embed = Embed(title="Error in command syntax",
-                      description=f"Expected `{len(required) + len(optional)}` argument{'s' if len(required) + len(optional) > 1 else ''} but got `{len(args)}`.\nCommand usage: ```{config.prefix}{usage}```")
+        embed = Embed(
+            title="Error in command syntax",
+            description=f"Expected `{len(required) + len(optional)}` argument{'s' if len(required) + len(optional) > 1 else ''} but got `{len(args)}`.\nCommand usage: ```{config.prefix}{usage}```",
+        )
         embed.set_color("red")
         await message.channel.send(embed=embed)
         return False
@@ -90,7 +91,7 @@ async def parse_usage_text(usage: str, args: List[str], message: discord.Message
 
 
 def main() -> None:
-    """ Main setup function. """
+    """Main setup function."""
 
     db = None
     bot = discord.Client(intents=discord.Intents.all())
@@ -101,7 +102,7 @@ def main() -> None:
 
     @bot.event
     async def on_ready():
-        """ When the bot is connected. """
+        """When the bot is connected."""
 
         if bot.user is None:
             raise RuntimeError("Bot user is None")
@@ -120,28 +121,44 @@ def main() -> None:
         logger.log("Guilds:", f"{len(bot.guilds)}")
         logger.log("Prefix:", config.prefix)
         logger.newline()
-        
+
         # Stop the bot attempting to load the commands multiple times
         if manager.commands:
             return
 
         # Load the commands
-        entries = [i for i in os.listdir(os.path.join(
-            "bot", "commands")) if not i.startswith("__")]
+        entries = [
+            i
+            for i in os.listdir(os.path.join("bot", "commands"))
+            if not i.startswith("__")
+        ]
         for entry in entries:
             cmd = entry.split(".")[0]
             if os.path.isfile(os.path.join("bot", "commands", entry)):
-                manager.register(__import__(
-                    f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0).cmd, file=entry)
+                manager.register(
+                    __import__(
+                        f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0
+                    ).cmd,
+                    file=entry,
+                )
             else:
                 # Current entry is a category
                 for cmd in [
-                    i.split(".")[0] for i in
-                    os.listdir(os.path.join("bot", "commands", entry))
+                    i.split(".")[0]
+                    for i in os.listdir(os.path.join("bot", "commands", entry))
                     if not i.startswith("__")
                 ]:
-                    manager.register(__import__(
-                        f"bot.commands.{entry}.{cmd}", globals(), locals(), ["cmd"], 0).cmd, entry, file=os.path.join(entry, cmd+".py"))
+                    manager.register(
+                        __import__(
+                            f"bot.commands.{entry}.{cmd}",
+                            globals(),
+                            locals(),
+                            ["cmd"],
+                            0,
+                        ).cmd,
+                        entry,
+                        file=os.path.join(entry, cmd + ".py"),
+                    )
 
         logger.log("Registered commands")
         for idx, command in enumerate(manager.commands, 1):
@@ -152,11 +169,15 @@ def main() -> None:
         # Setup events
         logger.newline()
         logger.log("Registered events")
-        entries = [i.split(".")[0] for i in os.listdir(
-            os.path.join("bot", "events")) if not i.startswith("__")]
+        entries = [
+            i.split(".")[0]
+            for i in os.listdir(os.path.join("bot", "events"))
+            if not i.startswith("__")
+        ]
         for idx, entry in zip(range(1, len(entries) + 1, 1), entries):
-            event = __import__(f"bot.events.{entry}", globals(), locals(), [
-                               "event"], 0).event
+            event = __import__(
+                f"bot.events.{entry}", globals(), locals(), ["event"], 0
+            ).event
             event_manager.register(event)
             logger.custom(str(idx), f"{event.name} ")
 
@@ -164,28 +185,30 @@ def main() -> None:
 
         # Setup tasks
         logger.log("Registered tasks")
-        entries = [i.split(".")[0] for i in os.listdir(
-            os.path.join("bot", "tasks")) if not i.startswith("__")]
+        entries = [
+            i.split(".")[0]
+            for i in os.listdir(os.path.join("bot", "tasks"))
+            if not i.startswith("__")
+        ]
         for idx, entry in zip(range(1, len(entries) + 1, 1), entries):
             imp = __import__(f"bot.tasks.{entry}", globals(), locals(), ["*"], 0)
-            task = [getattr(imp, i) for i in dir(imp)
-                     if i.endswith("Loop")][0]
+            task = [getattr(imp, i) for i in dir(imp) if i.endswith("Loop")][0]
 
             tasks_manager.register(task)
             logger.custom(str(idx), f"{event.name} ")
 
         logger.newline()
 
-
-        activity = discord.Activity(type=discord.ActivityType.watching, name=f"Virbox videos")
+        activity = discord.Activity(
+            type=discord.ActivityType.watching, name=f"Virbox videos"
+        )
         await bot.change_presence(activity=activity)
         bot.current_activity = activity
         bot.current_status = discord.Status.online
 
-
     @bot.event
     async def on_message(message: discord.Message):
-        """ Handle incoming messages. """
+        """Handle incoming messages."""
         if (
             message.author == bot.user
             or not message.content.startswith(config.prefix)
@@ -194,21 +217,25 @@ def main() -> None:
             await event_manager.event_map()["on_message"].execute(message)
             return
 
-        command, arguments = parse_user_input(
-            message.content[len(config.prefix):])
+        command, arguments = parse_user_input(message.content[len(config.prefix) :])
 
         # Check for category
         prefixes: List[str] = [i.prefix for i in manager.categories]
         if command in prefixes:
             try:
-                cmdobj = {i.prefix: i for i in manager.categories 
-                          if i.prefix is not None}[command] \
-                          .commands_map()[arguments[0]]
+                cmdobj = {
+                    i.prefix: i for i in manager.categories if i.prefix is not None
+                }[command].commands_map()[arguments[0]]
             except KeyError:
-                await logger.send_error(f"Command '{command} {arguments[0]}' not found", message)
+                await logger.send_error(
+                    f"Command '{command} {arguments[0]}' not found", message
+                )
                 return
             except IndexError:
-                await logger.send_error(f"No subcommand found, use '{config.prefix}help {command}' for more information", message)
+                await logger.send_error(
+                    f"No subcommand found, use '{config.prefix}help {command}' for more information",
+                    message,
+                )
                 return
 
             command = arguments[0]
@@ -218,7 +245,11 @@ def main() -> None:
                 cmdobj = manager[command]
             except KeyError:
                 try:
-                    cmdobj = [[c for c in i.commands if c.name == command] for i in manager.categories if i.prefix is None]
+                    cmdobj = [
+                        [c for c in i.commands if c.name == command]
+                        for i in manager.categories
+                        if i.prefix is None
+                    ]
                     cmdobj = [i for i in cmdobj if len(i) != 0][0][0]
                 except IndexError:
                     await logger.send_error(f"Command '{command}' not found", message)
@@ -226,7 +257,7 @@ def main() -> None:
 
         logger.log(
             f"'{message.author}' issued command '{command}'",
-            f"with arguments: {arguments}"
+            f"with arguments: {arguments}",
         )
 
         if cmdobj.category is not None:
@@ -237,15 +268,12 @@ def main() -> None:
 
         # Join args
         usage_args: List[Tuple[str, str]] = re.findall(
-            f'\[([^\[\]]+)\]|\<([^\<\>]+)\>',
-            cmdobj.usage
+            f"\[([^\[\]]+)\]|\<([^\<\>]+)\>", cmdobj.usage
         )
-        args_raw: List[str] = [f"<{i[1]}>" if i[1]
-                               else f"[{i[0]}]" for i in usage_args]
+        args_raw: List[str] = [f"<{i[1]}>" if i[1] else f"[{i[0]}]" for i in usage_args]
 
         if len(args_raw) >= 1 and args_raw[-1][1] == "*":
-            args, tmp = (arguments[:len(args_raw)-1],
-                         arguments[len(args_raw)-1:])
+            args, tmp = (arguments[: len(args_raw) - 1], arguments[len(args_raw) - 1 :])
             arguments = args + [" ".join(tmp)]
 
         # Check if a valid number of arguments have been passed

@@ -1,10 +1,11 @@
-from bot.config import Config, Embed
 from bot.base import Command
 from bot.commands.coderoles.add import cmd as Code
+from bot.config import Config, Embed
+
 
 class cmd(Command):
-    """ A discord command instance. """
-  
+    """A discord command instance."""
+
     name = "roles"
     usage = "roles"
     description = f"Shows user's current code roles"
@@ -24,14 +25,12 @@ class cmd(Command):
                 roles.append(role)
         # Checks if user has no code roles
         if len(roles) == 0:
-            embed = Embed(title="Code",description=f"**`{name}` has no code roles**")
+            embed = Embed(title="Code", description=f"**`{name}` has no code roles**")
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Replies with current code roles
         for role in roles:
-            description += f'`{role}`\n\n'
+            description += f"`{role}`\n\n"
         embed = Embed(title="Code", description=description)
         await message.channel.send(embed=embed)
-
-        

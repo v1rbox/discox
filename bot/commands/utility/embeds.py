@@ -1,8 +1,9 @@
-from bot.config import Config, Embed
 from bot.base import Command
+from bot.config import Config, Embed
+
 
 class cmd(Command):
-    """ A discord command instance. """
+    """A discord command instance."""
 
     name = "emebds"
     usage = "embeds"
@@ -10,7 +11,7 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         keys = list(Embed().colors.keys())
-        embeds = [keys[i:i+9] for i in range(0, len(keys), 9)]
+        embeds = [keys[i : i + 9] for i in range(0, len(keys), 9)]
 
         for lst in embeds:
             out = []

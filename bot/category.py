@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-import discord
+from typing import List, Optional
 
-from typing import Optional, List
+import discord
 
 from .base import Command
 from .config import Config
@@ -10,14 +10,14 @@ config = Config()
 
 
 class Category(ABC):
-    """ Template for category classes. """
+    """Template for category classes."""
 
     name: Optional[str] = None
     prefix: Optional[str] = None
     commands: List[Command] = []
 
     def __init__(self) -> None:
-        """ Initialize the category. """
+        """Initialize the category."""
         self.commands_map: Callable[..., Dict[str, Command]] = lambda: {
             command.name: command for command in self.commands if command.name
         }
@@ -31,7 +31,8 @@ class Category(ABC):
 
 
 class FunCategory(Category):
-    """ A command category instance. """
+    """A command category instance."""
+
     name = "fun"
     prefix = None
     commands: List[Command] = []
@@ -41,7 +42,8 @@ class FunCategory(Category):
 
 
 class UtilityCategory(Category):
-    """ A command category instance. """
+    """A command category instance."""
+
     name = "utility"
     prefix = None
     commands: List[Command] = []
@@ -49,8 +51,10 @@ class UtilityCategory(Category):
     def check_permissions(self, message: discord.Message) -> bool:
         return True
 
+
 class DistroCategory(Category):
-    """ A command category instance. """
+    """A command category instance."""
+
     name = "distroroles"
     prefix = "distro"
     commands: List[Command] = []
@@ -58,17 +62,21 @@ class DistroCategory(Category):
     def check_permissions(self, message: discord.Message) -> bool:
         return True
 
+
 class CodeCategory(Category):
-    """ A command category instance. """
+    """A command category instance."""
+
     name = "coderoles"
     prefix = "code"
     commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
-    
+
+
 class PresenceCategory(Category):
-    """ A command category instance. """
+    """A command category instance."""
+
     name = "changePresence"
     prefix = "change"
     commands: List[Command] = []
@@ -79,7 +87,8 @@ class PresenceCategory(Category):
 
 
 class ModCategory(Category):
-    """ A command category instance. """
+    """A command category instance."""
+
     name = "mod"
     prefix = None
     commands: List[Command] = []
@@ -90,7 +99,7 @@ class ModCategory(Category):
 
 
 class RequestCategory(Category):
-    """ A command category instance. """
+    """A command category instance."""
 
     name = "request"
     prefix = "req"
@@ -100,7 +109,7 @@ class RequestCategory(Category):
 
 
 class LevelCategory(Category):
-    """ A command category instance. """
+    """A command category instance."""
 
     name = "levels"
     prefix = None
@@ -110,4 +119,6 @@ class LevelCategory(Category):
 
 
 if __name__ == "__main__":
-    print("I had a dream where I was fighting Chuck Norris. That day I woke up with scars.")
+    print(
+        "I had a dream where I was fighting Chuck Norris. That day I woke up with scars."
+    )

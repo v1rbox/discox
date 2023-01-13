@@ -1,5 +1,5 @@
-from bot.config import Config, Embed
 from bot.base import Command
+from bot.config import Config, Embed
 
 
 class cmd(Command):
@@ -19,8 +19,7 @@ class cmd(Command):
         # implement member_id
         split_member_id = row[1].split(" ")
         member_name = split_member_id[2].replace("'", "")[5:]
-        member_discriminator = split_member_id[3].replace("'", "")[
-            14:]
+        member_discriminator = split_member_id[3].replace("'", "")[14:]
         member_id = member_name + "#" + member_discriminator
 
         # implement title
@@ -37,8 +36,7 @@ class cmd(Command):
             await cursor.execute("SELECT * FROM request WHERE Number_id = 1")
             row = await cursor.fetchone()
             if not row:
-                embed = Embed(
-                    title="Couldn't find anything in the database")
+                embed = Embed(title="Couldn't find anything in the database")
                 embed.set_color("red")
                 await message.channel.send(embed=embed)
             else:
@@ -53,8 +51,7 @@ class cmd(Command):
                     # implement member_id
                     split_member_id = row[1].split(" ")
                     member_name = split_member_id[2].replace("'", "")[5:]
-                    member_discriminator = split_member_id[3].replace("'", "")[
-                        14:]
+                    member_discriminator = split_member_id[3].replace("'", "")[14:]
                     member_id = member_name + "#" + member_discriminator
 
                     # implement title
@@ -64,15 +61,15 @@ class cmd(Command):
 
                     final_message += f"{final}\n"
 
-                embed = Embed(title="List of all the requests:",
-                              description=final_message)
+                embed = Embed(
+                    title="List of all the requests:", description=final_message
+                )
                 await message.channel.send(embed=embed)
 
             await cursor.close()
         else:
             if arguments[0].isdigit() == False:
-                embed = Embed(
-                    title="Invalid argument")
+                embed = Embed(title="Invalid argument")
                 embed.set_color("red")
                 await message.channel.send(embed=embed)
                 return
@@ -81,12 +78,13 @@ class cmd(Command):
             db = self.db
 
             cursor = await db.cursor()
-            await cursor.execute(f"SELECT * FROM request WHERE Number_id = ?", (arguments[0], ))
+            await cursor.execute(
+                f"SELECT * FROM request WHERE Number_id = ?", (arguments[0],)
+            )
             row = await cursor.fetchone()
 
             if not row:
-                embed = Embed(
-                    title="Invalid number_id")
+                embed = Embed(title="Invalid number_id")
                 embed.set_color("red")
                 await message.channel.send(embed=embed)
                 return
@@ -94,6 +92,8 @@ class cmd(Command):
             final_message = self.display_row(row)
             final_message += f"\nDescription: ```{row[3]}```"
             embed = Embed(
-                title=f"Show the information of the row with the given number_id: `{arguments[0]}`", description=final_message)
+                title=f"Show the information of the row with the given number_id: `{arguments[0]}`",
+                description=final_message,
+            )
             await message.channel.send(embed=embed)
             await cursor.close()
