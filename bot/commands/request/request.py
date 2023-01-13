@@ -1,15 +1,17 @@
 import aiosqlite
+from discord.message import Message
 
 from bot.base import Command
 from bot.config import Config, Embed
 
-from discord.message import Message
 
 class cmd(Command):
 
     name = "request"
     usage = "request"
-    description = "Add some recommendation to the server. Support multiple commands to deal with."
+    description = (
+        "Add some recommendation to the server. Support multiple commands to deal with."
+    )
 
     async def execute(self, arguments, message) -> None:
         member_id = message.author.__repr__()
@@ -20,14 +22,13 @@ class cmd(Command):
         await message.channel.send(embed=description_request)
         text_info = await self.bot.wait_for("message", timeout=60.0, check=None)
 
-        
-
         db = self.db
 
         cursor = await db.cursor()
 
         await cursor.execute(
-            "INSERT INTO request(Member_id, Title, Description) VALUES(?, ?, ?)", (member_id, title.content, text_info.content)
+            "INSERT INTO request(Member_id, Title, Description) VALUES(?, ?, ?)",
+            (member_id, title.content, text_info.content),
         )
 
         await db.commit()
