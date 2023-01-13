@@ -1,10 +1,11 @@
-from bot.config import Config, Embed
-from bot.base import Command
 from discord import Color
+
+from bot.base import Command
+from bot.config import Config, Embed
 
 
 class cmd(Command):
-    """ A discord command instance. """
+    """A discord command instance."""
 
     ### Allowed languages and max allowed code roles per user ###
     code_roles_color = Color.from_rgb(137, 204, 240)
@@ -80,13 +81,18 @@ class cmd(Command):
 
         # Checks if role is whitelisted
         if arguments[0].lower() not in map(lambda lang: lang.lower(), self.whitelist):
-            embed = Embed(title="Code", description="**Invalid language**\n\n*To see valid languages, use:*\n`v!code whitelist`")
+            embed = Embed(
+                title="Code",
+                description="**Invalid language**\n\n*To see valid languages, use:*\n`v!code whitelist`",
+            )
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Checks if user already has the role
         if arguments[0].lower() in map(lambda role: role.lower(), user_roles_names):
-            embed = Embed(title="Code", description=f"**`{name}` already has that code role**")
+            embed = Embed(
+                title="Code", description=f"**`{name}` already has that code role**"
+            )
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
@@ -96,13 +102,18 @@ class cmd(Command):
             if role in self.whitelist:
                 max += 1
         if max >= self.max_code:
-            embed = Embed(title="Code", description=f"**`{name}` has reached the max code roles.**\n\n*To see your current code roles, use:*\n`v!code roles` \n\n*To remove a code role, use:*\n`v!code remove [Your language]`")
+            embed = Embed(
+                title="Code",
+                description=f"**`{name}` has reached the max code roles.**\n\n*To see your current code roles, use:*\n`v!code roles` \n\n*To remove a code role, use:*\n`v!code remove [Your language]`",
+            )
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
 
         role_name = self.whitelist[
-                list(map(lambda lang: lang.lower(), self.whitelist)).index(arguments[0].lower())
+            list(map(lambda lang: lang.lower(), self.whitelist)).index(
+                arguments[0].lower()
+            )
         ]
         # Checks if role exists, if not, creates role
         if role_name not in server_roles_names:
@@ -110,7 +121,8 @@ class cmd(Command):
         # Adds user to role
         role = self.getRole(message, role_name)
         await message.author.add_roles(role)
-        embed = Embed(title="Code", description=f"**`{name}` has been added to the `{role.name}` code role**")
+        embed = Embed(
+            title="Code",
+            description=f"**`{name}` has been added to the `{role.name}` code role**",
+        )
         await message.channel.send(embed=embed)
-        
-

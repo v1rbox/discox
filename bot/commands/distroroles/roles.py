@@ -1,10 +1,11 @@
-from bot.config import Config, Embed
 from bot.base import Command
 from bot.commands.distroroles.add import cmd as Distro
+from bot.config import Config, Embed
+
 
 class cmd(Command):
-    """ A discord command instance. """
-  
+    """A discord command instance."""
+
     name = "roles"
     usage = "roles"
     description = f"Shows user's current distro roles"
@@ -24,14 +25,14 @@ class cmd(Command):
                 roles.append(role)
         # Checks if user has no distro roles
         if len(roles) == 0:
-            embed = Embed(title="Distro",description=f"**`{name}` has no distro roles**")
+            embed = Embed(
+                title="Distro", description=f"**`{name}` has no distro roles**"
+            )
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
         # Replies with current distro roles
         for role in roles:
-            description += f'`{role}`\n\n'
+            description += f"`{role}`\n\n"
         embed = Embed(title="Distro", description=description)
         await message.channel.send(embed=embed)
-
-        
