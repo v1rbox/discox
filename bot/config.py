@@ -49,7 +49,7 @@ class Embed(DiscordEmbed):
 
     def set_color(self, color: str) -> None:
         """Set a color from the default colorlist."""
-        self.color = self.__colors[color]
+        self.color = self.colors[color]
 
 
 class Config:
