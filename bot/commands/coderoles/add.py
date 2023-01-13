@@ -116,7 +116,7 @@ class cmd(Command):
             )
         ]
         # Checks if role exists, if not, creates role
-        if role_name not in server_roles_names
+        if role_name not in server_roles_names:
             await message.guild.create_role(name=role_name, colour=self.code_roles_color)
         # Adds user to role
         role = self.getRole(message, role_name)
