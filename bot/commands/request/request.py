@@ -8,7 +8,7 @@ class cmd(Command):
 
     name = "request"
     usage = "request"
-    description = "Add some recommendation to the server. Support multiple commands to deal with. \nThe [description] argument here should be a code block. "
+    description = "Add some recommendation to the server. Support multiple commands to deal with."
 
     async def execute(self, arguments, message) -> None:
         member_id = message.author.__repr__()
