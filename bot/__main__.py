@@ -123,9 +123,7 @@ def main() -> None:
         logger.newline()
 
         # Stop the bot attempting to load the commands multiple times
-        print(len(manager.commands))
         if len(manager.commands) != 0:
-            print("I cru")
             return
 
         # Load the commands
