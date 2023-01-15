@@ -118,6 +118,17 @@ class LevelCategory(Category):
         return True
 
 
+class GameCategory(Category):
+    """A command category instance."""
+
+    name = "games"
+    prefix = None
+    commands: List[Command] = []
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
+
+
 if __name__ == "__main__":
     print(
         "I had a dream where I was fighting Chuck Norris. That day I woke up with scars."

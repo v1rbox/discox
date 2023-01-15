@@ -123,7 +123,7 @@ def main() -> None:
         logger.newline()
 
         # Stop the bot attempting to load the commands multiple times
-        if manager.commands:
+        if len(manager.commands) != 0:
             return
 
         # Load the commands

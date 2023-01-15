@@ -15,6 +15,11 @@ class TaskLoop(Task):
         response = requests.get(
             f"https://www.youtube.com/feeds/videos.xml?channel_id={Config.channel_id}"
         )
+
+        if response.status_code == 404:
+            self.logger.error("Invalid youtube id")
+            return
+
         text = response.text
 
         video_id = re.findall(r"<yt:videoId>([A-Za-z0-9-_]+)</yt:videoId>", text)[0]
