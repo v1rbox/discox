@@ -90,7 +90,7 @@ class cmd(Command):
                         cat_tag = categories[page - 1].prefix
                         cat_tag = cat_tag + " " if cat_tag else ""
 
-                    data = await command.get_contribuders()
+                    data = await command.get_contributers()
 
                     await msg.clear_reactions()
                     embed = Embed(
@@ -130,7 +130,7 @@ class cmd(Command):
                     i.prefix: i for i in self.manager.categories if i.prefix is not None
                 }[cat].commands_map()[command]
 
-            data = await cmd.get_contribuders()
+            data = await cmd.get_contributers()
 
             embed = Embed(
                 title=f"{cmd.name.capitalize()} command",
