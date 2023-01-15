@@ -10,7 +10,8 @@ import discord
 from discord.ext import tasks
 
 from .logger import Logger
-from .manager import Manager
+#from .manager import Manager
+Manager = None  # FIX: circular imports :'((
 
 
 # @dataclass
