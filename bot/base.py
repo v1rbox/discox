@@ -94,7 +94,15 @@ class Command(ABC):
     async def get_contributers(self) -> str:
         res = (
             subprocess.run(
-                ["git", "shortlog", "-n", "-s", "HEAD", "--", f"bot/commands/{self.file}"],
+                [
+                    "git",
+                    "shortlog",
+                    "-n",
+                    "-s",
+                    "HEAD",
+                    "--",
+                    f"bot/commands/{self.file}",
+                ],
                 capture_output=True,
             )
             .stdout.decode()
