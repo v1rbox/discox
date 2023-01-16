@@ -107,11 +107,13 @@ class RequestCategory(Category):
     def check_permissions(self, message: discord.Message) -> bool:
         return True
 
+
 class GameCategory(Category):
     name = "game"
     prefix = None
+
     def check_permissions(self, message):
-        return True # Anyone can use it.
+        return True  # Anyone can use it.
 
 
 class LevelCategory(Category):

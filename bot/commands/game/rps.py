@@ -1,38 +1,36 @@
+import random  # For the bot's choice.
+
 from bot.base import Command
 from bot.config import Embed
-import random # For the bot's choice.
 
 # Rock paper scissors command.
 # Pseudo-enum of the possible "choices"
 
 # I probably should make these a cmd field but I'll keep them global
 # because I can. THE BOYS
-ROCK     = '🗿'
-PAPER    = '📜'
-SCISSORS = '✂️'
+ROCK = "🗿"
+PAPER = "📜"
+SCISSORS = "✂️"
 
-ROCK_NUM     = 0
-PAPER_NUM    = 1
+ROCK_NUM = 0
+PAPER_NUM = 1
 SCISSORS_NUM = 2
 
 RPS_TABLE = {
-    ROCK     : ROCK_NUM,
-    PAPER    : PAPER_NUM,
-    SCISSORS : SCISSORS_NUM,
+    ROCK: ROCK_NUM,
+    PAPER: PAPER_NUM,
+    SCISSORS: SCISSORS_NUM,
 }
 
-RPS_TABLE_REVERSE = {
-    ROCK_NUM    : ROCK,
-    PAPER_NUM   : PAPER,
-    SCISSORS_NUM: SCISSORS
-}
+RPS_TABLE_REVERSE = {ROCK_NUM: ROCK, PAPER_NUM: PAPER, SCISSORS_NUM: SCISSORS}
+
 
 class cmd(Command):
     # Our command instance.
 
     # I think having to type "v!rock-paper-scissors" every time
     # is kind of annoying.
-    
+
     name = "rps"
     usage = "rps"
     description = "Play Rock Paper Scissors with the bot!"
@@ -42,7 +40,7 @@ class cmd(Command):
         # We're really comparing 0, 1 and 2, and it sounds silly.
         # But it's RPS.
         if player == opponent:
-            return None # Tie.
+            return None  # Tie.
 
         if player == ROCK_NUM:
             return opponent == SCISSORS_NUM
@@ -67,7 +65,6 @@ class cmd(Command):
         opponent_weapon = random.randint(ROCK_NUM, SCISSORS_NUM)
         embed = Embed(
             title="Rock Paper Scissors",
-            
             # Yes, I did have to look up these emojis' code.
             description="""
             Choose your weapon! :crossed_swords:
@@ -75,11 +72,11 @@ class cmd(Command):
             :moyai:    = Rock
             :scroll:   = Paper
             :scissors: = Scissors
-            """
+            """,
         )
 
         embed.set_color("red")
-        
+
         embed_msg = await message.channel.send(embed=embed)
         # ILY Emojipedia.
         # Add emojis for the user's reaction.
@@ -93,13 +90,17 @@ class cmd(Command):
         #   ...
         # } while (weapon == -1)
         while True:
-            reaction, user = await self.bot.wait_for("reaction_add", timeout=20, check=None)
-            
+            reaction, user = await self.bot.wait_for(
+                "reaction_add", timeout=20, check=None
+            )
+
             # Get the number (ROCK, PAPER, SCISSORS (0, 1, 2))
             # Type-hinting it to make it clear that we are returning an
             # integer.
-            weapon: int = self.check_reaction(reaction, reaction.message.id, embed_msg.id)
-            
+            weapon: int = self.check_reaction(
+                reaction, reaction.message.id, embed_msg.id
+            )
+
             if weapon != -1:
                 break
 
@@ -107,7 +108,7 @@ class cmd(Command):
 
         if weapon == None:
             raise KeyError("Unexpected weapon - please choose a valid one.")
-        
+
         player_won = self.won(weapon, opponent_weapon)
         # The new embed - after the user's choice
         new_embed = Embed(
@@ -115,7 +116,7 @@ class cmd(Command):
             description=f"""
             You chose {RPS_TABLE_REVERSE[weapon]}, I chose {RPS_TABLE_REVERSE[opponent_weapon]}.
             {'**You won!** :trophy:' if player_won else ("**I won!** :medal:" if player_won is not None else "**It's a tie!**")}
-            """
+            """,
         )
 
         new_embed.set_color("red")
@@ -123,4 +124,3 @@ class cmd(Command):
         await embed_msg.edit(embed=new_embed)
 
         # Done.
-        
