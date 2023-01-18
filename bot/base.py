@@ -10,7 +10,9 @@ import discord
 from discord.ext import tasks
 
 from .logger import Logger
-from .manager import Manager
+
+# from .manager import Manager
+Manager = None  # FIX: circular imports :'((
 
 
 # @dataclass
@@ -92,7 +94,15 @@ class Command(ABC):
     async def get_contributers(self) -> str:
         res = (
             subprocess.run(
-                ["git", "shortlog", "-n", "-s", "--", f"bot/commands/{self.file}"],
+                [
+                    "git",
+                    "shortlog",
+                    "-n",
+                    "-s",
+                    "HEAD",
+                    "--",
+                    f"bot/commands/{self.file}",
+                ],
                 capture_output=True,
             )
             .stdout.decode()
