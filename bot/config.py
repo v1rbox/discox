@@ -1,13 +1,17 @@
-from discord.embeds import Embed as DiscordEmbed
 from discord import Colour
+from discord.embeds import Embed as DiscordEmbed
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import datetime
-
+import os
 from typing import List
 import os
 
 class Embed(DiscordEmbed):
-    """ Custom implementation of a discord embed object. """
+    """Custom implementation of a discord embed object."""
+
     def __init__(self, *args, **kwargs) -> None:
         DiscordEmbed.__init__(self, *args, **kwargs)
 
@@ -24,7 +28,6 @@ class Embed(DiscordEmbed):
             "white": Colour(int("ffffff", 16)),
             "cyan": Colour(int("00ffff", 16)),
             "grey": Colour(int("696969", 16)),  # yeah the funny number is grey
-
             "lightgreen": Colour(int("89f292", 16)),
             "lightred": Colour(int("ff7171", 16)),
             "lightblue": Colour(int("807bff", 16)),
@@ -37,27 +40,37 @@ class Embed(DiscordEmbed):
         }
 
         self.set_footer(
-                text="Virbox Community Bot", 
-                icon_url="https://cdn.discordapp.com/icons/1052597660860821604/8fd53af279aa7d8d77a0451776c4fa35.webp?size=96"
-            )
+            text="Virbox Community Bot",
+            icon_url="https://cdn.discordapp.com/icons/1052597660860821604/8fd53af279aa7d8d77a0451776c4fa35.webp?size=96",
+        )
         self.timestamp = datetime.datetime.now()
 
         self.set_color("green")
 
     def set_color(self, color: str) -> None:
-        """ Set a color from the default colorlist. """
+        """Set a color from the default colorlist."""
         self.color = self.colors[color]
 
 
 class Config:
-    token: str = ""
-    prefix: str = "v!"
-    mod_role_id: List[int] = [1057253751699816459]
-    temp_channel: int = 1059921288354856990
-    channel_id: str = "UCCFVFyadjMuaR5O89yRToew" # Virbox channel id
-    youtube_announcement_id: int = 1056990617357521009
+    token: str = os.getenv("DISCOX_TOKEN")  # bot token
+    prefix: str = os.getenv("DISCOX_PREFIX", "v!")  # prefix (default: v!)
+    report_channel_id: int = int(
+        os.getenv("DISCOX_REPORT_ID", 1064539181193375784)
+    )  # mod role id
+    mod_role_id: List[int] = [
+        int(x) for x in os.getenv("DISCOX_MOD_ROLE_ID", "0").split(",")
+    ]  # mod role id
+    temp_channel: int = int(os.getenv("DISCOX_TEMP_CHANNEL", "0"))  # temp channel id
+    channel_id: str = os.getenv(
+        "DISCOX_CHANNEL_ID", "UCCFVFyadjMuaR5O89yRToew"
+    )  # channel id
+    youtube_announcement_id: int = int(
+        os.getenv("DISCOX_YOUTUBE_ANNOUNCEMENT_ID", 1056990617357521009)
+    )  # youtube announcement id
 
 
 if __name__ == "__main__":
-    print("No ghosts want to approach Chuck Norris because they're afraid of dying a second time")
-
+    print(
+        "No ghosts want to approach Chuck Norris because they're afraid of dying a second time"
+    )

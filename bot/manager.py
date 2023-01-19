@@ -1,8 +1,8 @@
-import discord
-import aiosqlite
-
-from typing import Callable, Dict, Iterator, List, Type, TypeAlias, Optional
 from threading import Thread
+from typing import Callable, Dict, Iterator, List, Optional, Type, TypeAlias
+
+import aiosqlite
+import discord
 
 # putting this here to avoid circular imports
 Manager: TypeAlias = "CommandsManager"
@@ -10,8 +10,9 @@ Manager: TypeAlias = "CommandsManager"
 from .base import Command, Event, Task
 from .category import Category
 
+
 class CommandsManager:
-    """ Manage all commands. """
+    """Manage all commands."""
 
     def __init__(self, bot: discord.Client, db: aiosqlite.Connection) -> None:
         self.bot = bot
@@ -19,8 +20,10 @@ class CommandsManager:
 
         pkg = __import__("bot.category", globals(), locals(), ["*"], 0)
         self.categories: List[Category] = [
-            getattr(pkg, i)() for i in dir(pkg) 
-            if i.endswith("Category") and i != "Category"]
+            getattr(pkg, i)()
+            for i in dir(pkg)
+            if i.endswith("Category") and i != "Category"
+        ]
 
         self.commands: List[Command] = []
 
@@ -31,8 +34,13 @@ class CommandsManager:
             command.name: command for command in iter(self) if command.name
         }
 
-    def register(self, command: Type[Command], category: Optional[str] = None, file: Optional[str]= None) -> None:
-        """ Register a command. """
+    def register(
+        self,
+        command: Type[Command],
+        category: Optional[str] = None,
+        file: Optional[str] = None,
+    ) -> None:
+        """Register a command."""
 
         if command.name in self.commands_map().keys():
             raise ValueError(f"Command {command.name} is already registered")
@@ -48,28 +56,28 @@ class CommandsManager:
             self.commands.append(cmd)
 
     def get(self, name: str) -> Command:
-        """ Get a command by name. """
+        """Get a command by name."""
         return self.commands_map()[name]
 
     def get_category(self, name: str) -> List[Command]:
-        """ Get a category by name. """
+        """Get a category by name."""
         return self.categories_map()[name]
-    
+
     def __getitem__(self, name: str) -> Command:
-        """ Get a command by name. """
+        """Get a command by name."""
         return self.get(name)
 
     def __iter__(self) -> Iterator[Command]:
-        """ Iterate over all commands. """
+        """Iterate over all commands."""
         return iter(self.commands)
 
     def __len__(self) -> int:
-        """ Get the number of commands. """
+        """Get the number of commands."""
         return len(self.commands)
 
 
 class EventsManager:
-    """ Manage all event listneres. """
+    """Manage all event listneres."""
 
     def __init__(self, bot: discord.Client, db: aiosqlite.Connection) -> None:
         self.bot = bot
@@ -98,24 +106,24 @@ class EventsManager:
         return self.bot
 
     def get(self, name: str) -> Event:
-        """ Get a event by name. """
+        """Get a event by name."""
         return self.event_map()[name]
 
     def __getitem__(self, name: str) -> Event:
-        """ Get a event by name. """
+        """Get a event by name."""
         return self.get(name)
 
     def __iter__(self) -> Iterator[Event]:
-        """ Iterate over all events. """
+        """Iterate over all events."""
         return iter(self.events)
 
     def __len__(self) -> int:
-        """ Get the number of events. """
+        """Get the number of events."""
         return len(self.events)
 
 
 class TasksManager:
-    """ Manage all tasks. """
+    """Manage all tasks."""
 
     def __init__(self, bot: discord.Client, db: aiosqlite.Connection) -> None:
         self.bot = bot
@@ -135,19 +143,56 @@ class TasksManager:
         return self.bot
 
     def get(self, name: str) -> Event:
-        """ Get a event by name. """
+        """Get a event by name."""
         return self.event_map()[name]
 
     def __getitem__(self, name: str) -> Event:
-        """ Get a event by name. """
+        """Get a event by name."""
         return self.get(name)
 
     def __iter__(self) -> Iterator[Event]:
-        """ Iterate over all events. """
+        """Iterate over all events."""
         return iter(self.events)
 
     def __len__(self) -> int:
-        """ Get the number of events. """
+        """Get the number of events."""
+        return len(self.events)
+
+
+class TasksManager:
+    """Manage all tasks."""
+
+    def __init__(self, bot: discord.Client, db: aiosqlite.Connection) -> None:
+        self.bot = bot
+        self.db = db
+
+        self.tasks: List[Task] = []
+
+        self.task_map: Callable[..., Dict[str, Event]] = lambda: {
+            task.name: task for task in iter(self)
+        }
+
+    def register(self, task: Task) -> discord.Client:
+        task = task(self.bot, self, self.db)
+        task.execute.start()
+        self.tasks.append(task)
+
+        return self.bot
+
+    def get(self, name: str) -> Event:
+        """Get a event by name."""
+        return self.event_map()[name]
+
+    def __getitem__(self, name: str) -> Event:
+        """Get a event by name."""
+        return self.get(name)
+
+    def __iter__(self) -> Iterator[Event]:
+        """Iterate over all events."""
+        return iter(self.events)
+
+    def __len__(self) -> int:
+        """Get the number of events."""
         return len(self.events)
 
 

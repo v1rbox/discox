@@ -1,10 +1,15 @@
-from bot.config import Embed
+import asyncio
+
+import discord
+from PIL import Image, ImageDraw, ImageFont
+
 from bot.base import Command
+from bot.config import Config, Embed
 
 from .utils.__level_generator import generate_profile
 
 class cmd(Command):
-    """ A discord command instance. """
+    """A discord command instance."""
 
     name = "rank"
     usage = "rank [*user]"
@@ -39,7 +44,9 @@ class cmd(Command):
         async with message.channel.typing():
 
             cursor = await self.db.cursor()
-            await cursor.execute(f"SELECT exp, level FROM levels WHERE user_id = '{user.id}'")
+            await cursor.execute(
+                f"SELECT exp, level FROM levels WHERE user_id = '{user.id}'"
+            )
             result = await cursor.fetchone()
 
             if result is None:
@@ -54,7 +61,6 @@ class cmd(Command):
                     rank = i + 1
                     break
                 rank = i + 1
-
             bg_image = await self.get_bg(user.id)
 
             pic = await generate_profile(
@@ -73,8 +79,6 @@ class cmd(Command):
             embed.set_author(name = f"{user.display_name}'s ranking information", icon_url = user.avatar.url)
             embed.add_field(name = "**Level**", value = f"**```css\n{result[1]}```**")
             embed.add_field(name = "**Exp**", value = f"**```css\n{result[0]}```**")
-
             await message.channel.send(embed=embed, file=pic)
 
             await cursor.close()
-

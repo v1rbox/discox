@@ -1,10 +1,11 @@
-from bot.config import Config, Embed
-from bot.base import Command
 import discord
+
+from bot.base import Command
+from bot.config import Config, Embed
 
 
 class cmd(Command):
-    """ A discord command instance. """
+    """A discord command instance."""
 
     name = "setrank"
     usage = "setrank <user> [exp]"
@@ -18,7 +19,7 @@ class cmd(Command):
         lvl = 0
         exp = int(arguments[1])
         while True:
-            if exp >= (lvl+1) * 25 + 100:
+            if exp >= (lvl + 1) * 25 + 100:
                 lvl += 1
                 exp -= lvl * 25 + 100
             else:
@@ -29,7 +30,7 @@ class cmd(Command):
         await cursor.execute(f"DELETE FROM levels WHERE user_id = ?", (arguments[0],)) # could use update here?
         await self.db.commit()
 
-        sql = ("INSERT INTO levels(exp, level, user_id) VALUES (?,?,?)")
+        sql = "INSERT INTO levels(exp, level, user_id) VALUES (?,?,?)"
         val = (exp, lvl, arguments[0])
         await cursor.execute(sql, val)
         await self.db.commit()

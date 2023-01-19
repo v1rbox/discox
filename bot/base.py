@@ -1,22 +1,23 @@
-import discord
 import asyncio
-import aiosqlite
-import subprocess
 import re
-
+import subprocess
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import List, Optional, Tuple
 
-from typing import Optional, List, Tuple
+import aiosqlite
+import discord
 from discord.ext import tasks
 
 from .logger import Logger
-from .manager import Manager
+
+# from .manager import Manager
+Manager = None  # FIX: circular imports :'((
 
 
 # @dataclass
 class Command(ABC):
-    """ Base abstract class for all commands. """
+    """Base abstract class for all commands."""
 
     name: Optional[str] = None
     usage: Optional[str] = None
@@ -28,7 +29,9 @@ class Command(ABC):
     db: Optional[aiosqlite.Connection] = None
     logger = Logger()
 
-    def __init__(self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection) -> None:
+    def __init__(
+        self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection
+    ) -> None:
         """Initialize the command.
 
         [Args]:
@@ -56,19 +59,19 @@ class Command(ABC):
             raise ValueError("Command usage is required")
         else:
             args: List[Tuple[str, str]] = re.findall(
-                f'\[([^\[\]]+)\]|\<([^\<\>]+)\>', self.usage)
-            args: List[str] = [f"<{i[1]}>" if i[1]
-                               else f"[{i[0]}]" for i in args]
+                f"\[([^\[\]]+)\]|\<([^\<\>]+)\>", self.usage
+            )
+            args: List[str] = [f"<{i[1]}>" if i[1] else f"[{i[0]}]" for i in args]
 
             # Verify the integredy of the usage arguments
             last_arg = "< "
             for arg in args:
                 if arg[0] == "<" and last_arg[0] == "[":
                     raise ValueError(
-                        "Cannot have a positional argument after an optional argument.")
+                        "Cannot have a positional argument after an optional argument."
+                    )
                 if last_arg[1] == "*":
-                    raise ValueError(
-                        "Cannot have a command argument after a *arg.")
+                    raise ValueError("Cannot have a command argument after a *arg.")
                 last_arg = arg
 
         if not asyncio.iscoroutinefunction(self.execute):
@@ -88,8 +91,23 @@ class Command(ABC):
 
         raise NotImplementedError("Command execute method is required")
 
-    async def get_contribuders(self) -> str:
-        res = subprocess.run(["git", "shortlog", "-n", "-s", "--", f"bot/commands/{self.file}"], capture_output=True).stdout.decode().strip("\n")
+    async def get_contributers(self) -> str:
+        res = (
+            subprocess.run(
+                [
+                    "git",
+                    "shortlog",
+                    "-n",
+                    "-s",
+                    "HEAD",
+                    "--",
+                    f"bot/commands/{self.file}",
+                ],
+                capture_output=True,
+            )
+            .stdout.decode()
+            .strip("\n")
+        )
         lines = res.split("\n")
         colums = [i.strip().split() for i in lines]
         text = "\n".join([f"{i[0]:<9}{i[1]}" for i in colums])
@@ -104,7 +122,9 @@ class Event(ABC):
     db: Optional[aiosqlite.Connection] = None
     logger = Logger()
 
-    def __init__(self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection) -> None:
+    def __init__(
+        self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection
+    ) -> None:
         """Initialize the command.
 
         [Args]:
@@ -142,7 +162,9 @@ class Task(ABC):
     db: Optional[aiosqlite.Connection] = None
     logger = Logger()
 
-    def __init__(self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection) -> None:
+    def __init__(
+        self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection
+    ) -> None:
         """Initialize the task.
 
         [Args]:
@@ -163,7 +185,6 @@ class Task(ABC):
         """
 
         raise NotImplementedError("Task execute method is required")
-
 
 
 if __name__ == "__main__":

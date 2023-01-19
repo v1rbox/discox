@@ -1,10 +1,11 @@
-from bot.config import Config, Embed
-from bot.base import Command
 import asyncio
+
+from bot.base import Command
+from bot.config import Config, Embed
 
 
 class cmd(Command):
-    """ Help command. """
+    """Help command."""
 
     name = "help"
     usage = "help [*command]"
@@ -15,7 +16,7 @@ class cmd(Command):
 
         if len(arguments) == 0 or arguments[0] == "":
             msg = await message.channel.send("Loading...")
-            for i in ['◀️', '🔼', '🔽', '▶️', '🔍']:
+            for i in ["◀️", "🔼", "🔽", "▶️", "🔍"]:
                 await msg.add_reaction(i)
 
             page = 0
@@ -30,12 +31,12 @@ class cmd(Command):
                     name = "Uncategorised commands"
                     cat_tag = ""
                 else:
-                    commands = categories[page-1].commands
-                    name = categories[page-1].name 
-                    cat_tag = categories[page-1].prefix
+                    commands = categories[page - 1].commands
+                    name = categories[page - 1].name
+                    cat_tag = categories[page - 1].prefix
                     cat_tag = cat_tag + " " if cat_tag else ""
 
-                indx = min(max(0, indx), len(commands)-1)
+                indx = min(max(0, indx), len(commands) - 1)
 
                 embed = Embed(
                     title=f"{name} - Page {page+1} / {len(categories)+1}",
@@ -45,56 +46,73 @@ class cmd(Command):
 
                 for idx, command in zip(range(len(commands)), commands):
                     print(command, idx)
-                    embed.description += f"`{Config.prefix}{cat_tag}{command.name}`\n" if indx != idx else f"**`{Config.prefix}{cat_tag}{command.usage}`**\n"
+                    embed.description += (
+                        f"`{Config.prefix}{cat_tag}{command.name}`\n"
+                        if indx != idx
+                        else f"**`{Config.prefix}{cat_tag}{command.usage}`**\n"
+                    )
                     embed.description += f"{command.description.strip()}\n\n"
 
                 await msg.edit(content="", embed=embed)
 
                 def check(reaction, user):
-                    return user == message.author and str(reaction.emoji) in ['◀️', '▶️', '🔼', '🔽', '🔍']
+                    return user == message.author and str(reaction.emoji) in [
+                        "◀️",
+                        "▶️",
+                        "🔼",
+                        "🔽",
+                        "🔍",
+                    ]
 
                 try:
-                    reaction, user = await self.bot.wait_for('reaction_add', timeout=120.0, check=check)
+                    reaction, user = await self.bot.wait_for(
+                        "reaction_add", timeout=120.0, check=check
+                    )
                 except asyncio.TimeoutError:
                     await msg.clear_reactions()
                     return
-                
-                if str(reaction.emoji) == '◀️':
+
+                if str(reaction.emoji) == "◀️":
                     page -= 1
-                elif str(reaction.emoji) == '▶️':
+                elif str(reaction.emoji) == "▶️":
                     page += 1
-                elif str(reaction.emoji) == '🔼':
+                elif str(reaction.emoji) == "🔼":
                     indx -= 1
-                elif str(reaction.emoji) == '🔽':
+                elif str(reaction.emoji) == "🔽":
                     indx += 1
-                elif str(reaction.emoji) == '🔍':
+                elif str(reaction.emoji) == "🔍":
                     # Get the command object
                     if page == 0:
                         command = self.manager.commands[indx]
                         cat_tag = ""
                     else:
-                        command = categories[page-1].commands[indx]
-                        cat_tag = categories[page-1].prefix
+                        command = categories[page - 1].commands[indx]
+                        cat_tag = categories[page - 1].prefix
                         cat_tag = cat_tag + " " if cat_tag else ""
 
-                    data = await command.get_contribuders()
+                    data = await command.get_contributers()
 
                     await msg.clear_reactions()
-                    embed = Embed(title=f"{command.name.capitalize()} command", description=f"Usage:\n`{Config.prefix}{cat_tag}{command.usage}`\n{command.description}\n\nContributors for this command```Commits  User\n{data}```")
+                    embed = Embed(
+                        title=f"{command.name.capitalize()} command",
+                        description=f"Usage:\n`{Config.prefix}{cat_tag}{command.usage}`\n{command.description}\n\nContributors for this command```Commits  User\n{data}```",
+                    )
                     await msg.edit(content="", embed=embed)
                     await msg.add_reaction("↩️")
 
                     def check(reaction, user):
-                        return user == message.author and str(reaction.emoji) in ['↩️']
+                        return user == message.author and str(reaction.emoji) in ["↩️"]
 
                     try:
-                        reaction, user = await self.bot.wait_for('reaction_add', timeout=120.0, check=check)
+                        reaction, user = await self.bot.wait_for(
+                            "reaction_add", timeout=120.0, check=check
+                        )
                     except asyncio.TimeoutError:
                         await msg.clear_reactions()
                         return
 
                     await msg.clear_reactions()
-                    for i in ['◀️', '🔼', '🔽', '▶️', '🔍']:
+                    for i in ["◀️", "🔼", "🔽", "▶️", "🔍"]:
                         await msg.add_reaction(i)
 
                 await reaction.remove(message.author)
@@ -108,12 +126,15 @@ class cmd(Command):
                     raise KeyError(f"Command {arguments[0]} not found.")
             else:
                 cat, command = arguments.split(" ")
-                cmd = {i.prefix: i for i in self.manager.categories 
-                          if i.prefix is not None}[cat] \
-                          .commands_map()[command]
+                cmd = {
+                    i.prefix: i for i in self.manager.categories if i.prefix is not None
+                }[cat].commands_map()[command]
 
-            data = await cmd.get_contribuders()
+            data = await cmd.get_contributers()
 
-            embed = Embed(title=f"{cmd.name.capitalize()} command", description=f"Usage:\n`{Config.prefix}{cat}{cmd.usage}`\n{cmd.description}\n\nContributors for this command```Commits  User\n{data}```")
+            embed = Embed(
+                title=f"{cmd.name.capitalize()} command",
+                description=f"Usage:\n`{Config.prefix}{cat}{cmd.usage}`\n{cmd.description}\n\nContributors for this command```Commits  User\n{data}```",
+            )
 
             await message.channel.send(embed=embed)
