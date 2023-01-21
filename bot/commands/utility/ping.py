@@ -16,5 +16,8 @@ class cmd(Command):
                 description=f"This is a test embed\nYou typed `{arguments[1]}`",
             )
         else:
-            embed = Embed(title="Hello world!", description=f"Current bot latency is `{round(self.bot.latency*1000,2)}ms`")
+            embed = Embed(
+                title="Hello world!",
+                description=f"Current bot latency is `{round(self.bot.latency*1000,2)}ms`",
+            )
         await message.channel.send("Im alivetesererete!!", embed=embed)

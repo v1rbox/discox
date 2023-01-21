@@ -1,7 +1,7 @@
 import os
 import re
-import traceback
 import threading
+import traceback
 from typing import List, Tuple
 
 import aiosqlite
@@ -13,7 +13,8 @@ from rich.table import Table
 from .base import Command
 from .config import Config, Embed
 from .logger import Logger
-from .manager import CommandsManager, EventsManager, TasksManager, PoolingManager
+from .manager import (CommandsManager, EventsManager, PoolingManager,
+                      TasksManager)
 
 logger = Logger()
 config = Config()
@@ -104,7 +105,7 @@ def main() -> None:
     # Start autoreloads
     threading.Thread(target=PoolingManager, args=(bot,)).start()
 
-    async def register_all(): 
+    async def register_all():
         # Stop the bot attempting to load the commands multiple times
         if len(bot.manager.commands) != 0:
             bot.manager.reset()
@@ -198,7 +199,6 @@ def main() -> None:
         )
 
         await bot.register_all()
-
 
         await bot.change_presence(activity=activity)
         bot.current_activity = activity

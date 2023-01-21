@@ -1,12 +1,13 @@
+import importlib
+import os
+import time
 from threading import Thread
 from typing import Callable, Dict, Iterator, List, Optional, Type, TypeAlias
 
-from .logger import Logger
 import aiosqlite
 import discord
-import os
-import time
-import importlib
+
+from .logger import Logger
 
 # putting this here to avoid circular imports
 Manager: TypeAlias = "CommandsManager"
@@ -61,7 +62,9 @@ class CommandsManager:
 
     def reset(self) -> None:
         """Reload the manager obj"""
-        pkg = importlib.reload(__import__("bot.category", globals(), locals(), ["*"], 0))
+        pkg = importlib.reload(
+            __import__("bot.category", globals(), locals(), ["*"], 0)
+        )
         self.categories: List[Category] = [
             getattr(pkg, i)()
             for i in dir(pkg)
@@ -192,7 +195,7 @@ class TasksManager:
 
 class PoolingManager:
     def __init__(self, bot) -> None:
-        self.tracked: Dict[str,str] = self.get_dir()
+        self.tracked: Dict[str, str] = self.get_dir()
 
         while True:
             if (res := self.cmp_tracker(self.get_dir())) is None:
@@ -214,26 +217,36 @@ class PoolingManager:
                         cmd = entry.split(".")[0]
                         if os.path.isfile(os.path.join("bot", "commands", entry)):
                             bot.manager.register(
-                                importlib.reload(__import__(
-                                    f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0
-                                )).cmd,
+                                importlib.reload(
+                                    __import__(
+                                        f"bot.commands.{cmd}",
+                                        globals(),
+                                        locals(),
+                                        ["cmd"],
+                                        0,
+                                    )
+                                ).cmd,
                                 file=entry,
                             )
                         else:
                             # Current entry is a category
                             for cmd in [
                                 i.split(".")[0]
-                                for i in os.listdir(os.path.join("bot", "commands", entry))
+                                for i in os.listdir(
+                                    os.path.join("bot", "commands", entry)
+                                )
                                 if not i.startswith("__")
                             ]:
                                 bot.manager.register(
-                                    importlib.reload(__import__(
-                                        f"bot.commands.{entry}.{cmd}",
-                                        globals(),
-                                        locals(),
-                                        ["cmd"],
-                                        0,
-                                    )).cmd,
+                                    importlib.reload(
+                                        __import__(
+                                            f"bot.commands.{entry}.{cmd}",
+                                            globals(),
+                                            locals(),
+                                            ["cmd"],
+                                            0,
+                                        )
+                                    ).cmd,
                                     entry,
                                     file=os.path.join(entry, cmd + ".py"),
                                 )
@@ -249,9 +262,11 @@ class PoolingManager:
                         if not i.startswith("__")
                     ]
                     for idx, entry in zip(range(1, len(entries) + 1, 1), entries):
-                        event = importlib.reload(__import__(
-                            f"bot.events.{entry}", globals(), locals(), ["event"], 0
-                        )).event
+                        event = importlib.reload(
+                            __import__(
+                                f"bot.events.{entry}", globals(), locals(), ["event"], 0
+                            )
+                        ).event
                         bot.event_manager.register(event)
 
                 # bot.register_all()
@@ -265,9 +280,9 @@ class PoolingManager:
             except StopIteration as e:
                 return e.value
 
-    def get_dir(self) -> Dict[str,str]: 
+    def get_dir(self) -> Dict[str, str]:
         """Get all the directories and files, returns MD5 hash"""
-        tracker: Dict[str,str] = {}
+        tracker: Dict[str, str] = {}
         for dirpath, dirnames, filenames in os.walk("bot"):
             for filename in filenames:
                 if filename in ["main.db"] or filename.endswith(".pyc"):
@@ -291,7 +306,7 @@ class PoolingManager:
                 return f"{file} was edited."
 
             checked.append(file)
-        
+
         for file, ts in tracker.items():
             if file not in checked:
                 return f"{file} was created."
