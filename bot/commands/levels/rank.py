@@ -45,14 +45,14 @@ class cmd(Command):
 
         async with message.channel.typing():
 
-            cursor = await self.db.cursor()
-            await cursor.execute(
+            result = await self.db.raw_exec_select(
                 f"SELECT exp, level FROM levels WHERE user_id = '{user.id}'"
             )
-            result = await cursor.fetchone()
 
-            if result is None:
+            if len(result) == 0:
                 result = (0, 0)
+            else:
+                result = result[0]
 
             genarateBar(result[0], result[1])
             tempChannel = message.guild.get_channel(Config.temp_channel)
@@ -72,5 +72,3 @@ class cmd(Command):
             embed.set_image(url=url)
 
             await message.channel.send(embed=embed)
-
-            await cursor.close()

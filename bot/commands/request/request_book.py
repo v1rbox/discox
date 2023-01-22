@@ -31,18 +31,12 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         if arguments[0] == "0":
-            db = self.db
-            cursor = await db.cursor()
-            await cursor.execute("SELECT * FROM request WHERE Number_id = 1")
-            row = await cursor.fetchone()
-            if not row:
+            rows = await self.db.raw_exec_select("SELECT * FROM request")
+            if len(rows) == 0:
                 embed = Embed(title="Couldn't find anything in the database")
                 embed.set_color("red")
                 await message.channel.send(embed=embed)
             else:
-                await cursor.execute("SELECT * FROM request")
-                rows = await cursor.fetchall()
-
                 final_message = ""
                 for row in rows:
                     # implement number_id
@@ -65,8 +59,6 @@ class cmd(Command):
                     title="List of all the requests:", description=final_message
                 )
                 await message.channel.send(embed=embed)
-
-            await cursor.close()
         else:
             if arguments[0].isdigit() == False:
                 embed = Embed(title="Invalid argument")
@@ -75,19 +67,18 @@ class cmd(Command):
                 return
 
             arguments[0] = int(arguments[0])
-            db = self.db
 
-            cursor = await db.cursor()
-            await cursor.execute(
+            row = await self.db.raw_exec_select(
                 f"SELECT * FROM request WHERE Number_id = ?", (arguments[0],)
             )
-            row = await cursor.fetchone()
 
-            if not row:
+            if len(row) == 0:
                 embed = Embed(title="Invalid number_id")
                 embed.set_color("red")
                 await message.channel.send(embed=embed)
                 return
+
+            row = row[0]
 
             final_message = self.display_row(row)
             final_message += f"\nDescription: ```{row[3]}```"
@@ -96,4 +87,3 @@ class cmd(Command):
                 description=final_message,
             )
             await message.channel.send(embed=embed)
-            await cursor.close()

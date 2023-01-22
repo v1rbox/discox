@@ -10,6 +10,7 @@ import discord
 from discord.ext import tasks
 
 from .logger import Logger
+from .sql import SQLParser
 
 # from .manager import Manager
 Manager = None  # FIX: circular imports :'((
@@ -26,18 +27,18 @@ class Command(ABC):
     category: Optional[str] = None
     file: Optional[str] = None
 
-    db: Optional[aiosqlite.Connection] = None
+    db: Optional[SQLParser] = None
     logger = Logger()
 
     def __init__(
-        self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection
+        self, bot: discord.Client, manager: Manager, db: SQLParser
     ) -> None:
         """Initialize the command.
 
         [Args]:
             bot (discord.Client): bot on which we'll use the command
             manager: (Manager): ?
-            db (aiosqlite.Connection): command database connection
+            db (SQLParser): command database connection
 
         [Raises]:
             ValueError: if 'name' field is empty
@@ -119,18 +120,18 @@ class Event(ABC):
 
     name: Optional[str] = None
 
-    db: Optional[aiosqlite.Connection] = None
+    db: Optional[SQLParser] = None
     logger = Logger()
 
     def __init__(
-        self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection
+        self, bot: discord.Client, manager: Manager, db: SQLParser
     ) -> None:
         """Initialize the command.
 
         [Args]:
             bot (discord.Client): discord client
             manager (Manager): ?
-            db (aiosqlite.Connection): event database connection
+            db (SQLParser): event database connection
 
         [Raises]:
             ValueError: if 'name' field is empty
@@ -159,18 +160,18 @@ class Task(ABC):
 
     name: Optional[str] = None
 
-    db: Optional[aiosqlite.Connection] = None
+    db: Optional[SQLParser] = None
     logger = Logger()
 
     def __init__(
-        self, bot: discord.Client, manager: Manager, db: aiosqlite.Connection
+        self, bot: discord.Client, manager: Manager, db: SQLParser
     ) -> None:
         """Initialize the task.
 
         [Args]:
             bot (discord.Client): discord client
             manager (Manager): ?
-            db (aiosqlite.Connection): event database connection
+            db (SQLParser): event database connection
         """
 
         self.bot = bot

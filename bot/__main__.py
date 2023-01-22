@@ -15,9 +15,35 @@ from .config import Config, Embed
 from .logger import Logger
 from .manager import (CommandsManager, EventsManager, PoolingManager,
                       TasksManager)
+from .sql import SQLParser
 
 logger = Logger()
 config = Config()
+
+CREATE_STATEMENTS = [
+    """
+        CREATE TABLE IF NOT EXISTS "levels" (
+	        "user_id"	TEXT UNIQUE,
+	        "level"	INTEGER,
+	        "exp"	INTEGER,
+	        PRIMARY KEY("user_id")
+        )
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS "latest_video" (
+	        "video_id"	TEXT
+        )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS "request" (
+	    "Number_id"	INTEGER NOT NULL,
+	    "Member_id"	TEXT NOT NULL,
+	    "Title"	TEXT NOT NULL,
+	    "Description"	TEXT NOT NULL,
+	    PRIMARY KEY("Number_id" AUTOINCREMENT)
+    )
+    """,
+]
 
 
 def parse_user_input(user_input: str) -> Tuple[str, List[str]]:
@@ -95,7 +121,7 @@ async def parse_usage_text(
 def main() -> None:
     """Main setup function."""
 
-    db = None
+    db = SQLParser("bot/assets/main.db", CREATE_STATEMENTS)
     bot = discord.Client(intents=discord.Intents.all())
 
     bot.manager = CommandsManager(bot, db)
@@ -108,9 +134,10 @@ def main() -> None:
     async def register_all():
         # Stop the bot attempting to load the commands multiple times
         if len(bot.manager.commands) != 0:
-            bot.manager.reset()
-            bot.event_manager.reset()
-            tasks_manager.reset()
+            # bot.manager.reset()
+            # bot.event_manager.reset()
+            # tasks_manager.reset()
+            return
 
         # Load the commands
         entries = [
@@ -176,13 +203,10 @@ def main() -> None:
     async def on_ready():
         """When the bot is connected."""
 
+        await db.initialise()
+
         if bot.user is None:
             raise RuntimeError("Bot user is None")
-
-        db = await aiosqlite.connect("bot/assets/main.db")
-        bot.manager.db = db
-        bot.event_manager.db = db
-        tasks_manager.db = db
 
         logger.log("Bot is ready!")
         logger.log(f"Logged in as {bot.user}")
