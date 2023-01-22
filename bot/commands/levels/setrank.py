@@ -25,16 +25,13 @@ class cmd(Command):
             else:
                 break
 
-        cursor = await self.db.cursor()
+        await self.db.raw_exec_commit(
+            f"DELETE FROM levels WHERE user_id = ?", (arguments[0],)
+        )
 
-        await cursor.execute(f"DELETE FROM levels WHERE user_id = ?", (arguments[0],))
-        await self.db.commit()
-
-        sql = "INSERT INTO levels(exp, level, user_id) VALUES (?,?,?)"
-        val = (exp, lvl, arguments[0])
-        await cursor.execute(sql, val)
-        await self.db.commit()
-
-        await cursor.close()
+        await self.db.raw_exec_commit(
+            "INSERT INTO levels(exp, level, user_id) VALUES (?,?,?)",
+            (exp, lvl, arguments[0]),
+        )
 
         await message.channel.send(f"Updated rank to {lvl}.{exp}")

@@ -1,3 +1,5 @@
+import asyncio
+
 import aiosqlite
 from discord.message import Message
 
@@ -15,25 +17,30 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         member_id = message.author.__repr__()
+
+        def check(m):
+            return m.channel == message.channel and m.author.id == message.author.id
+
         title_request = Embed(title="What is the title of the request?")
         await message.channel.send(embed=title_request)
-        title = await self.bot.wait_for("message", timeout=60.0, check=None)
-        description_request = Embed(title="What is the description of this request?")
-        await message.channel.send(embed=description_request)
-        text_info = await self.bot.wait_for("message", timeout=60.0, check=None)
 
-        db = self.db
+        try:
+            title = await self.bot.wait_for("message", timeout=120.0, check=check)
+            description_request = Embed(
+                title="What is the description of this request?"
+            )
 
-        cursor = await db.cursor()
+            await message.channel.send(embed=description_request)
+            text_info = await self.bot.wait_for("message", timeout=120.0, check=check)
 
-        await cursor.execute(
+        except asyncio.TimeoutError:
+            await message.channel.send("Timed out.")
+            return
+
+        await self.db.raw_exec_commit(
             "INSERT INTO request(Member_id, Title, Description) VALUES(?, ?, ?)",
             (member_id, title.content, text_info.content),
         )
-
-        await db.commit()
-
-        await cursor.close()
 
         embed = Embed(title="A request has been added!")
         await message.channel.send(embed=embed)
