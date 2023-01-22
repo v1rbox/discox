@@ -1,10 +1,11 @@
+import asyncio
+
 import aiosqlite
 from discord.message import Message
 
 from bot.base import Command
 from bot.config import Config, Embed
 
-import asyncio
 
 class cmd(Command):
 
@@ -25,7 +26,9 @@ class cmd(Command):
 
         try:
             title = await self.bot.wait_for("message", timeout=120.0, check=check)
-            description_request = Embed(title="What is the description of this request?")
+            description_request = Embed(
+                title="What is the description of this request?"
+            )
 
             await message.channel.send(embed=description_request)
             text_info = await self.bot.wait_for("message", timeout=120.0, check=check)
