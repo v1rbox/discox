@@ -8,6 +8,7 @@ import aiosqlite
 import discord
 
 from .logger import Logger
+from .sql import SQLParser
 
 # putting this here to avoid circular imports
 Manager: TypeAlias = "CommandsManager"
@@ -19,7 +20,7 @@ from .category import Category
 class CommandsManager:
     """Manage all commands."""
 
-    def __init__(self, bot: discord.Client, db: aiosqlite.Connection) -> None:
+    def __init__(self, bot: discord.Client, db: SQLParser) -> None:
         self.bot = bot
         self.db = db
 
@@ -104,7 +105,7 @@ class CommandsManager:
 class EventsManager:
     """Manage all event listneres."""
 
-    def __init__(self, bot: discord.Client, db: aiosqlite.Connection) -> None:
+    def __init__(self, bot: discord.Client, db: SQLParser) -> None:
         self.bot = bot
         self.db = db
 
@@ -153,7 +154,7 @@ class EventsManager:
 class TasksManager:
     """Manage all tasks."""
 
-    def __init__(self, bot: discord.Client, db: aiosqlite.Connection) -> None:
+    def __init__(self, bot: discord.Client, db: SQLParser) -> None:
         self.bot = bot
         self.db = db
 
