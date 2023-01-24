@@ -11,6 +11,7 @@ class cmd(Command):
     distro_roles_color = Color.from_rgb(185, 137, 240)
     max_distro = 3
     whitelist = [
+        "/e/OS",
         "Alma",
         "Alpine",
         "Android",
