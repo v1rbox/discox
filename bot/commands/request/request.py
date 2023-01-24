@@ -23,7 +23,7 @@ class cmd(Command):
     async def execute(self, arguments, message) -> None:
         """
         HOW DOES IT WORK?
-        When, when you type 'v!req request', it will automatically start an interactive chat to you. It will ask you some information about the request, and then once you fill all of them, the command will add it to the database and ping every moderators and administrators to review it.
+        Well, when you type 'v!req request', it will automatically start an interactive chat to you. It will ask you some information about the request, and then once you fill all of them, the command will add it to the database and ping every moderators and administrators to review it.
 
         INFORMATION ABOUT THE REQUEST:
             - Title of the request: (the title variable)
@@ -66,4 +66,11 @@ class cmd(Command):
         )
         # Notify the user that the bot has added the request to the database.
         embed = Embed(title="A request has been added!")
-        await message.channel.send(embed=embed)
+        await message.channel.send(message.author.mention, embed=embed)
+
+        # Notify the administrators to review the request
+        ping_roles = ""
+        for i in self.category.config.mod_role_id:
+            ping_roles += "<@&" + str(i) + ">"
+        embed = Embed(title="A request has been added! Please consider to review it and start voting!")
+        await message.channel.send(ping_roles, embed=embed)

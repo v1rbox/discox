@@ -43,13 +43,13 @@ class SQLParser:
         await db.commit()
 
     # Add custom db methods here if you need more control
-
+    
     @connect
     async def initialise(self, db: aiosqlite.Connection):
         """Execute all the create statements on load"""
         for sql in self.create_statemets:
             await self.raw_exec_commit(db, sql)
-
+    
     # In practise this was not very pratical, might be implemented in the futre
     # async def SELECT(self, table: str, rows: Tuple[str], where: Optional[Dict] = None):
     #     # Base SQL qurey
