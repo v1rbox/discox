@@ -27,8 +27,8 @@ class TaskLoop(Task):
         list_id = await self.db.raw_exec_select("SELECT video_id FROM latest_video")
         if len(list_id) == 0:
             await self.db.raw_exec_commit(
-                    "INSERT INTO latest_video(video_id) VALUES(?)", (video_id,)
-                    )
+                "INSERT INTO latest_video(video_id) VALUES(?)", (video_id,)
+            )
         list_id = await self.db.raw_exec_select("SELECT video_id FROM latest_video")
 
         last_id = list_id[0]
@@ -46,5 +46,6 @@ class TaskLoop(Task):
                 },
             )
 
-            await self.db.raw_exec_commit("UPDATE latest_video SET video_id = ?", (video_id,))
-
+            await self.db.raw_exec_commit(
+                "UPDATE latest_video SET video_id = ?", (video_id,)
+            )

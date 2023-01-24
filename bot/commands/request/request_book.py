@@ -24,17 +24,17 @@ class cmd(Command):
 
         """
 
-            INFO: this method is used to display the request in the request table.
-            After cursor.fetchone(), it will return a tuple which represents the request in the database. To make it easier to read, this function will reformat the tuple and then print out the formatted string.
+        INFO: this method is used to display the request in the request table.
+        After cursor.fetchone(), it will return a tuple which represents the request in the database. To make it easier to read, this function will reformat the tuple and then print out the formatted string.
 
-            HOW IT WORKS:
-            The tuple will look like this:
-                (<number_id>, <author_information>, <title>, <description>)
-            For example:
-                (1, "<Member id=917681283595919391 name='imindMan' discriminator='8536' bot=False nick=None guild=<Guild id=1032277950416035930 name='imindworld' shard_id=0 chunked=True member_count=36>>", 'Hello', 'Hello guys')
-            The bot will then use this tuple, reformat it to a string, then return it
-            THe final result will look like this (based on the example):
-                1. 'Hello' by imindMan#8536
+        HOW IT WORKS:
+        The tuple will look like this:
+            (<number_id>, <author_information>, <title>, <description>)
+        For example:
+            (1, "<Member id=917681283595919391 name='imindMan' discriminator='8536' bot=False nick=None guild=<Guild id=1032277950416035930 name='imindworld' shard_id=0 chunked=True member_count=36>>", 'Hello', 'Hello guys')
+        The bot will then use this tuple, reformat it to a string, then return it
+        THe final result will look like this (based on the example):
+            1. 'Hello' by imindMan#8536
         """
         # implement number_id
         number_id = row[0]
@@ -50,19 +50,20 @@ class cmd(Command):
 
         final = f"{number_id}. '{title}' by {member_id}"
         return final
+
     async def execute(self, arguments, message) -> None:
 
         """
-            MAIN EXECUTION:
-                After the user type in the command, the bot will check if the arguments[0] (the first argument) is 0 or another number. If it's 0, then the bot will select the request table in the database and show all of them in a specific format that looks like this:
-                    List of all the requests:
-                        <number_id>. <title> by <member_id>
-                        ...
-                If it's another number, then the bot will select that row with that number_id. If the row doesn't exist, it throws error. Otherwise, it will show up like this:
-                    Show the information of the row with the given number_id: <number_id>
-                        <number_id>. <title> by <member_id>
-                        Description:
-                            <description>
+        MAIN EXECUTION:
+            After the user type in the command, the bot will check if the arguments[0] (the first argument) is 0 or another number. If it's 0, then the bot will select the request table in the database and show all of them in a specific format that looks like this:
+                List of all the requests:
+                    <number_id>. <title> by <member_id>
+                    ...
+            If it's another number, then the bot will select that row with that number_id. If the row doesn't exist, it throws error. Otherwise, it will show up like this:
+                Show the information of the row with the given number_id: <number_id>
+                    <number_id>. <title> by <member_id>
+                    Description:
+                        <description>
         """
 
         # in case if arguments[0] == "0"
@@ -79,7 +80,7 @@ class cmd(Command):
                 # Display as normally
                 final_message = ""
                 for row in rows:
-                    # Looping through every elements in the database 
+                    # Looping through every elements in the database
                     final = self.display_request(row)
                     final_message += f"{final}\n"
                 # Print all of them
@@ -88,7 +89,7 @@ class cmd(Command):
                 )
                 await message.channel.send(embed=embed)
         else:
-            # Get the request based on the number_id 
+            # Get the request based on the number_id
             arguments[0] = int(arguments[0])
 
             row = await self.db.raw_exec_select(
