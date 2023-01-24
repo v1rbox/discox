@@ -103,6 +103,7 @@ class RequestCategory(Category):
 
     name = "request"
     prefix = "req"
+    config = config
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
