@@ -1,4 +1,3 @@
-# /bot/commands/ping.py
 import time
 from asyncio import sleep
 from re import match
