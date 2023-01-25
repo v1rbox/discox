@@ -2,10 +2,15 @@ import discord
 
 from bot.base import Command
 
-from .utils.uis import OptionView
+from .utils.__uis import OptionView
 
 
 class cmd(Command):
+    
+    """
+    Set your own background for your rank card.
+    """
+    
     name = "setbg"
     usage = "setbg [*url]"
     description = "Set your own background for your rank card. URL must be a direct link to an image."

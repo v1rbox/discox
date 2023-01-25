@@ -1,3 +1,8 @@
+"""
+A utility function to generate a profile card with levelling information and ranking.
+Made by [timelessnesses](https://timelessnesses.me)
+"""
+
 import math
 import os
 import typing

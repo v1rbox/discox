@@ -1,6 +1,6 @@
 import random
 
-import requests
+import aiohttp
 
 from bot.base import Command
 from bot.config import Config, Embed
@@ -12,27 +12,28 @@ class cmd(Command):
     name = "leetcode"
     usage = "leetcode <command>"
     description = "Generates a random leetcode problem, use info to find total number of problem, use gen to generate a new problem"
-
-    leet_code_api_url = "https://leetcode.com/api/problems/all"
-    problem_data = requests.get(url=leet_code_api_url).json()
-    total_problem = problem_data["num_total"]
-
     async def execute(self, arguments, message) -> None:
+
+        leet_code_api_url = "https://leetcode.com/api/problems/all"
+        async with aiohttp.ClientSession() as ses:
+            async with ses.get(leet_code_api_url) as resp:
+                problem_data = await resp.json()
+        total_problem = problem_data["num_total"]
 
         if arguments[0] == "info":
             embed = Embed(
                 title="Leet Code Problem",
-                description=f"Total number of problems generated : {self.total_problem}.\nRun `{Config.prefix}leetcode gen` to generate random problem. Happy Coding :))",
+                description=f"Total number of problems generated : {total_problem}.\nRun `{Config.prefix}leetcode gen` to generate random problem. Happy Coding :))",
             )
             await message.channel.send(embed=embed)
 
         elif arguments[0] == "gen":
 
             # Picks a random number betwwn 0 and total number of problem in leetcode - 1
-            problem_index = random.randint(0, self.total_problem - 1)
+            problem_index = random.randint(0, total_problem - 1)
 
             # Picks a random problem from all problems in leetcode
-            problem = self.problem_data["stat_status_pairs"][problem_index]
+            problem = problem_data["stat_status_pairs"][problem_index]
 
             # Generates problem id
             problem_id = problem["stat"]["question_id"]
