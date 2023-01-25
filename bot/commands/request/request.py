@@ -72,5 +72,7 @@ class cmd(Command):
         ping_roles = ""
         for i in self.category.config.mod_role_id:
             ping_roles += "<@&" + str(i) + ">"
-        embed = Embed(title="A request has been added! Please consider to review it and start voting!")
+        embed = Embed(
+            title="A request has been added! Please consider to review it and start voting!"
+        )
         await message.channel.send(ping_roles, embed=embed)
