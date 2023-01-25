@@ -1,4 +1,3 @@
-# /bot/commands/ping.py
 import time
 from asyncio import sleep
 from re import match
@@ -28,7 +27,7 @@ class cmd(Command):
 
         embed = Embed(
             title="New Reminder",
-            description=f"Reminder set to <t:{timestamp}:f>, wich is in <t:{timestamp}:R>.",
+            description=f"Reminder set to <t:{timestamp}:f>, which is in <t:{timestamp}:R>.",
         )
         msg = await message.reply(embed=embed)
         url = msg.jump_url
@@ -36,6 +35,6 @@ class cmd(Command):
         embed = Embed(
             title=arguments[1],
             description=f"""This is your reminder.
-        If you wan't to know the context, [here]({url}) is the link.""",
+        If you want to know the context, [here]({url}) is the link.""",
         )
         await message.channel.send(f"<@{message.author.id}>", embed=embed)

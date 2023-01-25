@@ -19,7 +19,7 @@ class cmd(Command):
                 embed = Embed(description=f"```{k:<20}```")
                 embed.set_color(k)
                 embed.set_footer(text="", icon_url="")
-                embed.timestamp = Embed.Empty
+                embed.timestamp = None
                 out.append(embed)
 
             await message.channel.send(embeds=out)
