@@ -27,14 +27,6 @@ class cmd(Command):
 
         cursor = await self.db.cursor()
 
-        await cursor.execute(f"DELETE FROM levels WHERE user_id = ?", (arguments[0],)) # could use update here?
-        await self.db.commit()
-
-        sql = "INSERT INTO levels(exp, level, user_id) VALUES (?,?,?)"
-        val = (exp, lvl, arguments[0])
-        await cursor.execute(sql, val)
-        await self.db.commit()
-
-        await cursor.close()
+        await cursor.execute("UPDATE levels SET level = ?, exp = ? WHERE user_id = ?", (lvl, exp, int(arguments[0]))) # update
 
         await message.channel.send(f"Updated rank to {lvl}.{exp}")

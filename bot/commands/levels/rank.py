@@ -1,8 +1,3 @@
-import asyncio
-
-import discord
-from PIL import Image, ImageDraw, ImageFont
-
 from bot.base import Command
 from bot.config import Config, Embed
 
