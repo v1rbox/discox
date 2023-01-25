@@ -61,8 +61,8 @@ class cmd(Command):
 
         # MAIN EXECUTION: after getting all the information, the bot will add all of the information to the database
         await self.db.raw_exec_commit(
-            "INSERT INTO request(Member_id, Title, Description) VALUES(?, ?, ?)",
-            (member_id, title.content, description.content),
+            "INSERT INTO request(Member_id, Title, Description, Upvote, Downvote, Pending_close) VALUES(?, ?, ?, ?, ?, ?)",
+            (member_id, title.content, description.content, 0, 0, 0),
         )
         # Notify the user that the bot has added the request to the database.
         embed = Embed(title="A request has been added!")
@@ -72,7 +72,5 @@ class cmd(Command):
         ping_roles = ""
         for i in self.category.config.mod_role_id:
             ping_roles += "<@&" + str(i) + ">"
-        embed = Embed(
-            title="A request has been added! Please consider to review it and start voting!"
-        )
+        embed = Embed(title="A request has been added! Please consider to review it and start voting!")
         await message.channel.send(ping_roles, embed=embed)
