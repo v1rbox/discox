@@ -23,6 +23,9 @@ class cmd(Command):
                 continue
 
             user = self.bot.get_user(int(result[0]))
+            if user == None:
+                continue
+
             lvl = result[2]
             desc += f"**{str(user)}** *(level {lvl})*\n"
             v += 1
