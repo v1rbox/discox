@@ -1,5 +1,6 @@
 import os
 import re
+import threading
 import traceback
 from typing import List, Tuple
 
@@ -12,10 +13,37 @@ from rich.table import Table
 from .base import Command
 from .config import Config, Embed
 from .logger import Logger
-from .manager import CommandsManager, EventsManager, TasksManager
+from .manager import (CommandsManager, EventsManager, PoolingManager,
+                      TasksManager)
+from .sql import SQLParser
 
 logger = Logger()
 config = Config()
+
+CREATE_STATEMENTS = [
+    """
+        CREATE TABLE IF NOT EXISTS "levels" (
+	        "user_id"	TEXT UNIQUE,
+	        "level"	INTEGER,
+	        "exp"	INTEGER,
+	        PRIMARY KEY("user_id")
+        )
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS "latest_video" (
+	        "video_id"	TEXT
+        )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS "request" (
+	    "Number_id"	INTEGER NOT NULL,
+	    "Member_id"	TEXT NOT NULL,
+	    "Title"	TEXT NOT NULL,
+	    "Description"	TEXT NOT NULL,
+	    PRIMARY KEY("Number_id" AUTOINCREMENT)
+    )
+    """,
+]
 
 
 def parse_user_input(user_input: str) -> Tuple[str, List[str]]:
@@ -93,37 +121,22 @@ async def parse_usage_text(
 def main() -> None:
     """Main setup function."""
 
-    db = None
+    db = SQLParser("bot/assets/main.db", CREATE_STATEMENTS)
     bot = discord.Client(intents=discord.Intents.all())
 
-    manager = CommandsManager(bot, db)
-    event_manager = EventsManager(bot, db)
+    bot.manager = CommandsManager(bot, db)
+    bot.event_manager = EventsManager(bot, db)
     tasks_manager = TasksManager(bot, db)
 
-    @bot.event
-    async def on_ready():
-        """When the bot is connected."""
+    # Start autoreloads
+    threading.Thread(target=PoolingManager, args=(bot,)).start()
 
-        if bot.user is None:
-            raise RuntimeError("Bot user is None")
-
-        db = await aiosqlite.connect("bot/assets/main.db")
-        manager.db = db
-        event_manager.db = db
-        tasks_manager.db = db
-
-        logger.log("Bot is ready!")
-        logger.log(f"Logged in as {bot.user}")
-
-        logger.newline()
-        logger.log("Username:", f"{bot.user.name}#{bot.user.discriminator}")
-        logger.log("ID:", f"{bot.user.id}")
-        logger.log("Guilds:", f"{len(bot.guilds)}")
-        logger.log("Prefix:", config.prefix)
-        logger.newline()
-
+    async def register_all():
         # Stop the bot attempting to load the commands multiple times
-        if len(manager.commands) != 0:
+        if len(bot.manager.commands) != 0:
+            # bot.manager.reset()
+            # bot.event_manager.reset()
+            # tasks_manager.reset()
             return
 
         # Load the commands
@@ -135,7 +148,7 @@ def main() -> None:
         for entry in entries:
             cmd = entry.split(".")[0]
             if os.path.isfile(os.path.join("bot", "commands", entry)):
-                manager.register(
+                bot.manager.register(
                     __import__(
                         f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0
                     ).cmd,
@@ -148,7 +161,7 @@ def main() -> None:
                     for i in os.listdir(os.path.join("bot", "commands", entry))
                     if not i.startswith("__")
                 ]:
-                    manager.register(
+                    bot.manager.register(
                         __import__(
                             f"bot.commands.{entry}.{cmd}",
                             globals(),
@@ -160,15 +173,7 @@ def main() -> None:
                         file=os.path.join(entry, cmd + ".py"),
                     )
 
-        logger.log("Registered commands")
-        for idx, command in enumerate(manager.commands, 1):
-            logger.custom(
-                str(idx), f"{config.prefix}{command.name} :", command.description
-            )
-
         # Setup events
-        logger.newline()
-        logger.log("Registered events")
         entries = [
             i.split(".")[0]
             for i in os.listdir(os.path.join("bot", "events"))
@@ -178,13 +183,9 @@ def main() -> None:
             event = __import__(
                 f"bot.events.{entry}", globals(), locals(), ["event"], 0
             ).event
-            event_manager.register(event)
-            logger.custom(str(idx), f"{event.name} ")
-
-        logger.newline()
+            bot.event_manager.register(event)
 
         # Setup tasks
-        logger.log("Registered tasks")
         entries = [
             i.split(".")[0]
             for i in os.listdir(os.path.join("bot", "tasks"))
@@ -195,13 +196,34 @@ def main() -> None:
             task = [getattr(imp, i) for i in dir(imp) if i.endswith("Loop")][0]
 
             tasks_manager.register(task)
-            logger.custom(str(idx), f"{event.name} ")
 
+    bot.register_all = register_all
+
+    @bot.event
+    async def on_ready():
+        """When the bot is connected."""
+
+        await db.initialise()
+
+        if bot.user is None:
+            raise RuntimeError("Bot user is None")
+
+        logger.log("Bot is ready!")
+        logger.log(f"Logged in as {bot.user}")
+
+        logger.newline()
+        logger.log("Username:", f"{bot.user.name}#{bot.user.discriminator}")
+        logger.log("ID:", f"{bot.user.id}")
+        logger.log("Guilds:", f"{len(bot.guilds)}")
+        logger.log("Prefix:", config.prefix)
         logger.newline()
 
         activity = discord.Activity(
             type=discord.ActivityType.watching, name=f"Virbox videos"
         )
+
+        await bot.register_all()
+
         await bot.change_presence(activity=activity)
         bot.current_activity = activity
         bot.current_status = discord.Status.online
@@ -214,17 +236,17 @@ def main() -> None:
             or not message.content.startswith(config.prefix)
             or not bot.is_ready()
         ):
-            await event_manager.event_map()["on_message"].execute(message)
+            await bot.event_manager.event_map()["on_message"].execute(message)
             return
 
         command, arguments = parse_user_input(message.content[len(config.prefix) :])
 
         # Check for category
-        prefixes: List[str] = [i.prefix for i in manager.categories]
+        prefixes: List[str] = [i.prefix for i in bot.manager.categories]
         if command in prefixes:
             try:
                 cmdobj = {
-                    i.prefix: i for i in manager.categories if i.prefix is not None
+                    i.prefix: i for i in bot.manager.categories if i.prefix is not None
                 }[command].commands_map()[arguments[0]]
             except KeyError:
                 await logger.send_error(
@@ -242,12 +264,12 @@ def main() -> None:
             arguments = arguments[1:]
         else:
             try:
-                cmdobj = manager[command]
+                cmdobj = bot.manager[command]
             except KeyError:
                 try:
                     cmdobj = [
                         [c for c in i.commands if c.name == command]
-                        for i in manager.categories
+                        for i in bot.manager.categories
                         if i.prefix is None
                     ]
                     cmdobj = [i for i in cmdobj if len(i) != 0][0][0]
