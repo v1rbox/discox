@@ -7,7 +7,7 @@ class cmd(Command):
 
     name = "leaderboard"
     usage = "leaderboard"
-    description = "Check the top 5 chatters."
+    description = "Check the top 15 chatters."
 
     async def execute(self, arguments, message) -> None:
         result = await self.db.raw_exec_select(
