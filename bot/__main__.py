@@ -249,7 +249,7 @@ def main() -> None:
             user, timestamp, remindMsg, channel, message = reminder
             channelObj = await bot.fetch_channel(channel)
             url = f"https://discord.com/channels/{channelObj.guild.id}/{channel}/{message}"
-		embed = Embed(title=parse.unquote(remindMsg), description=f"""This is your reminder.
+	    embed = Embed(title=parse.unquote(remindMsg), description=f"""This is your reminder.
 If you want to know the context, [here]({url}) is the link.""")
 	    if (timestamp > int(time())):
 		embed = Embed(title=parse.unquote(remindMsg), description=f"""This was your reminder from (<t:{timestamp}:R>) Sorry for being late.
