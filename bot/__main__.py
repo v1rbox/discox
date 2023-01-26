@@ -17,10 +17,6 @@ from .manager import (CommandsManager, EventsManager, PoolingManager,
                       TasksManager)
 from .sql import SQLParser
 
-import urllib.parse as parse
-from asyncio import sleep
-from time import time
-
 logger = Logger()
 config = Config()
 
