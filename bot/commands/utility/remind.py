@@ -1,7 +1,7 @@
 import time
 from asyncio import sleep
 from re import match
-
+import urllib.parse as parse
 from bot.base import Command
 from bot.config import Config, Embed
 
@@ -31,6 +31,14 @@ class cmd(Command):
         )
         msg = await message.reply(embed=embed)
         url = msg.jump_url
+        
+        db = self.db
+        cursor = await db.cursor()
+        await cursor.execute(
+          """INSERT INTO reminders(User, Timestamp, Reminder, Channel, Message) VALUES(?, ?, ?, ?, ?)""", (message.author.id, timestamp, parse.quote(arguments[1]), message.channel.id, msg.id)
+        )
+        await db.commit()
+        
         await sleep(reminderTime)
         embed = Embed(
             title=arguments[1],
@@ -38,3 +46,7 @@ class cmd(Command):
         If you want to know the context, [here]({url}) is the link.""",
         )
         await message.channel.send(f"<@{message.author.id}>", embed=embed)
+
+        await cursor.execute("DELETE FROM reminders WHERE User = ? AND Timestamp = ?", (message.author.id, timestamp))
+        await db.commit()
+        await cursor.close()
