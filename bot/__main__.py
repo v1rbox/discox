@@ -245,7 +245,7 @@ def main() -> None:
         cursor = await db.cursor()
        	await cursor.execute("SELECT * FROM reminders ORDER BY Timestamp ASC")
         reminders = await cursor.fetchall()
-	for reminder in reminders:
+        for reminder in reminders:
 	    user, timestamp, remindMsg, channel, message = reminder
             channelObj = await bot.fetch_channel(channel)
             url = f"https://discord.com/channels/{channelObj.guild.id}/{channel}/{message}"
