@@ -254,7 +254,7 @@ def main() -> None:
         prefixes: List[str] = [i.prefix for i in bot.manager.categories]
         if command in prefixes:
             try:
-            	cmdobj = {
+                cmdobj = {
                     i.prefix: i for i in bot.manager.categories if i.prefix is not None
                 }[command].commands_map()[arguments[0]]
             except KeyError:

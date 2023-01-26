@@ -1,7 +1,8 @@
 import time
+import urllib.parse as parse
 from asyncio import sleep
 from re import match
-import urllib.parse as parse
+
 from bot.base import Command
 from bot.config import Config, Embed
 
@@ -31,11 +32,18 @@ class cmd(Command):
         )
         msg = await message.reply(embed=embed)
         url = msg.jump_url
-        
+
         db = self.db
         cursor = await db.cursor()
         await cursor.execute(
-          """INSERT INTO reminders(User, Timestamp, Reminder, Channel, Message) VALUES(?, ?, ?, ?, ?)""", (message.author.id, timestamp, parse.quote(arguments[1]), message.channel.id, msg.id)
+            """INSERT INTO reminders(User, Timestamp, Reminder, Channel, Message) VALUES(?, ?, ?, ?, ?)""",
+            (
+                message.author.id,
+                timestamp,
+                parse.quote(arguments[1]),
+                message.channel.id,
+                msg.id,
+            ),
         )
         await db.commit()
         await cursor.close()
