@@ -1,7 +1,7 @@
 import time
 from asyncio import sleep
 from re import match
-
+import urllib.parse as parse
 from bot.base import Command
 from bot.config import Config, Embed
 
@@ -31,10 +31,11 @@ class cmd(Command):
         )
         msg = await message.reply(embed=embed)
         url = msg.jump_url
-        await sleep(reminderTime)
-        embed = Embed(
-            title=arguments[1],
-            description=f"""This is your reminder.
-        If you want to know the context, [here]({url}) is the link.""",
+        
+        db = self.db
+        cursor = await db.cursor()
+        await cursor.execute(
+          """INSERT INTO reminders(User, Timestamp, Reminder, Channel, Message) VALUES(?, ?, ?, ?, ?)""", (message.author.id, timestamp, parse.quote(arguments[1]), message.channel.id, msg.id)
         )
-        await message.channel.send(f"<@{message.author.id}>", embed=embed)
+        await db.commit()
+        await cursor.close()
