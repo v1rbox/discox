@@ -3,8 +3,6 @@ name: Code formatting
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 permissions: write-all
 
