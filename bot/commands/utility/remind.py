@@ -38,15 +38,4 @@ class cmd(Command):
           """INSERT INTO reminders(User, Timestamp, Reminder, Channel, Message) VALUES(?, ?, ?, ?, ?)""", (message.author.id, timestamp, parse.quote(arguments[1]), message.channel.id, msg.id)
         )
         await db.commit()
-        
-        await sleep(reminderTime)
-        embed = Embed(
-            title=arguments[1],
-            description=f"""This is your reminder.
-        If you want to know the context, [here]({url}) is the link.""",
-        )
-        await message.channel.send(f"<@{message.author.id}>", embed=embed)
-
-        await cursor.execute("DELETE FROM reminders WHERE User = ? AND Timestamp = ?", (message.author.id, timestamp))
-        await db.commit()
         await cursor.close()
