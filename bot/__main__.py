@@ -247,9 +247,6 @@ def main() -> None:
         reminders = await cursor.fetchall()
         for reminder in reminders:
             user, timestamp, remindMsg, channel, message = reminder
-            
-	    if (timestamp > int(time())):
-	    	await sleep(timestamp - int(time())
             channelObj = await bot.fetch_channel(channel)
             url = f"https://discord.com/channels/{channelObj.guild.id}/{channel}/{message}"
 	    embed = Embed(title=parse.unquote(remindMsg), description=f"""This is your reminder.
