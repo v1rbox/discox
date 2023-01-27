@@ -118,14 +118,14 @@ class cmd(Command):
                 await reaction.remove(message.author)
 
         else:
-            if len(arguments.split(" ")) == 1:
+            if len(arguments) == 1:
                 cat = ""
                 try:
                     cmd = self.manager.get(arguments[0])
                 except KeyError:
                     raise KeyError(f"Command {arguments[0]} not found.")
             else:
-                cat, command = arguments.split(" ")
+                cat, command = tuple(arguments)
                 cmd = {
                     i.prefix: i for i in self.manager.categories if i.prefix is not None
                 }[cat].commands_map()[command]
