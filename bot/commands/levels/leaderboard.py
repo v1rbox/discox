@@ -7,7 +7,7 @@ class cmd(Command):
 
     name = "leaderboard"
     usage = "leaderboard"
-    description = "Check the top 5 chatters."
+    description = "Check the top 15 chatters."
 
     async def execute(self, arguments, message) -> None:
         result = await self.db.raw_exec_select(
@@ -23,6 +23,9 @@ class cmd(Command):
                 continue
 
             user = self.bot.get_user(int(result[0]))
+            if user == None:
+                continue
+
             lvl = result[2]
             desc += f"**{str(user)}** *(level {lvl})*\n"
             v += 1

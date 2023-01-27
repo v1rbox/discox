@@ -1,5 +1,5 @@
-# /bot/commands/ping.py
 import time
+import urllib.parse as parse
 from asyncio import sleep
 from re import match
 
@@ -28,14 +28,22 @@ class cmd(Command):
 
         embed = Embed(
             title="New Reminder",
-            description=f"Reminder set to <t:{timestamp}:f>, wich is in <t:{timestamp}:R>.",
+            description=f"Reminder set to <t:{timestamp}:f>, which is in <t:{timestamp}:R>.",
         )
         msg = await message.reply(embed=embed)
         url = msg.jump_url
-        await sleep(reminderTime)
-        embed = Embed(
-            title=arguments[1],
-            description=f"""This is your reminder.
-        If you wan't to know the context, [here]({url}) is the link.""",
+
+        db = self.db
+        cursor = await db.cursor()
+        await cursor.execute(
+            """INSERT INTO reminders(User, Timestamp, Reminder, Channel, Message) VALUES(?, ?, ?, ?, ?)""",
+            (
+                message.author.id,
+                timestamp,
+                parse.quote(arguments[1]),
+                message.channel.id,
+                msg.id,
+            ),
         )
-        await message.channel.send(f"<@{message.author.id}>", embed=embed)
+        await db.commit()
+        await cursor.close()
