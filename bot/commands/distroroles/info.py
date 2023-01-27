@@ -31,6 +31,6 @@ class cmd(Command):
     embed.add_field("OS type", result["os_type"], inline=True)
     embed.add_field("Development status", result["status"], inline=True)
     embed.add_field("Graphical environments", ", ".join(result["desktop_environments"]), inline=False)
-    embed.add_field("Downloads", result["download_mirrors"], inline=False)
+    embed.add_field("Downloads", "\n".join(result["download_mirrors"]), inline=False)
     embed.set_color("green")
     message.channel.send(embed=embed)
