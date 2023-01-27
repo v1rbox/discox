@@ -7,7 +7,7 @@ class cmd(Command):
     """A discord command instance."""
     
     name = "info"
-    usage = "info <distibution>"
+    usage = "info <distribution>"
     description = "Shows information about the user entered distro"
     
     result = requests.get(f'https://diwa.demo-web-fahmi.my.id/api/v2/distributions/{arguments[0]}').json()
