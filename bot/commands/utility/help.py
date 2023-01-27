@@ -118,7 +118,7 @@ class cmd(Command):
                 await reaction.remove(message.author)
 
         else:
-            if len(arguments[0].split(" ")) == 1:
+            if len(arguments.split(" ")) == 1:
                 cat = ""
                 try:
                     cmd = self.manager.get(arguments[0])
