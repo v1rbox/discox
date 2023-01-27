@@ -18,7 +18,7 @@ class TaskLoop(Task):
         )
         for reminder in reminders:
             user, timestamp, remindMsg, channel, message = reminder
-            if timestamp > int(time()):
+            if timestamp < int(time()):
                 channelObj = await self.bot.fetch_channel(channel)
                 url = f"https://discord.com/channels/{channelObj.guild.id}/{channel}/{message}"
                 embed = Embed(

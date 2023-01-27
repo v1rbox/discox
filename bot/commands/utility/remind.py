@@ -33,9 +33,7 @@ class cmd(Command):
         msg = await message.reply(embed=embed)
         url = msg.jump_url
 
-        db = self.db
-        cursor = await db.cursor()
-        await cursor.execute(
+        await self.db.raw_exec_commit(
             """INSERT INTO reminders(User, Timestamp, Reminder, Channel, Message) VALUES(?, ?, ?, ?, ?)""",
             (
                 message.author.id,
@@ -45,5 +43,3 @@ class cmd(Command):
                 msg.id,
             ),
         )
-        await db.commit()
-        await cursor.close()
