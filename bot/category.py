@@ -96,6 +96,16 @@ class ModCategory(Category):
     def check_permissions(self, message: discord.Message) -> bool:
         # Checking for everyone who are a mod in the server. Usually the server has more mod roles than just one
         return any([i.id in config.mod_role_id for i in message.author.roles])
+    
+class RemindCategory(Category):
+    """A command category instance."""
+
+    name = "reminders"
+    prefix = "remind"
+    commands: List[Command] = []
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
 
 
 class RequestCategory(Category):
