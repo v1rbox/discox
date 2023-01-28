@@ -3,6 +3,7 @@ from bot.config import Embed
 import requests
 from colorthief import ColorThief
 from discord import Colour
+import os
 
 
 class cmd(Command):
@@ -38,6 +39,7 @@ class cmd(Command):
                 open('distro.png', 'wb').write(b.content)
                 color_thief = ColorThief('distro.png')
                 dominant_color = color_thief.get_color(quality=1)
+                os.remove("distro.png")
         except:
             pass
 
