@@ -4,7 +4,7 @@ import requests
 from colorthief import ColorThief
 from discord import Colour
 import os
-
+from re import sub, search
 
 class cmd(Command):
     """A discord command instance."""
@@ -33,6 +33,14 @@ class cmd(Command):
                 link = entry["url"]
                 if "https://distrowatch.com/index.php?distribution=" in link:
                     distro_codename = link.replace("https://distrowatch.com/index.php?distribution=", "")
+            if not distro_codename:
+                for link in result["screenshots"]:
+                    if "http://distrowatch.com/gallery.php?distribution=" in link:
+                        distro_codename = link.replace("http://distrowatch.com/gallery.php?distribution=", "")
+            if not distro_codename:
+                for link in result["reviews"]:
+                    if search("https\:\/\/distrowatch\.com\/weekly\.php\?issue\=.*\#", link):
+                        distro_codename = sub("https\:\/\/distrowatch\.com\/weekly\.php\?issue\=.*\#", "", link)
 
             if distro_codename:
                 b = requests.get(f'https://distrowatch.com/images/yvzhuwbpy/{distro_codename}.png', allow_redirects=True)
