@@ -16,10 +16,10 @@ class cmd(Command):
         if result["message"] != "success":
             embed = Embed(
                 title="Distro",
-                description=f'**Invalid distro**\n\nThe distro named `{args[0]}` not found.\n*Note: Please don\'t type the distro name seperately.\n*Example: `endeavouros`'
+                description=f'**Invalid distro**\n\nThe distro named `{arguments[0]}` not found.\n*Note: Please don\'t type the distro name seperately.\n*Example: `endeavouros`'
             )
             embed.set_color("red")
-            message.channel.send(embed=embed)
+            await message.channel.send(embed=embed)
             return
     
         embed = Embed(
