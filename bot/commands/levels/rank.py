@@ -45,7 +45,7 @@ class cmd(Command):
             if user == None:
                 embed = Embed(
                     title="User not found",
-                    description=f'The user named `{arguments[0]}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*'
+                    description=f"The user named `{arguments[0]}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
                 )
                 embed.set_color("red")
                 await message.channel.send(embed=embed)
