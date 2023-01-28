@@ -34,6 +34,18 @@ class cmd(Command):
         url = msg.jump_url
 
         if reminderTime < 60:
+
+            await self.db.raw_exec_commit(
+                """INSERT INTO reminders(User, Timestamp, Reminder, Channel, Message) VALUES(?, ?, ?, ?, ?)""",
+                (
+                    message.author.id,
+                    timestamp,
+                    parse.quote(arguments[1]),
+                    Config.temp_channel,
+                    msg.id,
+                ),
+            )
+
             await sleep(reminderTime)
             embed = Embed(
                 title=parse.unquote(arguments[1]),
