@@ -29,12 +29,14 @@ class cmd(Command):
 
         HOW IT WORKS:
         The tuple will look like this:
-            (<number_id>, <author_information>, <title>, <description>)
+            (<number_id>, <author_information>, <title>, <description>, <upvote>, <downvote>, <pending_close>)
         For example:
-            (1, "<Member id=917681283595919391 name='imindMan' discriminator='8536' bot=False nick=None guild=<Guild id=1032277950416035930 name='imindworld' shard_id=0 chunked=True member_count=36>>", 'Hello', 'Hello guys')
+            (1, "<Member id=917681283595919391 name='imindMan' discriminator='8536' bot=False nick=None guild=<Guild id=1032277950416035930 name='imindworld' shard_id=0 chunked=True member_count=36>>", 'Hello', 'Hello guys', 0, 0, 0)
         The bot will then use this tuple, reformat it to a string, then return it
         THe final result will look like this (based on the example):
             1. 'Hello' by imindMan#8536
+               Vote count: U:0 - D:0 - G:0
+               Pending close: 0
         """
         # implement number_id
         number_id = row[0]
@@ -48,7 +50,14 @@ class cmd(Command):
         # implement title
         title = row[2]
 
-        final = f"{number_id}. '{title}' by {member_id}"
+        # implement upvote
+        upvote = row[4]
+        # downvote
+        downvote = row[5]
+
+        # Pending_close
+        pending_close = row[6]
+        final = f"{number_id}. '{title}' by {member_id}\nVote count: U:{upvote} - D:{downvote} - G:{int(upvote) - int(downvote)}\nPending close: {pending_close}"
         return final
 
     async def execute(self, arguments, message) -> None:
@@ -57,11 +66,15 @@ class cmd(Command):
         MAIN EXECUTION:
             After the user type in the command, the bot will check if the arguments[0] (the first argument) is 0 or another number. If it's 0, then the bot will select the request table in the database and show all of them in a specific format that looks like this:
                 List of all the requests:
-                    <number_id>. <title> by <member_id>
+                <number_id>. <title> by <member_id>.
+                    Vote count: U:<upvote> - D:<downvote> - G:<upvote> - <downvote>
+                    Pending close: <pending_close>
                     ...
             If it's another number, then the bot will select that row with that number_id. If the row doesn't exist, it throws error. Otherwise, it will show up like this:
                 Show the information of the row with the given number_id: <number_id>
-                    <number_id>. <title> by <member_id>
+                    <number_id>. <title> by <member_id>.
+                        Vote count: U:<upvote> - D:<downvote>
+                        Pending close: <pending_close>
                     Description:
                         <description>
         """
@@ -71,8 +84,7 @@ class cmd(Command):
             # Select from the database
             rows = await self.db.raw_exec_select("SELECT * FROM request")
             if len(rows) == 0:
-                # Throw error if the bot doesn't find anything in the database (based on the number_id check, easily get bugs if you don't handle it properly)
-                # Check if the request database is empty using the number_id check instead of just fetchall() and check the len() will prevent the 'wrong number_id request', which means the number_id in the request database will always be in order, easier to check and deal with the database
+                # Throw error if the bot doesn't find anything in the database
                 embed = Embed(title="Couldn't find anything in the database")
                 embed.set_color("red")
                 await message.channel.send(embed=embed)
