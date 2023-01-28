@@ -1,3 +1,5 @@
+import requests
+
 from bot.base import Command
 from bot.config import Embed
 import requests
@@ -6,9 +8,10 @@ from discord import Colour
 import os
 from re import sub, search
 
+
 class cmd(Command):
     """A discord command instance."""
-    
+
     name = "info"
     usage = "info <distribution>"
     description = "Shows information about the user entered distro"
