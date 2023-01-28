@@ -33,7 +33,7 @@ class cmd(Command):
         msg = await message.reply(embed=embed)
         url = msg.jump_url
         
-        if reminderTime < 60000:
+        if reminderTime < 60:
             await sleep(reminderTime)
             embed = Embed(
                 title=parse.unquote(arguments[1]),
