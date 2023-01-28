@@ -13,7 +13,10 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         reminders = await self.db.raw_exec_select(
-            f"SELECT Timestamp, Reminder FROM reminders WHERE User = {message.author.id}"
+            "SELECT Timestamp, Reminder FROM reminders WHERE User = ?",
+            (
+                message.author.id,
+            )
         )
         embed = Embed(
             title=f"Reminders of {message.author.name}#{message.author.discriminator}"
