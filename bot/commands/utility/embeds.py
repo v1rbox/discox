@@ -5,7 +5,7 @@ from bot.config import Config, Embed
 class cmd(Command):
     """A discord command instance."""
 
-    name = "emebds"
+    name = "embeds"
     usage = "embeds"
     description = "View all embed colors."
 
