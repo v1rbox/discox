@@ -19,8 +19,6 @@ class cmd(Command):
             user = message.author
 
         url = user.display_avatar.url
-        embed = Embed(
-            title=f"Avatar of {str(user)}"
-        )
+        embed = Embed(title=f"Avatar of {str(user)}")
         embed.set_image(url=url)
         await message.reply(embed=embed)
