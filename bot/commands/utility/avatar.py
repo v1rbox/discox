@@ -1,4 +1,5 @@
-from re import findall
+from re import sub
+from discord import NotFound
 
 from bot.base import Command
 from bot.config import Config, Embed
@@ -13,8 +14,23 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         if len(arguments):
-            userId = int("".join(findall("\d", arguments[0])))
-            user = await message.guild.fetch_member(userId)
+            userId = sub("\D", "", arguments[0])
+            if not userId:
+                embed = Embed(
+                    title="Error",
+                    description=f"'{arguments[0]}' is not a valid user"
+                )
+                embed.set_color("red")
+                return await message.reply(embed=embed)
+            try:
+                user = await message.guild.fetch_member(userId)
+            except NotFound:
+                embed = Embed(
+                    title="Error",
+                    description=f"The user '{userId}' doesn't exist or is not in this server"
+                )
+                embed.set_color("red")
+                return await message.reply(embed=embed)
         else:
             user = message.author
 
