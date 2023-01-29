@@ -14,8 +14,8 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         if len(arguments):
-            userId = re.sub("\D", "", arguments[0])
-            if not re.search("^(<@\d+>|\d+)$", arguments[0]):
+            userId = int("0" + re.sub("\D", "", arguments[0]))
+            if not re.search("^(<@\d+>|\d+)$", arguments[0]) or userId > 9223372036854775807:
                 embed = Embed(
                     title="Error",
                     description=f"'{arguments[0]}' is not a valid user id"
@@ -23,7 +23,7 @@ class cmd(Command):
                 embed.set_color("red")
                 return await message.reply(embed=embed)
             try:
-                user = await message.guild.fetch_member(int(userId))
+                user = await message.guild.fetch_member(userId)
             except NotFound:
                 embed = Embed(
                     title="Error",
