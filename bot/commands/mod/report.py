@@ -71,9 +71,9 @@ class cmd(Command):
             )
             await msg.send("Report has been posted")
         else:
-            await msg.send("Report Canseled")
+            await msg.send("Report Canceled")
             # Remove timeout
             await member.timeout(
                 datetime.timedelta(seconds=3),
-                reason=f"Report Canseled - {message.author}",
+                reason=f"Report Canceled - {message.author}",
             )
