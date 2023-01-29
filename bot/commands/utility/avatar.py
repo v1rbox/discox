@@ -1,4 +1,4 @@
-from re import sub
+import re
 from discord import NotFound
 
 from bot.base import Command
@@ -14,16 +14,16 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         if len(arguments):
-            userId = sub("\D", "", arguments[0])
-            if not userId:
+            userId = re.sub("\D", "", arguments[0])
+            if not re.search("^(<@\d+>|\d+)$", arguments[0]):
                 embed = Embed(
                     title="Error",
-                    description=f"'{arguments[0]}' is not a valid user"
+                    description=f"'{arguments[0]}' is not a valid user id"
                 )
                 embed.set_color("red")
                 return await message.reply(embed=embed)
             try:
-                user = await message.guild.fetch_member(userId)
+                user = await message.guild.fetch_member(int(userId))
             except NotFound:
                 embed = Embed(
                     title="Error",
