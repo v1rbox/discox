@@ -25,4 +25,5 @@ class event(Event):
         avatar = member.display_avatar.url
         embed.set_thumbnail(url=avatar)
         channel = await member.guild.fetch_channel(Config.join_message_channel)
-        await channel.send(embed=embed)
+        joinMessage = await channel.send(embed=embed)
+        await joinMessage.add_reaction("👋")
