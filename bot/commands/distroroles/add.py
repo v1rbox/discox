@@ -76,7 +76,7 @@ class cmd(Command):
     ]
 
     name = "add"
-    usage = "add <distibution>"
+    usage = "add <distribution>"
     description = f"Assigns user a role based on selected distro, max of {max_distro} distro roles per user."
 
     ### Gets Role Object with from a given name ###

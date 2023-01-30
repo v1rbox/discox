@@ -68,7 +68,7 @@ class cmd(Command):
 
             embed = Embed(
                 title=problem_title,
-                description=f"Problem ID : {problem_id}\n\nProblem Details : {problem_url}\n\nProblem Status : {problem_status}\n\nProblem Diffculty : {problem_difficulty}",
+                description=f"Problem ID: {problem_id}\n\nProblem Details: {problem_url}\n\nProblem Status: {problem_status}\n\nProblem Difficulty : {problem_difficulty}",
             )
 
             await message.channel.send(embed=embed)

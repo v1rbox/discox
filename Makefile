@@ -8,6 +8,12 @@ else
 	PYTHON = $(addsuffix /bin/python,$(POETRY_PYTHON_PATH))
 endif
 
+ifeq (add,$(firstword $(MAKECMDGOALS)))
+  # use the rest as arguments for "run"
+  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  # ...and turn them into do-nothing targets
+  $(eval $(RUN_ARGS):;@:)
+endif
 
 init:
 	poetry install
@@ -21,3 +27,8 @@ install-beautifier:
 beautify:
 	black .
 	isort .
+
+add:
+	@echo "Adding new module..."
+	poetry add $(RUN_ARGS)
+	poetry export -f requirements.txt --output requirements.txt --without-hashes

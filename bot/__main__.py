@@ -39,6 +39,15 @@ CREATE_STATEMENTS = [
 	    PRIMARY KEY("Number_id" AUTOINCREMENT)
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS "reminders" (
+    	    "User" INT,
+    	    "Timestamp" INT PRIMARY KEY,
+    	    "Reminder" TEXT,
+    	    "Channel" INT,
+    	    "Message" INT
+    )
+    """,
 ]
 
 

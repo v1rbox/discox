@@ -7,7 +7,7 @@ class cmd(Command):
     """A discord command instance."""
 
     name = "remove"
-    usage = "remove <distibution>"
+    usage = "remove <distribution>"
     description = f"Removes a distro role from user"
 
     async def execute(self, arguments, message) -> None:

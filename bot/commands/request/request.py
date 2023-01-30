@@ -61,8 +61,8 @@ class cmd(Command):
 
         # MAIN EXECUTION: after getting all the information, the bot will add all of the information to the database
         await self.db.raw_exec_commit(
-            "INSERT INTO request(Member_id, Title, Description) VALUES(?, ?, ?)",
-            (member_id, title.content, description.content),
+            "INSERT INTO request(Member_id, Title, Description, Upvote, Downvote, Pending_close) VALUES(?, ?, ?, ?, ?, ?)",
+            (member_id, title.content, description.content, 0, 0, 0),
         )
         # Notify the user that the bot has added the request to the database.
         embed = Embed(title="A request has been added!")
