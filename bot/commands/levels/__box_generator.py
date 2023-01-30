@@ -19,6 +19,6 @@ def generate_color_square(color: tuple[int, int, int]) -> Image:
     draw = ImageDraw.Draw(color_square)
     draw.rectangle((0, 0, 100, 100), fill=color)
     bytes = BytesIO()
-    draw.save(bytes, "png")
+    color_square.save(bytes, "png")
     bytes.seek(0)
     return discord.File(bytes, filename="color_square.png")

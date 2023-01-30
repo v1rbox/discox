@@ -23,7 +23,7 @@ class cmd(Command):
     ) -> tuple[int, int, int] | tuple[255, 255, 255]:
         result = await self.db.raw_exec_select("SELECT font_color FROM levels WHERE user_id = ?", (user,))
         try:
-            return (result[0][0], result[0][1], result[0][2])
+            return tuple(int(i) for i in result[0][0].split(" "))
         except (IndexError, TypeError):
             return (255, 255, 255)
 
@@ -76,11 +76,11 @@ class cmd(Command):
                 font_color=await self.get_font_color(user.id),
             )
 
-            embed = Embed()
-            embed.set_author(
-                name=f"{user.display_name}'s ranking information",
-                icon_url=user.avatar.url,
-            )
-            embed.add_field(name="**Level**", value=f"**```css\n{result[1]}```**")
-            embed.add_field(name="**Exp**", value=f"**```css\n{result[0]}```**")
-            await message.channel.send(embed=embed, file=pic)
+        embed = Embed()
+        embed.set_author(
+            name=f"{user.display_name}'s ranking information",
+            icon_url=user.avatar.url,
+        )
+        embed.add_field(name="**Level**", value=f"**```css\n{result[1]}```**")
+        embed.add_field(name="**Exp**", value=f"**```css\n{result[0]}```**")
+        await message.channel.send(embed=embed, file=pic)

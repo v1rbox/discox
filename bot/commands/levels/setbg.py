@@ -2,7 +2,7 @@ import discord
 
 from bot.base import Command
 
-from .__uis import OptionView
+from .__uis import Confirm
 
 
 class cmd(Command):
@@ -19,16 +19,14 @@ class cmd(Command):
         if arguments[0] == "":
             await message.channel.send("Please provide a url.")
             return
-        view = OptionView()
+        view = Confirm()
         await message.channel.send(
             "Are you sure you want to set this background?", view=view
         )
-        answer = await view.get_answer()
+        await view.wait()
+        answer = view.value
         if answer:
-            cursor = await self.db.cursor()
-            await cursor.execute(
-                f"UPDATE levels SET bg = '{arguments[0]}' WHERE user_id = '{message.author.id}'"
-            )
+            await self.db.raw_exec_commit("UPDATE levels SET bg = ? WHERE user_id = ?", (arguments[0], message.author.id))
             await message.channel.send("Successfully set background.")
         else:
             await message.channel.send("Cancelled.")
