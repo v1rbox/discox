@@ -1,6 +1,6 @@
 from bot.base import Command
-from utils.__box_generator import generate_color_square
-from utils.__uis import OptionView
+from .__box_generator import generate_color_square
+from .__uis import OptionView
 class cmd(Command):
     name = "setfontcolor"
     usage = "setfontcolor <r> <g> <b>"

@@ -15,15 +15,15 @@ from PIL import Image, ImageDraw, ImageFont
 
 class Generator:
     def __init__(self):
-        self.default_bg = os.path.join(os.path.dirname(__file__), "assets", "card.png")
-        self.online = os.path.join(os.path.dirname(__file__), "assets", "online.png")
-        self.offline = os.path.join(os.path.dirname(__file__), "assets", "offline.png")
-        self.idle = os.path.join(os.path.dirname(__file__), "assets", "idle.png")
-        self.dnd = os.path.join(os.path.dirname(__file__), "assets", "dnd.png")
+        self.default_bg = os.path.join(os.path.dirname(__file__), "__assets", "card.png")
+        self.online = os.path.join(os.path.dirname(__file__), "__assets", "online.png")
+        self.offline = os.path.join(os.path.dirname(__file__), "__assets", "offline.png")
+        self.idle = os.path.join(os.path.dirname(__file__), "__assets", "idle.png")
+        self.dnd = os.path.join(os.path.dirname(__file__), "__assets", "dnd.png")
         self.streaming = os.path.join(
-            os.path.dirname(__file__), "assets", "streaming.png"
+            os.path.dirname(__file__), "__assets", "streaming.png"
         )
-        self.font1 = os.path.join(os.path.dirname(__file__), "assets", "font.ttf")
+        self.font1 = os.path.join(os.path.dirname(__file__), "__assets", "font.ttf")
 
     async def generate_profile(
         self,

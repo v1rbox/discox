@@ -2,7 +2,7 @@ import discord
 
 from bot.base import Command
 
-from .utils.__uis import OptionView
+from .__uis import OptionView
 
 
 class cmd(Command):

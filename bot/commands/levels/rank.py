@@ -1,7 +1,7 @@
 from bot.base import Command
 from bot.config import Config, Embed
 
-from .utils.__level_generator import generate_profile
+from .__level_generator import generate_profile
 
 
 class cmd(Command):
