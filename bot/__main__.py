@@ -21,7 +21,7 @@ CREATE_STATEMENTS = [
 	        "level"	INTEGER,
 	        "exp"	INTEGER,
             "font_color"	TEXT,
-            "bg"	TEXT,
+            "bg"	TEXT DEFAULT NULL,
 	        PRIMARY KEY("user_id")
         )
     """,

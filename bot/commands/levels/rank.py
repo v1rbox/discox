@@ -14,7 +14,7 @@ class cmd(Command):
     async def get_bg(self, user: int) -> str | None:
         result = await self.db.raw_exec_select("SELECT bg FROM levels WHERE user_id = ?", (user,))
         try:
-            return result[0]
+            return result[0][0] if result[0][0] else None
         except (IndexError, TypeError):
             return None
 
@@ -64,7 +64,6 @@ class cmd(Command):
                     break
                 rank = i + 1
             bg_image = await self.get_bg(user.id)
-
             pic = await generate_profile(
                 bg_image=bg_image if bg_image else None,
                 profile_image=user.avatar.url,
