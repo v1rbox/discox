@@ -4,13 +4,7 @@ import threading
 import traceback
 from typing import List, Tuple
 
-import aiosqlite
 import discord
-from discord.ext import tasks
-from rich.console import Console
-from rich.table import Table
-
-from .base import Command
 from .config import Config, Embed
 from .logger import Logger
 from .manager import (CommandsManager, EventsManager, PoolingManager,
@@ -26,6 +20,8 @@ CREATE_STATEMENTS = [
 	        "user_id"	TEXT UNIQUE,
 	        "level"	INTEGER,
 	        "exp"	INTEGER,
+            "font_color"	TEXT,
+            "bg"	TEXT DEFAULT NULL,
 	        PRIMARY KEY("user_id")
         )
     """,
