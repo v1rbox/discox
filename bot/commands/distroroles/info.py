@@ -1,6 +1,6 @@
+import io
 import os
 from re import search, sub
-import io
 
 import aiohttp
 from colorthief import ColorThief

@@ -5,6 +5,7 @@ import traceback
 from typing import List, Tuple
 
 import discord
+
 from .config import Config, Embed
 from .logger import Logger
 from .manager import (CommandsManager, EventsManager, PoolingManager,

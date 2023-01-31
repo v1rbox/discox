@@ -1,6 +1,7 @@
 import discord
 from discord.ui import Button, View
 
+
 class Confirm(discord.ui.View):
     def __init__(self):
         super().__init__()

@@ -6,11 +6,11 @@ from .__uis import Confirm
 
 
 class cmd(Command):
-    
+
     """
     Set your own background for your rank card.
     """
-    
+
     name = "setbg"
     usage = "setbg [*url]"
     description = "Set your own background for your rank card. URL must be a direct link to an image."
@@ -26,7 +26,10 @@ class cmd(Command):
         await view.wait()
         answer = view.value
         if answer:
-            await self.db.raw_exec_commit("UPDATE levels SET bg = ? WHERE user_id = ?", (arguments[0], message.author.id))
+            await self.db.raw_exec_commit(
+                "UPDATE levels SET bg = ? WHERE user_id = ?",
+                (arguments[0], message.author.id),
+            )
             await message.channel.send("Successfully set background.")
         else:
             await message.channel.send("Cancelled.")

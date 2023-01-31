@@ -25,5 +25,8 @@ class cmd(Command):
             else:
                 break
 
-        await self.db.raw_exec_commit("UPDATE levels SET level = ?, exp = ? WHERE user_id = ?", (lvl, exp, int(arguments[0])))
+        await self.db.raw_exec_commit(
+            "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
+            (lvl, exp, int(arguments[0])),
+        )
         await message.channel.send(f"Updated rank to {lvl}.{exp}")

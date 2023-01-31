@@ -12,6 +12,7 @@ class cmd(Command):
     name = "leetcode"
     usage = "leetcode <command>"
     description = "Generates a random leetcode problem, use info to find total number of problem, use gen to generate a new problem"
+
     async def execute(self, arguments, message) -> None:
 
         leet_code_api_url = "https://leetcode.com/api/problems/all"

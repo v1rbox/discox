@@ -1,6 +1,9 @@
-from PIL import Image, ImageDraw
 from io import BytesIO
+
 import discord
+from PIL import Image, ImageDraw
+
+
 def generate_color_square(color: tuple[int, int, int]) -> Image:
     """
     Generate a color square based on the color provided.

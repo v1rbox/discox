@@ -13,7 +13,9 @@ class TaskLoop(Task):
     @tasks.loop(minutes=2.5)
     async def execute(self):
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://www.youtube.com/feeds/videos.xml?channel_id={Config.channel_id}") as resp:
+            async with session.get(
+                f"https://www.youtube.com/feeds/videos.xml?channel_id={Config.channel_id}"
+            ) as resp:
                 response = resp
 
         if response.status == 404:
@@ -54,8 +56,8 @@ class TaskLoop(Task):
                         "content-type": "application/json",
                     },
                     json={
-                         "content": f"New video :0\nhttps://www.youtube.com/watch?v={video_id}"   
-                    }
+                        "content": f"New video :0\nhttps://www.youtube.com/watch?v={video_id}"
+                    },
                 ) as resp:
                     pass
 

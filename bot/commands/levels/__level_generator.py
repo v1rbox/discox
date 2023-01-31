@@ -15,9 +15,13 @@ from PIL import Image, ImageDraw, ImageFont
 
 class Generator:
     def __init__(self):
-        self.default_bg = os.path.join(os.path.dirname(__file__), "__assets", "card.png")
+        self.default_bg = os.path.join(
+            os.path.dirname(__file__), "__assets", "card.png"
+        )
         self.online = os.path.join(os.path.dirname(__file__), "__assets", "online.png")
-        self.offline = os.path.join(os.path.dirname(__file__), "__assets", "offline.png")
+        self.offline = os.path.join(
+            os.path.dirname(__file__), "__assets", "offline.png"
+        )
         self.idle = os.path.join(os.path.dirname(__file__), "__assets", "idle.png")
         self.dnd = os.path.join(os.path.dirname(__file__), "__assets", "dnd.png")
         self.streaming = os.path.join(

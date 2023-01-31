@@ -12,7 +12,9 @@ class cmd(Command):
     description = "Check the rank for another user, by default this is the author."
 
     async def get_bg(self, user: int) -> str | None:
-        result = await self.db.raw_exec_select("SELECT bg FROM levels WHERE user_id = ?", (user,))
+        result = await self.db.raw_exec_select(
+            "SELECT bg FROM levels WHERE user_id = ?", (user,)
+        )
         try:
             return result[0][0] if result[0][0] else None
         except (IndexError, TypeError):
@@ -21,7 +23,9 @@ class cmd(Command):
     async def get_font_color(
         self, user: int
     ) -> tuple[int, int, int] | tuple[255, 255, 255]:
-        result = await self.db.raw_exec_select("SELECT font_color FROM levels WHERE user_id = ?", (user,))
+        result = await self.db.raw_exec_select(
+            "SELECT font_color FROM levels WHERE user_id = ?", (user,)
+        )
         try:
             return tuple(int(i) for i in result[0][0].split(" "))
         except (IndexError, TypeError):
