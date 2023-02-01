@@ -18,7 +18,6 @@ class cmd(Command):
     description = "Shows information about the user entered distro"
 
     async def execute(self, arguments, message) -> None:
-
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 f"https://diwa.demo-web-fahmi.my.id/api/v2/distributions/{arguments[0]}"

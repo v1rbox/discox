@@ -16,7 +16,6 @@ class cmd(Command):
     description = "Show the current status of the request database"
 
     def display_request(self, row: tuple) -> str:
-
         """
 
         INFO: this method is used to display the request in the request table.
