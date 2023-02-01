@@ -68,6 +68,7 @@ class Config:
     join_message_channel: str = os.getenv(
         "DISCOX_JOIN_MESSAGE_CHANNEL"
     )  # join message channel id
+    role_channel: int = int(os.getenv("DISCOX_ROLE_CHANNEL", "0"))  # role channel
     youtube_announcement_id: int = int(
         os.getenv("DISCOX_YOUTUBE_ANNOUNCEMENT_ID", 1056990617357521009)
     )  # youtube announcement id

@@ -36,7 +36,6 @@ class cmd(Command):
         )
 
         if not res:
-
             embed = Embed(title="Invalid record")
             embed.set_color("red")
             await message.channel.send(embed=embed)
@@ -60,7 +59,6 @@ class cmd(Command):
 
         # delete the request if the user reacts with a thumb up
         if str(reaction) == "👍":
-
             """
             HOW IT WORKS:
                 By default, the request number_id is an attribute with the AUTO_INCREMENT key.

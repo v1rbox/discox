@@ -5,7 +5,7 @@ from bot.config import Config, Embed
 
 
 class cmd(Command):
-    """A discord command instance."""
+    """Set rank to other user. Only <@936357105760370729> can use this command."""
 
     name = "setrank"
     usage = "setrank <user> [exp]"
@@ -26,12 +26,7 @@ class cmd(Command):
                 break
 
         await self.db.raw_exec_commit(
-            f"DELETE FROM levels WHERE user_id = ?", (arguments[0],)
+            "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
+            (lvl, exp, int(arguments[0])),
         )
-
-        await self.db.raw_exec_commit(
-            "INSERT INTO levels(exp, level, user_id) VALUES (?,?,?)",
-            (exp, lvl, arguments[0]),
-        )
-
         await message.channel.send(f"Updated rank to {lvl}.{exp}")

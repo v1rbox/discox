@@ -118,10 +118,8 @@ class cmd(Command):
         return (is_playing, None)
 
     async def execute(self, arguments, message) -> None:
-
         # Generates info
         if arguments[0] == "info":
-
             embed = Embed(
                 title="Tic Tac Toe",
                 description=f"To Play a Tic Tac Toe Game with the bot type `{Config.prefix}tic-tac-toe single-player`\n.To play against a friend type `{Config.prefix} multi-player`\n. To make a move react with the appropiate emoji",
@@ -130,7 +128,6 @@ class cmd(Command):
 
         # Single player
         elif arguments[0] == "single-player":
-
             # Variables that store various game data
             board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
             is_playing = True
@@ -149,7 +146,6 @@ class cmd(Command):
 
             # game loop
             while is_playing:
-
                 is_playing, winner = self.check_win(board, player)
                 if is_playing == False:
                     embed = Embed(
@@ -190,7 +186,6 @@ class cmd(Command):
                         pass
 
                 except asyncio.TimeoutError:
-
                     # If user fails to react within 60 seconds
                     is_playing = False
                     embed = Embed(
@@ -201,7 +196,6 @@ class cmd(Command):
 
         # Multi player
         elif arguments[0] == "multi-player":
-
             # Variables that store various game data
             board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
             is_playing = True
@@ -220,7 +214,6 @@ class cmd(Command):
 
             # game loop
             while is_playing:
-
                 is_playing, winner = self.check_win(board, player)
                 if is_playing == False:
                     embed = Embed(
@@ -262,7 +255,6 @@ class cmd(Command):
                         pass
 
                 except asyncio.TimeoutError:
-
                     # If user fails to react within 60 seconds
                     is_playing = False
                     embed = Embed(
