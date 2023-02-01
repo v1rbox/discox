@@ -7,7 +7,6 @@ from bot.config import Config, Embed
 
 
 class cmd(Command):
-
     name = "report"
     usage = "report <user_id>"
     description = "Report a user"

@@ -10,17 +10,13 @@ class cmd(Command):
     description = "Get the current membercount in the server."
 
     async def execute(self, arguments, message) -> None:
-        result = await self.db.raw_exec_select(
-            f"SELECT membercount FROM membercount"
-        )
+        result = await self.db.raw_exec_select(f"SELECT membercount FROM membercount")
         if len(result) == 0:
             await self.db.raw_exec_commit(
                 f"INSERT INTO membercount(membercount) VALUES(?)",
-                (message.guild.member_count,)
+                (message.guild.member_count,),
             )
-        result = await self.db.raw_exec_select(
-            f"SELECT membercount FROM membercount"
-        )
+        result = await self.db.raw_exec_select(f"SELECT membercount FROM membercount")
         status = "increased"
         extra = ""
         isgood = ":fire:"
@@ -35,6 +31,5 @@ class cmd(Command):
         )
         await message.channel.send(embed=embed)
         await self.db.raw_exec_commit(
-            f"UPDATE membercount SET membercount = ?",
-            (message.guild.member_count,)
+            f"UPDATE membercount SET membercount = ?", (message.guild.member_count,)
         )

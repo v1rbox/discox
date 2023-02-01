@@ -14,7 +14,6 @@ class cmd(Command):
     description = "Generates a random leetcode problem, use info to find total number of problem, use gen to generate a new problem"
 
     async def execute(self, arguments, message) -> None:
-
         leet_code_api_url = "https://leetcode.com/api/problems/all"
         async with aiohttp.ClientSession() as ses:
             async with ses.get(leet_code_api_url) as resp:
@@ -29,7 +28,6 @@ class cmd(Command):
             await message.channel.send(embed=embed)
 
         elif arguments[0] == "gen":
-
             # Picks a random number betwwn 0 and total number of problem in leetcode - 1
             problem_index = random.randint(0, total_problem - 1)
 

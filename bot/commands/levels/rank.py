@@ -46,7 +46,6 @@ class cmd(Command):
                 return
 
         async with message.channel.typing():
-
             result = await self.db.raw_exec_select(
                 f"SELECT exp, level FROM levels WHERE user_id = '{user.id}'"
             )

@@ -53,7 +53,7 @@ CREATE_STATEMENTS = [
     CREATE TABLE IF NOT EXISTS "membercount" (
             "membercount" INT
     )
-    """
+    """,
 ]
 
 

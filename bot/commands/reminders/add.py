@@ -34,7 +34,6 @@ class cmd(Command):
         url = msg.jump_url
 
         if reminderTime < 60:
-
             await self.db.raw_exec_commit(
                 """INSERT INTO reminders(User, Timestamp, Reminder, Channel, Message) VALUES(?, ?, ?, ?, ?)""",
                 (
