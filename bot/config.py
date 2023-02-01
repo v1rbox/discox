@@ -65,6 +65,7 @@ class Config:
     channel_id: str = os.getenv(
         "DISCOX_CHANNEL_ID", "UCCFVFyadjMuaR5O89yRToew"
     )  # channel id
+    role_channel: int = int(os.getenv("DISCOX_ROLE_CHANNEL", "0"))  # role channel
     youtube_announcement_id: int = int(
         os.getenv("DISCOX_YOUTUBE_ANNOUNCEMENT_ID", 1056990617357521009)
     )  # youtube announcement id
