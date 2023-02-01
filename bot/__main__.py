@@ -49,6 +49,11 @@ CREATE_STATEMENTS = [
     	    "Message" INT
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS "membercount" (
+            "membercount" INT
+    )
+    """
 ]
 
 
