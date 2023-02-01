@@ -298,6 +298,10 @@ def main() -> None:
                 logger.error("Insufficient permissions.")
                 await logger.send_error("Insufficient permissions.", message)
                 return
+            if len(cmdobj.category.channels) and not message.channel.id in cmdobj.category.channels:
+                logger.error("Channel not allowed.")
+                await logger.send_error("Channel not allowed.", message)
+                return
 
         # Join args
         usage_args: List[Tuple[str, str]] = re.findall(
