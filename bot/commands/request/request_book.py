@@ -21,7 +21,6 @@ class cmd(Command):
     description = "List of every requests in order if the <number_id> == 0. Otherwise, just shown up the information in that number_id row"
 
     def display_request(self, row: tuple) -> str:
-
         """
 
         INFO: this method is used to display the request in the request table.
@@ -61,7 +60,6 @@ class cmd(Command):
         return final
 
     async def execute(self, arguments, message) -> None:
-
         """
         MAIN EXECUTION:
             After the user type in the command, the bot will check if the arguments[0] (the first argument) is 0 or another number. If it's 0, then the bot will select the request table in the database and show all of them in a specific format that looks like this:
