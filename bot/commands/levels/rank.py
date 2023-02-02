@@ -84,12 +84,4 @@ class cmd(Command):
                 user_status=str(user.status),
                 font_color=await self.get_font_color(user.id),
             )
-
-        embed = Embed()
-        embed.set_author(
-            name=f"{user.display_name}'s ranking information",
-            icon_url=user.avatar.url,
-        )
-        embed.add_field(name="**Level**", value=f"**```css\n{result[1]}```**")
-        embed.add_field(name="**Exp**", value=f"**```css\n{result[0]}```**")
-        await message.channel.send(embed=embed, file=pic)
+        await message.channel.send(file=pic)
