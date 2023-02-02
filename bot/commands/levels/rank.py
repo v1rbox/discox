@@ -33,7 +33,7 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         user = None
-        if arguments[0] == "":
+        if not arguments or arguments[0] == "":
             user = message.author
         else:
             try:
@@ -43,13 +43,25 @@ class cmd(Command):
                 try:
                     user = await message.guild.fetch_member(arguments[0])
                 except (discord.NotFound, discord.HTTPException, discord.Forbidden):
-                    embed = Embed(
-                        title="User not found",
-                        description=f"The user named `{arguments[0]}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
-                    )
-                    embed.set_color("red")
-                    await message.channel.send(embed=embed)
-                    return
+                    try:
+                        user =  await message.guild.fetch_member(message.mentions[0].id)
+                    except IndexError:
+                        embed = Embed(
+                            title="No mentions associated with any of users in this server.",
+                            description=f"The user mentioned `{arguments[0]}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
+                        )
+                        embed.set_color("red")
+                        await message.channel.send(embed=embed)
+                        return
+                    except (discord.NotFound, discord.HTTPException, discord.Forbidden):
+                        embed = Embed(
+                            title="User not found",
+                            description=f"The user named `{arguments[0]}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
+                        )
+                        embed.set_color("red")
+                        await message.channel.send(embed=embed)
+                        return
+
 
         async with message.channel.typing():
             result = await self.db.raw_exec_select(
