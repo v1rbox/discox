@@ -1,6 +1,6 @@
 from bot.base import Command
 from bot.config import Config, Embed
-
+import discord
 from .__level_generator import generate_profile
 
 
@@ -32,18 +32,24 @@ class cmd(Command):
             return (255, 255, 255)
 
     async def execute(self, arguments, message) -> None:
+        user = None
         if arguments[0] == "":
             user = message.author
         else:
-            user = message.guild.get_member_named(arguments[0])
-            if user == None:
-                embed = Embed(
-                    title="User not found",
-                    description=f"The user named `{arguments[0]}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
-                )
-                embed.set_color("red")
-                await message.channel.send(embed=embed)
-                return
+            try:
+                user = message.guild.get_member_named(arguments[0])
+                assert user is not None
+            except AssertionError:
+                try:
+                    user = await message.guild.fetch_member(arguments[0])
+                except (discord.NotFound, discord.HTTPException, discord.Forbidden):
+                    embed = Embed(
+                        title="User not found",
+                        description=f"The user named `{arguments[0]}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
+                    )
+                    embed.set_color("red")
+                    await message.channel.send(embed=embed)
+                    return
 
         async with message.channel.typing():
             result = await self.db.raw_exec_select(
