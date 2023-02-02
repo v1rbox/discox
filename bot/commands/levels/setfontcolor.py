@@ -17,7 +17,7 @@ class cmd(Command):
             raise ValueError(
                 "RGB malformed. Expecting 3 of them to be digits between 0 and 255."
             )
-        option = Confirm()
+        option = Confirm(message.author)
         await message.channel.send(
             "Are you sure you want to set your font color to this?",
             view=option,
