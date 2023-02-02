@@ -27,7 +27,7 @@ class cmd(Command):
             "SELECT font_color FROM levels WHERE user_id = ?", (user,)
         )
         try:
-            return tuple(int(i) for i in result[0][0].split(" "))
+            return tuple(int(i) for i in result[0][0].split(" ") if result[0][0] else "255 255 255")
         except (IndexError, TypeError):
             return (255, 255, 255)
 
