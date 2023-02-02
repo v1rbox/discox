@@ -1,6 +1,8 @@
+import discord
+
 from bot.base import Command
 from bot.config import Config, Embed
-import discord
+
 from .__level_generator import generate_profile
 
 
@@ -44,7 +46,7 @@ class cmd(Command):
                     user = await message.guild.fetch_member(arguments[0])
                 except (discord.NotFound, discord.HTTPException, discord.Forbidden):
                     try:
-                        user =  await message.guild.fetch_member(message.mentions[0].id)
+                        user = await message.guild.fetch_member(message.mentions[0].id)
                     except IndexError:
                         embed = Embed(
                             title="No mentions associated with any of users in this server.",
@@ -61,7 +63,6 @@ class cmd(Command):
                         embed.set_color("red")
                         await message.channel.send(embed=embed)
                         return
-
 
         async with message.channel.typing():
             result = await self.db.raw_exec_select(
@@ -106,7 +107,7 @@ class cmd(Command):
                     user_xp=result[0],
                     next_xp=result[1] * 25 + 100,
                     server_position=rank,
-                    user_name=f"Unrenderable Username#{user.discriminator}", # weird ass mf username
+                    user_name=f"Unrenderable Username#{user.discriminator}",  # weird ass mf username
                     user_status=str(user.status),
                     font_color=await self.get_font_color(user.id),
                 )
