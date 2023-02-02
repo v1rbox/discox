@@ -6,7 +6,7 @@ class Confirm(discord.ui.View):
     def __init__(self, intended: discord.Member | discord.User):
         super().__init__()
         self.value = None
-
+        self.intended = intended
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
     async def confirm(
         self, interaction: discord.Interaction, button: discord.ui.Button
