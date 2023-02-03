@@ -1,6 +1,6 @@
 # Databases
 *.db
-assets/main.db
+bot/assets/main.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
