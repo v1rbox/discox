@@ -15,6 +15,7 @@ class Category(ABC):
     name: Optional[str] = None
     prefix: Optional[str] = None
     commands: List[Command] = []
+    channels: List[int] = []
 
     def __init__(self) -> None:
         """Initialize the category."""
@@ -58,6 +59,7 @@ class DistroCategory(Category):
     name = "distroroles"
     prefix = "distro"
     commands: List[Command] = []
+    channels = [config.role_channel]
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
@@ -69,6 +71,7 @@ class CodeCategory(Category):
     name = "coderoles"
     prefix = "code"
     commands: List[Command] = []
+    channels = [config.role_channel]
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True

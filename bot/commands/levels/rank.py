@@ -1,3 +1,5 @@
+import discord
+
 from bot.base import Command
 from bot.config import Config, Embed
 
@@ -28,22 +30,39 @@ class cmd(Command):
         )
         try:
             return tuple(int(i) for i in result[0][0].split(" "))
-        except (IndexError, TypeError):
+        except (IndexError, TypeError, AttributeError):
             return (255, 255, 255)
 
     async def execute(self, arguments, message) -> None:
-        if arguments[0] == "":
+        user = None
+        if not arguments or arguments[0] == "":
             user = message.author
         else:
-            user = message.guild.get_member_named(arguments[0])
-            if user == None:
-                embed = Embed(
-                    title="User not found",
-                    description=f"The user named `{arguments[0]}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
-                )
-                embed.set_color("red")
-                await message.channel.send(embed=embed)
-                return
+            try:
+                user = message.guild.get_member_named(arguments[0])
+                assert user is not None
+            except AssertionError:
+                try:
+                    user = await message.guild.fetch_member(arguments[0])
+                except (discord.NotFound, discord.HTTPException, discord.Forbidden):
+                    try:
+                        user = await message.guild.fetch_member(message.mentions[0].id)
+                    except IndexError:
+                        embed = Embed(
+                            title="No mentions associated with any of users in this server.",
+                            description=f"The user mentioned `{arguments[0]}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
+                        )
+                        embed.set_color("red")
+                        await message.channel.send(embed=embed)
+                        return
+                    except (discord.NotFound, discord.HTTPException, discord.Forbidden):
+                        embed = Embed(
+                            title="User not found",
+                            description=f"The user named `{arguments[0]}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
+                        )
+                        embed.set_color("red")
+                        await message.channel.send(embed=embed)
+                        return
 
         async with message.channel.typing():
             result = await self.db.raw_exec_select(
@@ -67,23 +86,29 @@ class cmd(Command):
                     break
                 rank = i + 1
             bg_image = await self.get_bg(user.id)
-            pic = await generate_profile(
-                bg_image=bg_image if bg_image else None,
-                profile_image=user.avatar.url,
-                level=result[1],
-                user_xp=result[0],
-                next_xp=result[1] * 25 + 100,
-                server_position=rank,
-                user_name=str(user),
-                user_status=str(user.status),
-                font_color=await self.get_font_color(user.id),
-            )
-
-        embed = Embed()
-        embed.set_author(
-            name=f"{user.display_name}'s ranking information",
-            icon_url=user.avatar.url,
-        )
-        embed.add_field(name="**Level**", value=f"**```css\n{result[1]}```**")
-        embed.add_field(name="**Exp**", value=f"**```css\n{result[0]}```**")
-        await message.channel.send(embed=embed, file=pic)
+            pic = None
+            try:
+                pic = await generate_profile(
+                    bg_image=bg_image if bg_image else None,
+                    profile_image=user.avatar.url,
+                    level=result[1],
+                    user_xp=result[0],
+                    next_xp=result[1] * 25 + 100,
+                    server_position=rank,
+                    user_name=str(user),
+                    user_status=str(user.status),
+                    font_color=await self.get_font_color(user.id),
+                )
+            except:
+                pic = await generate_profile(
+                    bg_image=bg_image if bg_image else None,
+                    profile_image=user.avatar.url,
+                    level=result[1],
+                    user_xp=result[0],
+                    next_xp=result[1] * 25 + 100,
+                    server_position=rank,
+                    user_name=f"Unrenderable Username#{user.discriminator}",  # weird ass mf username
+                    user_status=str(user.status),
+                    font_color=await self.get_font_color(user.id),
+                )
+        await message.channel.send(file=pic)

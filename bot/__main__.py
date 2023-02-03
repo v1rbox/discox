@@ -49,6 +49,11 @@ CREATE_STATEMENTS = [
     	    "Message" INT
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS "membercount" (
+            "membercount" INT
+    )
+    """,
 ]
 
 
@@ -292,6 +297,13 @@ def main() -> None:
             if not cmdobj.category.check_permissions(message):
                 logger.error("Insufficient permissions.")
                 await logger.send_error("Insufficient permissions.", message)
+                return
+            if (
+                len(cmdobj.category.channels)
+                and not message.channel.id in cmdobj.category.channels
+            ):
+                logger.error("Channel not allowed.")
+                await logger.send_error("Channel not allowed.", message)
                 return
 
         # Join args
