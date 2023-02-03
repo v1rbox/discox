@@ -132,6 +132,17 @@ async def match_type(
     type:str, arg:str, message:discord.Message
 ) -> any:
     match type:
+        case "int":
+            return int(arg)
+        
+        case "bool":
+            if arg.lower() == "true":
+                return True
+            elif arg.lower() == "false":
+                return False
+            else:
+                await logger.send_error(f"{arg} is not a boolean.", message)
+
         case "member":
             try:
                 user = message.guild.get_member_named(arg)
@@ -145,25 +156,15 @@ async def match_type(
                             message.mentions[0].id
                         )
                     except IndexError:
-                        embed = Embed(
-                            title="No mentions associated with any of users in this server.",
-                            description=f"The user mentioned `{arg}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
-                        )
-                        embed.set_color("red")
-                        await message.channel.send(embed=embed)
-                        return False
+                        await logger.send_error(f"The user `{arg}` was not found.\nNote: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.", message)
+                        raise Exception("error")
                     except (
                         discord.NotFound,
                         discord.HTTPException,
                         discord.Forbidden,
                     ):
-                        embed = Embed(
-                            title="User not found",
-                            description=f"The user named `{arg}` not found.\n*Note: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.*",
-                        )
-                        embed.set_color("red")
-                        await message.channel.send(embed=embed)
-                        return False
+                        logger.send_error(f"The user `{arg}` was not found.\nNote: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.", message)
+                        raise Exception("error")
             return user
         case _:
             return arg
@@ -192,12 +193,14 @@ async def parse_types(
     
     for i in range(len(arguments)):
         type = "str" if len(usage_args[i].split(":")) == 1 else usage_args[i].split(":")[1]
-        typed = await match_type(
-            type, arguments[i], message
-        )
-        if not typed:
-            return False
-        result.append(typed)
+        try:
+            typed = await match_type(
+                type, arguments[i], message
+            )
+            result.append(typed)
+        except Exception as e:
+            if e == "error":
+                return False
     return result
 
 
