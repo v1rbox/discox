@@ -87,11 +87,12 @@ class cmd(Command):
                 rank = i + 1
             bg_image = await self.get_bg(user.id)
             pic = None
+            level=result[1] - 1
             try:
                 pic = await generate_profile(
                     bg_image=bg_image if bg_image else None,
                     profile_image=user.avatar.url,
-                    level=result[1] - 1,
+                    level,
                     user_xp=result[0],
                     next_xp=result[1] * 25 + 100,
                     server_position=rank,
@@ -103,7 +104,7 @@ class cmd(Command):
                 pic = await generate_profile(
                     bg_image=bg_image if bg_image else None,
                     profile_image=user.avatar.url,
-                    level=result[1] - 1,
+                    level,
                     user_xp=result[0],
                     next_xp=result[1] * 25 + 100,
                     server_position=rank,
