@@ -133,15 +133,29 @@ async def match_type(
 ) -> any:
     match type:
         case "int":
-            return int(arg)
-        
+            if arg.removeprefix("-").isdigit():
+                return int(arg)
+            else:
+                await logger.send_error(f"'{arg}' is not an integer.", message)
+                raise ValueError()
+            
+        case "float":
+            if re.match(
+                "^-?\d+(?:\.\d+)$", arg
+            ) is not None:
+                return float(arg)
+            else:
+                await logger.send_error(f"'{arg}' is not a float.", message)
+                raise ValueError()
+
         case "bool":
             if arg.lower() == "true":
                 return True
             elif arg.lower() == "false":
                 return False
             else:
-                await logger.send_error(f"{arg} is not a boolean.", message)
+                await logger.send_error(f"'{arg}' is not a boolean.", message)
+                raise ValueError()
 
         case "member":
             try:
@@ -157,14 +171,14 @@ async def match_type(
                         )
                     except IndexError:
                         await logger.send_error(f"The user `{arg}` was not found.\nNote: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.", message)
-                        raise Exception("error")
+                        raise ValueError()
                     except (
                         discord.NotFound,
                         discord.HTTPException,
                         discord.Forbidden,
                     ):
                         logger.send_error(f"The user `{arg}` was not found.\nNote: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.", message)
-                        raise Exception("error")
+                        raise ValueError()
             return user
         case _:
             return arg
@@ -173,10 +187,10 @@ async def parse_types(
     usage: str, arguments: List[str], message: discord.Message
 ) -> List:
     required_args: List[str] = re.findall(
-        "<(.+)>", usage
+        "\<(.*?)\>", usage
     )
     optional_args: List[str] = re.findall(
-        "\[(.+)\]", usage
+        "\[(.*?)\]", usage
     )
     usage_args = [*required_args, *optional_args]
 
@@ -198,9 +212,8 @@ async def parse_types(
                 type, arguments[i], message
             )
             result.append(typed)
-        except Exception as e:
-            if e == "error":
-                return False
+        except ValueError:
+            return False
     return result
 
 
