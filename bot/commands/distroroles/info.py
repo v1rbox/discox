@@ -22,8 +22,9 @@ class cmd(Command):
             async with session.get(
                 f"https://diwa.demo-web-fahmi.my.id/api/v2/distributions/{arguments[0]}"
             ) as result:
+                raw_result = result
                 result = await result.json()
-        if result.status_code != 200 or result["message"] != "success":
+        if raw_result.status != 200 or result["message"] != "success":
             embed = Embed(
                 title="Distro",
                 description=f"**Not found**\n\nThe distro named `{arguments[0]}` not found.",
