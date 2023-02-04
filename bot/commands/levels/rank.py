@@ -34,7 +34,6 @@ class cmd(Command):
             return (255, 255, 255)
 
     async def execute(self, arguments, message) -> None:
-        
         user = message.author if not len(arguments) else arguments[0]
 
         async with message.channel.typing():
