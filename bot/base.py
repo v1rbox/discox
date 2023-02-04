@@ -181,6 +181,71 @@ class Task(ABC):
 
         raise NotImplementedError("Task execute method is required")
 
+class Roles:
+    whitelist = None
+    role_color = None
+    max = None
+    
+    def getRoleByName(self, message, role_name):
+        for role in message.guild.roles:
+            if role.name == role_name:
+                return role
+
+    def getAuthorRolesNames(self, message):
+        return [x.name for x in message.author.roles]
+
+    def getGuildRolesNames(self, message):
+        return [x.name for x in message.author.roles]
+
+    def isWhitelisted(self,message,argument):
+        if argument.lower() in map(lambda role: role.lower(), self.whitelist):
+            return True
+        return False
+
+    def authorHasRole(self,message,argument): 
+        if argument.lower() in map(lambda role: role.lower(), self.getAuthorRolesNames(message)):
+            return True
+        return False
+
+    def guildHasRole(self,message,argument):
+        if argument.lower() in map(lambda role: role.lower(), self.getGuildRolesNames(message)):
+            return True
+        return False
+
+    def hasMaxRoles(self,message):
+        if len([x for x in self.getAuthorRolesNames(message) if x in self.whitelist]) >= self.max:
+            return True
+        return False
+
+    async def addRole(self,message,argument):
+        has_max_roles = self.hasMaxRoles(message)
+        author_has_role = self.authorHasRole(message, argument)
+        guild_has_role = self.guildHasRole(message, argument)
+        is_whitelisted = self.isWhitelisted(message, argument) 
+
+        if is_whitelisted == False:
+            print("Distro Not Whitelisted")
+        elif has_max_roles == True:
+            print("User has the max amount of roles of this type")
+        elif author_has_role == True:
+            print("User already has this role")
+        elif guild_has_role == True:
+            await message.author.add_roles(self.getRoleByName(message,argument)) 
+            print("Added to Role")
+        elif guild_has_role == False:
+            argument = self.whitelist[list(map(lambda distro: distro.lower(), self.whitelist)).index(argument.lower())]
+            await message.guild.create_role(name=argument, colour=self.role_color)
+            await message.author.add_roles(self.getRoleByName(message,argument)) 
+            print("Created role and added to Role")
+        else:
+            print("Cant Add")
+
+    def getWhitelist(self):
+       print(self.whitelist) 
+
+
+
+
 
 if __name__ == "__main__":
     print("Chuck Norris learnt to read with a book")
