@@ -19,7 +19,7 @@ class cmd(Command):
         if arguments[0] == "":
             await message.channel.send("Please provide a url.")
             return
-        view = Confirm()
+        view = Confirm(message.author)
         await message.channel.send(
             "Are you sure you want to set this background?", view=view
         )
