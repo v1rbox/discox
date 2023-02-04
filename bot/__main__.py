@@ -128,9 +128,8 @@ async def parse_usage_text(
 
     return True
 
-async def match_type(
-    type:str, arg:str, message:discord.Message
-) -> any:
+
+async def match_type(type: str, arg: str, message: discord.Message) -> any:
     match type:
         case "int":
             if arg.removeprefix("-").isdigit():
@@ -138,11 +137,9 @@ async def match_type(
             else:
                 await logger.send_error(f"'{arg}' is not an integer.", message)
                 raise ValueError()
-            
+
         case "float":
-            if re.match(
-                "^-?\d+(?:\.\d+)$", arg
-            ) is not None:
+            if re.match("^-?\d+(?:\.\d+)$", arg) is not None:
                 return float(arg)
             else:
                 await logger.send_error(f"'{arg}' is not a float.", message)
@@ -169,37 +166,36 @@ async def match_type(
                     user = await message.guild.fetch_member(arg)
                 except (discord.NotFound, discord.HTTPException, discord.Forbidden):
                     try:
-                        user = await message.guild.fetch_member(
-                            message.mentions[0].id
-                        )
+                        user = await message.guild.fetch_member(message.mentions[0].id)
                     except IndexError:
-                        await logger.send_error(f"The user `{arg}` was not found.\nNote: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.", message)
+                        await logger.send_error(
+                            f"The user `{arg}` was not found.\nNote: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.",
+                            message,
+                        )
                         raise ValueError()
                     except (
                         discord.NotFound,
                         discord.HTTPException,
                         discord.Forbidden,
                     ):
-                        logger.send_error(f"The user `{arg}` was not found.\nNote: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.", message)
+                        logger.send_error(
+                            f"The user `{arg}` was not found.\nNote: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.",
+                            message,
+                        )
                         raise ValueError()
             return user
         case _:
             return arg
 
+
 async def parse_types(
     usage: str, arguments: List[str], message: discord.Message
 ) -> List:
-    required_args: List[str] = re.findall(
-        "\<(.*?)\>", usage
-    )
-    optional_args: List[str] = re.findall(
-        "\[(.*?)\]", usage
-    )
+    required_args: List[str] = re.findall("\<(.*?)\>", usage)
+    optional_args: List[str] = re.findall("\[(.*?)\]", usage)
     usage_args = [*required_args, *optional_args]
 
-    args_raw: List[str] = re.findall(
-        "\[.+\]|<.+>", usage
-    )
+    args_raw: List[str] = re.findall("\[.+\]|<.+>", usage)
     usage_types = []
     for i in usage_args:
         if i[1] is None:
@@ -207,13 +203,13 @@ async def parse_types(
         else:
             usage_types.append([i[0], i[1]])
     result = []
-    
+
     for i in range(len(arguments)):
-        type = "str" if len(usage_args[i].split(":")) == 1 else usage_args[i].split(":")[1]
+        type = (
+            "str" if len(usage_args[i].split(":")) == 1 else usage_args[i].split(":")[1]
+        )
         try:
-            typed = await match_type(
-                type, arguments[i], message
-            )
+            typed = await match_type(type, arguments[i], message)
             result.append(typed)
         except ValueError:
             return False
@@ -423,4 +419,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-    
