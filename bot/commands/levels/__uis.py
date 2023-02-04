@@ -8,7 +8,9 @@ class Confirm(discord.ui.View):
         self.intended = intended
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
-    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def confirm(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
         if interaction.user.id != self.intended.id:
             await interaction.response.send_message(
                 "What are you doing here. This is not for you. ඞ", ephemeral=True

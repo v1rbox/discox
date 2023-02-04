@@ -1,10 +1,12 @@
-import discord
-import yarl
-import aiohttp
-from PIL import Image
-import PIL
 import io
+
+import aiohttp
+import discord
+import PIL
+import yarl
 from discord import Message
+from PIL import Image
+
 from bot.base import Command
 
 from .__uis import Confirm
@@ -29,16 +31,20 @@ class cmd(Command):
             raise ValueError("Invalid URL. Unable to parse URL") from e
         except (AssertionError) as e:
             raise ValueError("Invalid URL. URL is malformed.") from e
-        
+
     async def is_valid_picture(self, url: str) -> bool:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status != 200:
-                    raise ValueError(f"Invalid URL. URL must be a direct link to an image. Status Code: {response.status}")
+                    raise ValueError(
+                        f"Invalid URL. URL must be a direct link to an image. Status Code: {response.status}"
+                    )
                 try:
                     image = Image.open(io.BytesIO(await response.read()))
                 except PIL.UnidentifiedImageError:
-                    raise ValueError("Invalid URL. URL must be a direct link to an image. Got an invalid image data.") from None
+                    raise ValueError(
+                        "Invalid URL. URL must be a direct link to an image. Got an invalid image data."
+                    ) from None
                 image.verify()
                 image.close()
                 return True

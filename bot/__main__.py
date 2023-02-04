@@ -20,11 +20,12 @@ CREATE_STATEMENTS = [
     CREATE TABLE IF NOT EXISTS "polls" (
         "guild_id"	INTEGER,
         "channel_id"	INTEGER,
-        "message_id"	INTEGER,
+        "message_id"	INTEGER UNIQUE,
         "votes" STRING, # its json
-        "when_end" INTEGER,
         "when_start" INTEGER,
-        
+        "is_active" BOOLEAN,
+        "type" STRING # either reaction or interaction
+        PRIMARY KEY("message_id")
     )
     """,
     """

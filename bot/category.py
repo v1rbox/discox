@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional, Callable, Dict
+from typing import Callable, Dict, List, Optional
 
 import discord
 
@@ -143,6 +143,7 @@ class GameCategory(Category):
     def check_permissions(self, message: discord.Message) -> bool:
         return True
 
+
 class PollsCategory(Category):
     """A command category instance."""
 
@@ -152,6 +153,7 @@ class PollsCategory(Category):
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
+
 
 if __name__ == "__main__":
     print(
