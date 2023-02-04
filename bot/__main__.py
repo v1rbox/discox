@@ -17,6 +17,17 @@ config = Config()
 
 CREATE_STATEMENTS = [
     """
+    CREATE TABLE IF NOT EXISTS "polls" (
+        "guild_id"	INTEGER,
+        "channel_id"	INTEGER,
+        "message_id"	INTEGER,
+        "votes" STRING, # its json
+        "when_end" INTEGER,
+        "when_start" INTEGER,
+        
+    )
+    """,
+    """
         CREATE TABLE IF NOT EXISTS "levels" (
 	        "user_id"	TEXT UNIQUE,
 	        "level"	INTEGER,

@@ -12,7 +12,7 @@ class cmd(Command):
     """
 
     name = "setbg"
-    usage = "setbg [*url]"
+    usage = "setbg <url>"
     description = "Set your own background for your rank card. URL must be a direct link to an image."
 
     async def execute(self, arguments, message) -> None:
