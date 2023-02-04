@@ -105,7 +105,7 @@ class RemindCategory(Category):
     """A command category instance."""
 
     name = "reminders"
-    prefix = "remind"
+    prefix = "reminder"
     commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:
