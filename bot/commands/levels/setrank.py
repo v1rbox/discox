@@ -8,7 +8,7 @@ class cmd(Command):
     """Set rank to other user. Only <@936357105760370729> can use this command."""
 
     name = "setrank"
-    usage = "setrank <user> [exp]"
+    usage = "setrank <user:member> [exp:int]"
     description = "Set the rank for another user. Administrator only."
 
     async def execute(self, arguments, message) -> None:
@@ -17,7 +17,7 @@ class cmd(Command):
 
         # Calculate level
         lvl = 0
-        exp = int(arguments[1])
+        exp = arguments[1]
         while True:
             if exp >= (lvl + 1) * 25 + 100:
                 lvl += 1
@@ -27,6 +27,6 @@ class cmd(Command):
 
         await self.db.raw_exec_commit(
             "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
-            (lvl, exp, int(arguments[0])),
+            (lvl, exp, arguments[0].id),
         )
         await message.channel.send(f"Updated rank to {lvl}.{exp}")
