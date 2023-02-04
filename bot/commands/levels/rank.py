@@ -34,11 +34,8 @@ class cmd(Command):
             return (255, 255, 255)
 
     async def execute(self, arguments, message) -> None:
-        user = None
-        if not arguments or arguments[0] == "":
-            user = message.author
-        else:
-            user = arguments[0]
+        
+        user = message.author if not len(arguments) else arguments[0]
 
         async with message.channel.typing():
             result = await self.db.raw_exec_select(
@@ -66,7 +63,7 @@ class cmd(Command):
             try:
                 pic = await generate_profile(
                     bg_image=bg_image if bg_image else None,
-                    profile_image=user.avatar.url,
+                    profile_image=user.display_avatar.url,
                     level=result[1],
                     user_xp=result[0],
                     next_xp=result[1] * 25 + 100,

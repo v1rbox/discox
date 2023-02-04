@@ -155,6 +155,9 @@ async def match_type(type: str, arg: str, message: discord.Message) -> any:
                 raise ValueError()
 
         case "member":
+            # temp fix
+            if arg == "":
+                arg = str(message.author.id)
             try:
                 user = message.guild.get_member_named(arg)
                 assert user is not None
