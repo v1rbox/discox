@@ -21,10 +21,10 @@ CREATE_STATEMENTS = [
         "guild_id"	INTEGER,
         "channel_id"	INTEGER,
         "message_id"	INTEGER UNIQUE,
-        "votes" STRING, # its json
+        "votes" STRING,
         "when_start" INTEGER,
         "is_active" BOOLEAN,
-        "type" STRING # either reaction or interaction
+        "type" STRING,
         PRIMARY KEY("message_id")
     )
     """,
