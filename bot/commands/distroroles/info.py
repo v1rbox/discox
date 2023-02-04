@@ -1,8 +1,7 @@
 import io
 import os
 from re import search, sub
-
-import aiohttp
+import requests
 from colorthief import ColorThief
 from discord import Colour
 
@@ -18,12 +17,8 @@ class cmd(Command):
     description = "Shows information about the user entered distro"
 
     async def execute(self, arguments, message) -> None:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"https://diwa.demo-web-fahmi.my.id/api/v2/distributions/{arguments[0]}"
-            ) as result:
-                result = await result.json()
-        if result.status_code != 200 or result["message"] != "success":
+        result = requests.get(f'https://diwa.demo-web-fahmi.my.id/api/v2/distributions/{arguments[0]}')
+        if result.status_code != 200 or result.json()["message"] != "success":
             embed = Embed(
                 title="Distro",
                 description=f"**Not found**\n\nThe distro named `{arguments[0]}` not found.",
@@ -31,6 +26,7 @@ class cmd(Command):
             embed.set_color("red")
             await message.channel.send(embed=embed)
             return
+        result = result.json()
 
         dominant_color = None
         distro_codename = None
@@ -59,13 +55,11 @@ class cmd(Command):
                         )
 
             if distro_codename:
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(
-                        f"https://distrowatch.com/images/yvzhuwbpy/{distro_codename}.png"
-                    ) as b:
-                        b = io.BytesIO(await b.read())
-                color_thief = ColorThief(b)
+                b = requests.get(f'https://distrowatch.com/images/yvzhuwbpy/{distro_codename}.png', allow_redirects=True)
+                open('distro.png', 'wb').write(b.content)
+                color_thief = ColorThief('distro.png')
                 dominant_color = color_thief.get_color(quality=1)
+                os.remove("distro.png")
         except:
             pass
 
