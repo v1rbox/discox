@@ -1,0 +1,82 @@
+from discord import Color
+
+from bot.base import Command, Roles
+from bot.config import Config, Embed
+
+Roles.max = 3
+Roles.role_color = Color.from_rgb(185, 137, 240)
+Roles.whitelist = [
+        "/e/OS",
+        "Alma",
+        "Alpine",
+        "Android",
+        "Arch",
+        "Arco",
+        "Artix",
+        "Bedrock",
+        "CalyxOS",
+        "CentOS",
+        "Debian",
+        "Elementary",
+        "EndeavourOS",
+        "Fedora",
+        "FreeBSD",
+        "Funtoo",
+        "Garuda",
+        "Gentoo",
+        "GNUGuix",
+        "GrapheneOS",
+        "Haiku",
+        "HarmonyOS",
+        "iOS",
+        "KaiOS",
+        "Kali",
+        "Kubuntu",
+        "LineageOS",
+        "Lubuntu",
+        "MacOS",
+        "Manjaro",
+        "Mint",
+        "MIUI",
+        "Mobian",
+        "MX",
+        "NetBSD",
+        "NixOS",
+        "Nobara",
+        "OpenBSD",
+        "OpenMediaVault",
+        "OpenSUSE",
+        "Oracle",
+        "Parrot",
+        "Plasma Mobile",
+        "Pop!OS",
+        "ReactOS",
+        "RedHat",
+        "Rocky",
+        "Sailfish OS",
+        "Slackware",
+        "Solaris",
+        "SUSE",
+        "Tails",
+        "TempleOS",
+        "TrueNAS",
+        "Ubuntu",
+        "Ubuntu Touch",
+        "Ultramarine",
+        "UwUntu",
+        "Void",
+        "Whonix",
+        "Windows",
+        "Zorin",
+    ]
+
+class cmd(Command,Roles):
+    """A discord command instance."""
+
+    name = "add2"
+    usage = "add2 <distribution>"
+    description = f"Assigns user a role based on selected distro, max of distro roles per user."
+
+    async def execute(self, arguments, message) -> None:
+        await self.addRole(message, arguments[0])
+        
