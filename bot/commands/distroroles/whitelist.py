@@ -12,4 +12,9 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         distroroles = DistroRoles()
-        distroroles.getWhitelist()
+        embed = Embed(
+                title="Distro",
+                description=distroroles.getWhitelist()
+                )
+        await message.channel.send(embed=embed)
+

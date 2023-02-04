@@ -182,6 +182,7 @@ class Task(ABC):
         raise NotImplementedError("Task execute method is required")
 
 class Roles:
+    prefix = None
     whitelist = None
     role_color = None
     max = None
@@ -195,56 +196,86 @@ class Roles:
         return [x.name for x in message.author.roles]
 
     def getGuildRolesNames(self, message):
-        return [x.name for x in message.author.roles]
+        return [x.name for x in message.guild.roles]
 
-    def isWhitelisted(self,message,argument):
-        if argument.lower() in map(lambda role: role.lower(), self.whitelist):
-            return True
-        return False
+    def isWhitelisted(self,argument):
+        return True if argument.lower() in [x.lower() for x in self.whitelist] else False
 
     def authorHasRole(self,message,argument): 
-        if argument.lower() in map(lambda role: role.lower(), self.getAuthorRolesNames(message)):
-            return True
-        return False
+        return True if argument.lower() in [x.lower() for x in self.getAuthorRolesNames(message)] else False
 
     def guildHasRole(self,message,argument):
-        if argument.lower() in map(lambda role: role.lower(), self.getGuildRolesNames(message)):
-            return True
-        return False
+        return True if argument.lower() in [x.lower() for x in self.getGuildRolesNames(message)] else False
 
     def hasMaxRoles(self,message):
-        if len([x for x in self.getAuthorRolesNames(message) if x in self.whitelist]) >= self.max:
-            return True
-        return False
+        return True if len([x for x in self.getAuthorRolesNames(message) if x in self.whitelist]) >= self.max else False
 
     async def addRole(self,message,argument):
-        has_max_roles = self.hasMaxRoles(message)
-        author_has_role = self.authorHasRole(message, argument)
-        guild_has_role = self.guildHasRole(message, argument)
-        is_whitelisted = self.isWhitelisted(message, argument) 
-
-        if is_whitelisted == False:
-            print("Distro Not Whitelisted")
-        elif has_max_roles == True:
-            print("User has the max amount of roles of this type")
-        elif author_has_role == True:
-            print("User already has this role")
-        elif guild_has_role == True:
+        if not self.isWhitelisted(argument):
+            return f"***{argument} is not a whitelisted {self.prefix} role***"
+        elif self.hasMaxRoles(message):
+            return f"***{message.author.name} has the max amount of {self.prefix} roles***"
+        elif self.authorHasRole(message, argument):
+            return f"***{message.author.name} already has the {argument} {self.prefix} role***"
+        elif self.guildHasRole(message, argument):
+            argument = self.whitelist[list(map(lambda distro: distro.lower(), self.whitelist)).index(argument.lower())]
             await message.author.add_roles(self.getRoleByName(message,argument)) 
-            print("Added to Role")
-        elif guild_has_role == False:
+            return f"***{message.author.name} has been added to the {argument} {self.prefix} role***"
+        #Creates role and adds to role if role does not exist yet
+        elif not self.guildHasRole(message, argument):
             argument = self.whitelist[list(map(lambda distro: distro.lower(), self.whitelist)).index(argument.lower())]
             await message.guild.create_role(name=argument, colour=self.role_color)
             await message.author.add_roles(self.getRoleByName(message,argument)) 
-            print("Created role and added to Role")
+            return f"***{message.author.name} has been added to the {argument} {self.prefix} role***"
         else:
-            print("Cant Add")
+            return f"***Cannot add to {self.prefix} role***"
+
+    async def removeRole(self,message,argument):
+        if not self.isWhitelisted(argument):
+            return f"***{argument} is not a whitelisted {self.prefix} role***"
+        elif not self.authorHasRole(message, argument):
+            return f"***{message.author.name} does not have the {argument} {self.prefix} role***"
+        else:
+            argument = self.whitelist[list(map(lambda distro: distro.lower(), self.whitelist)).index(argument.lower())]
+            role = self.getRoleByName(message, argument)
+            await message.author.remove_roles(role)
+            #Removes the role if the role is now empty
+            if len(role.members) == 0:
+                await role.delete()
+            return f"***{message.author.name} has been removed from the {argument} {self.prefix} role***"
+
+    def getRoles(self,message):
+        roles = [x for x in self.getAuthorRolesNames(message) if x in self.whitelist]
+        if len(roles) == 0:
+            return f"***{message.author.name} has no {self.prefix} roles yet***"
+        else:
+            desc = ""
+            for role in roles:
+                desc += f"{role}\n"
+            return f"***{message.author.name}'s {self.prefix} roles:\n\n{desc}***"
 
     def getWhitelist(self):
-       print(self.whitelist) 
+        if len(self.whitelist) == 0:
+            return f"***There are currently no whitelisted {self.prefix} roles***"
+        else:
+            desc = ""
+            for role in self.whitelist:
+                desc += f"{role}\n"
+            return f"***Whitelisted {self.prefix} roles:\n\n{desc}***"
 
-
-
+    def getLeaderboard(self,message):
+        leaderboard=[]
+        for role in self.getGuildRolesNames(message):
+            if role in self.whitelist and len(self.getRoleByName(message, role).members) > 0:
+                leaderboard.append({"role":role,"count":len(self.getRoleByName(message, role).members)}) 
+        if leaderboard == []:
+            return f"***Nobody has any {self.prefix} roles yet***"
+        else:
+            leaderboard = sorted(leaderboard, key=lambda d: d["count"], reverse=True)
+            desc = ""
+            for role in leaderboard:
+                desc += f"Current {role['role']} users: {role['count']}\n"
+            return f"***{self.prefix} roles leaderboard:\n\n{desc}***"
 
 
 if __name__ == "__main__":

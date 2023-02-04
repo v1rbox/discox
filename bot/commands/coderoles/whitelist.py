@@ -1,5 +1,5 @@
+from bot.commands.coderoles.add import CodeRoles
 from bot.base import Command
-from bot.commands.coderoles.add import cmd as Code
 from bot.config import Config, Embed
 
 
@@ -8,18 +8,13 @@ class cmd(Command):
 
     name = "whitelist"
     usage = "whitelist"
-    description = f"Shows available languages"
+    description = f"Shows available code role options"
 
     async def execute(self, arguments, message) -> None:
-        if len(Code.whitelist) > 0:
-            description = "**Available languages:**\n\n"
-            for i in Code.whitelist:
-                description += f"`{i}`\n"
-            embed = Embed(title="Code", description=description)
-            await message.channel.send(embed=embed)
-        else:
-            embed = Embed(
-                title="Code", description="**No languages currently whitelisted**"
-            )
-            embed.set_color("red")
-            await message.channel.send(embed=embed)
+        coderoles = CodeRoles()
+        embed = Embed(
+                title="Code",
+                description=coderoles.getWhitelist()
+                )
+        await message.channel.send(embed=embed)
+

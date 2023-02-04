@@ -6,6 +6,7 @@ from bot.config import Config, Embed
 class DistroRoles(Roles):
     max = 3
     role_color = Color.from_rgb(185, 137, 240)
+    prefix = "distro"
     whitelist = [
         "/e/OS",
         "Alma",
@@ -76,9 +77,12 @@ class cmd(Command):
 
     name = "add"
     usage = "add <distribution>"
-    description = f"Assigns user a role based on selected distro, max of distro roles per user."
+    description = f"Assigns user a role based on selected distro, max of {DistroRoles.max} distro roles per user."
 
     async def execute(self, arguments, message) -> None:
         distroroles = DistroRoles()
-        await distroroles.addRole(message, arguments[0])
-        
+        embed = Embed(
+                title="Distro",
+                description=await distroroles.addRole(message, arguments[0])
+                )
+        await message.channel.send(embed=embed) 
