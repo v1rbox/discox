@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional, Tuple
 
-import aiosqlite
-
+import asyncio
+import aiomysql
 
 class SQLParser:
     def __init__(self, file: str, create_statemets: List[str]) -> None:
@@ -14,11 +14,16 @@ class SQLParser:
 
         async def wrapper(self, *args, **kwargs):
             # If we already have a connection to the database we wont need to reopen it
-            if len(args) > 0 and isinstance(args[0], aiosqlite.Connection):
+            if len(args) > 0 and isinstance(args[0], aiomysql.connection.Connection):
                 res = await func(self, *args, **kwargs)
             else:
-                async with aiosqlite.connect(self.file) as db:
-                    res = await func(self, db, *args, **kwargs)
+                pool = await aiomysql.create_pool(host='127.0.0.1', port=3306,
+                    user='root', password='',
+                    db='discox', autocommit=True
+                )
+                async with pool.acquire() as db:
+                    async with db.cursor() as cur:
+                        res = await func(self, db, cur, *args, **kwargs)
 
             return res
 
@@ -26,29 +31,33 @@ class SQLParser:
 
     @connect
     async def raw_exec_select(
-        self, db: aiosqlite.Connection, sql: str, vals: Tuple = ()
+        self, db: aiomysql.connection.Connection, cur: aiomysql.cursors.Cursor, sql: str, vals: Tuple = ()
     ) -> List[Tuple]:
         """Get a result(s) from the database"""
-        async with db.execute(sql, vals) as cursor:
-            res = [row async for row in cursor]
+        sql = sql.replace("?", "%s")
+        await cur.execute(sql, vals)
+        print(sql, vals)
+        res = await cur.fetchall()
+        print(res)
 
         return res
 
     @connect
     async def raw_exec_commit(
-        self, db: aiosqlite.Connection, sql: str, vals: Tuple = ()
+        self, db: aiomysql.connection.Connection, cur: aiomysql.cursors.Cursor, sql: str, vals: Tuple = ()
     ) -> None:
         """Execute an sql statement and commit it to the database"""
-        await db.execute(sql, vals)
-        await db.commit()
+        sql = sql.replace("?", "%s")
+        print(sql, vals)
+        await cur.execute(sql, vals)
 
     # Add custom db methods here if you need more control
 
     @connect
-    async def initialise(self, db: aiosqlite.Connection):
+    async def initialise(self, db: aiomysql.connection.Connection, cur: aiomysql.cursors.Cursor):
         """Execute all the create statements on load"""
         for sql in self.create_statemets:
-            await self.raw_exec_commit(db, sql)
+            await self.raw_exec_commit(db, cur, sql)
 
     # In practise this was not very pratical, might be implemented in the futre
     # async def SELECT(self, table: str, rows: Tuple[str], where: Optional[Dict] = None):
