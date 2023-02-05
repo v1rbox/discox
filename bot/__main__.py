@@ -61,7 +61,7 @@ CREATE_STATEMENTS = [
 	    message_id VARCHAR(100) PRIMARY KEY,
 	    board_message_id VARCHAR(100)
 	);
-    """
+    """,
 ]
 
 
