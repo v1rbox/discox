@@ -41,6 +41,8 @@ class event(Event):
                                 content += f'{messageObj.content} • '
                             content += f'{reaction.count} stars • by {messageObj.author}\n{messageObj.attachments[0].url}'
                             await starboard.send(content)
+                    else:
+                        await starboard.send(embed=embed)
                     await self.db.raw_exec_commit(
                         """INSERT INTO starboard(message_id) VALUES (?)""",
                         (messageObj.id,)
