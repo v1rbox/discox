@@ -52,7 +52,7 @@ class event(Event):
                             if len(sub(IMAGE_REGEX, "", messageObj.content)) == 0:
                                 embed.description = None
                             else:
-                                embed.description = sub(IMAGE_REGEX, "[the image link]", messageObj.content)
+                                embed.description = sub(IMAGE_REGEX, "[image link]", messageObj.content)
                         board_message = await starboard.send(content=f'{REACTION} **{reaction.count}**', embed=embed)
                     await self.db.raw_exec_commit(
                         """INSERT INTO starboard(message_id, board_message_id) VALUES (?,?)""",
