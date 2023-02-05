@@ -56,6 +56,12 @@ CREATE_STATEMENTS = [
             membercount INT PRIMARY KEY
         );
     """,
+    """
+    	CREATE TABLE IF NOT EXISTS discox.starboard (
+	    message_id INTEGER PRIMARY KEY
+	    board_message_id INTEGER
+	)
+    """
 ]
 
 
