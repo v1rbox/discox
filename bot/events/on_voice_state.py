@@ -11,8 +11,8 @@ class event(Event):
         if after.channel is not None and "Create VC" in after.channel.name:
             category = after.channel.category
             if len(category.voice_channels) > 6:
-                await member.move_to(None, reason="No more avaliable voice channels")
-                await member.send("No more avaliable voice channels.")
+                await member.move_to(None, reason="No more available voice channels")
+                await member.send("No more available voice channels.")
             else:
                 channel = await category.create_voice_channel(
                     f"Voice Channel #{len(category.voice_channels)}"
