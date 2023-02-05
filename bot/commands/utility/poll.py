@@ -25,6 +25,7 @@ class cmd(Command):
         options = False
         if len(user_input) > 1:
             options = user_input[1:]
+            assert len(options) < 12, "You can't add more than 11 options."
 
         avatar_color = None
         try:
