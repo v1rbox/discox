@@ -3,9 +3,9 @@ import os
 from re import search, sub
 
 import aiohttp
+import orjson
 from colorthief import ColorThief
 from discord import Colour
-import orjson
 
 from bot.base import Command
 from bot.config import Embed
@@ -64,8 +64,8 @@ class cmd(Command):
                     async with session.get(
                         f"https://distrowatch.com/images/yvzhuwbpy/{distro_codename}.png",
                         headers={
-                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
-                        }
+                            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+                        },
                     ) as b:
                         b = io.BytesIO(await b.read())
                 color_thief = ColorThief(b)
@@ -82,9 +82,7 @@ class cmd(Command):
             embed.set_thumbnail(
                 url=f"https://distrowatch.com/images/yvzhuwbpy/{distro_codename}.png"
             )
-        embed.add_field(
-            name="Average rating", value=j["average_rating"], inline=True
-        )
+        embed.add_field(name="Average rating", value=j["average_rating"], inline=True)
         embed.add_field(
             name="Architectures", value=", ".join(j["architectures"]), inline=True
         )
