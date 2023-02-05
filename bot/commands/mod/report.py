@@ -8,12 +8,12 @@ from bot.config import Config, Embed
 
 class cmd(Command):
     name = "report"
-    usage = "report <user_id>"
+    usage = "report <user_id:member>"
     description = "Report a user"
 
     async def execute(self, arguments, message) -> None:
         await message.delete()
-        member = await message.guild.fetch_member(arguments[0])
+        member = arguments[0]
         await member.timeout(
             datetime.timedelta(hours=3), reason=f"Report - {message.author}"
         )
