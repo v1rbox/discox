@@ -17,42 +17,44 @@ config = Config()
 
 CREATE_STATEMENTS = [
     """
-        CREATE TABLE IF NOT EXISTS "levels" (
-	        "user_id"	TEXT UNIQUE,
-	        "level"	INTEGER,
-	        "exp"	INTEGER,
-            "font_color"	TEXT,
-            "bg"	TEXT DEFAULT NULL,
-	        PRIMARY KEY("user_id")
-        )
+        CREATE DATABASE IF NOT EXISTS discox;
     """,
     """
-        CREATE TABLE IF NOT EXISTS "latest_video" (
-	        "video_id"	TEXT
-        )
+        CREATE TABLE IF NOT EXISTS discox.levels (
+            user_id VARCHAR(100) PRIMARY KEY,
+            level INTEGER,
+            exp INTEGER,
+            font_color VARCHAR(25),
+            bg VARCHAR(2048) DEFAULT NULL
+        );
     """,
     """
-    CREATE TABLE IF NOT EXISTS "request" (
-	    "Number_id"	INTEGER NOT NULL,
-	    "Member_id"	TEXT NOT NULL,
-	    "Title"	TEXT NOT NULL,
-	    "Description"	TEXT NOT NULL,
-	    PRIMARY KEY("Number_id" AUTOINCREMENT)
-    )
+        CREATE TABLE IF NOT EXISTS discox.latest_video (
+	        video_id VARCHAR(50) PRIMARY KEY
+        );
     """,
     """
-    CREATE TABLE IF NOT EXISTS "reminders" (
-    	    "User" INT,
-    	    "Timestamp" INT PRIMARY KEY,
-    	    "Reminder" TEXT,
-    	    "Channel" INT,
-    	    "Message" INT
-    )
+        CREATE TABLE IF NOT EXISTS discox.request (
+            Number_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Member_id VARCHAR(100) NOT NULL,
+            Title VARCHAR(255) NOT NULL,
+            Description VARCHAR(2048) NOT NULL
+        );
     """,
     """
-    CREATE TABLE IF NOT EXISTS "membercount" (
-            "membercount" INT
-    )
+        CREATE TABLE IF NOT EXISTS discox.reminders (
+            id INTEGER AUTO_INCREMENT PRIMARY KEY,
+            User VARCHAR(100),
+            Timestamp INTEGER,
+            Reminder VARCHAR(2048),
+            Channel VARCHAR(100),
+            Message VARCHAR(100)
+        );
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS discox.membercount (
+            membercount INT PRIMARY KEY
+        );
     """,
 ]
 

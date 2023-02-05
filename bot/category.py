@@ -31,17 +31,6 @@ class Category(ABC):
         raise NotImplementedError("Check permissions method is required")
 
 
-class FunCategory(Category):
-    """A command category instance."""
-
-    name = "fun"
-    prefix = None
-    commands: List[Command] = []
-
-    def check_permissions(self, message: discord.Message) -> bool:
-        return True
-
-
 class UtilityCategory(Category):
     """A command category instance."""
 
