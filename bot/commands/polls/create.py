@@ -2,9 +2,11 @@
 
 """
 
+from datetime import datetime
+
 import discord
 import orjson
-from datetime import datetime
+
 from bot.base import Command
 from bot.config import Embed
 
@@ -15,8 +17,21 @@ class cmd(Command):
     name = "create"
     description = "Create a poll. Separate everything with commas. Question will be taken as the first argument. Description will be taken as the second argument (you can leave it alone with just give it blank value like this 'question,,a,b,c'). Else it is options."
     usage = "create <multiple_or_single> <*infos>"
+    
+    bind = [
+        "0️⃣",
+        "1️⃣",
+        "2️⃣",
+        "3️⃣",
+        "4️⃣",
+        "5️⃣",
+        "6️⃣",
+        "7️⃣",
+        "8️⃣",
+        "9️⃣",
+    ]
 
-    async def react_with_buttons(self, counts: int) -> None:
+    async def react_with_buttons(self, counts: int) -> PollButtons:
         return PollButtons(counts, self.when_clicked, self.when_timeout)
 
     async def when_clicked(
@@ -30,10 +45,18 @@ class cmd(Command):
                 )
             )[0][0]
         )
-        type = await self.db.raw_exec_select("SELECT type FROM polls WHERE message_id = ?", (interaction.message.id,))
-        if interaction.user.id in cursor["votes"][button.label]["users"] and type == "single":
+        type = await self.db.raw_exec_select(
+            "SELECT type FROM polls WHERE message_id = ?", (interaction.message.id,)
+        )
+        if (
+            interaction.user.id in cursor["votes"][button.label]["users"]
+            and type == "single"
+        ):
             return
-        elif interaction.user.id not in cursor["votes"][button.label]["users"] and type == "single":
+        elif (
+            interaction.user.id not in cursor["votes"][button.label]["users"]
+            and type == "single"
+        ):
             cursor["votes"][button.label]["users"].append(interaction.user.id)
             cursor["votes"][button.label]["count"] += 1
         elif type == "multiple":
@@ -65,7 +88,12 @@ class cmd(Command):
         pass
 
     async def execute(self, arguments: list[str], message) -> None:
-        assert arguments[0] not in ["single", "multiple"], "You need to specify the type of poll."
+        print(arguments)
+        assert arguments[0] in [
+            "single",
+            "multiple",
+        ], "You need to specify the type of poll."
+        assert len(arguments) == 2 and arguments[1], "Not Enough Arguments"
         poll_type = arguments[0]
         arguments = arguments[1].split(",")
         question = arguments[0]
@@ -75,9 +103,13 @@ class cmd(Command):
         options = arguments[2:]
         embed = Embed(title=question, description=description)
         embed.set_footer(text="Poll created by " + message.author.name)
-        embed.set_thumbnail(url=message.author.avatar_url)
+        embed.set_thumbnail(
+            url=message.author.avatar.url
+            if message.author.avatar
+            else message.author.default_avatar.url
+        )
         for i in range(len(options)):
-            embed.add_field(name=str(i), value=options[i], inline=False)
+            embed.add_field(name=str(i), value=options[i], inline=True)
         view = None
         emoji = False
         if len(options) > 5:
@@ -87,32 +119,30 @@ class cmd(Command):
         msg: discord.Message = await message.channel.send(embed=embed, view=view)
         if emoji:
             for i in range(len(options)):
-                await msg.add_reaction(str(i))
-        else:
-            await msg.delete()
-            raise NotImplementedError("Unreachable code.")
-        
+                await msg.add_reaction(self.bind[i])
+        elif not emoji:
+            pass
+
         await self.db.raw_exec_commit(
-            "INSERT INTO polls VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO polls VALUES (?, ?, ?, ?, ?, ?, ?)",
             (
                 message.guild.id,
                 message.channel.id,
                 msg.id,
                 orjson.dumps(
                     {
-                        "votes":{
-                            x: {
+                        "votes": {
+                            str(x): {
                                 "counts": 0,
                                 "users": [],
                                 "name": i,
-                            } for x, i in enumerate(options)
+                            }
+                            for x, i in enumerate(options)
                         },
-                        
                     }
                 ),
                 datetime.now().timestamp(),
                 True,
                 poll_type,
-                
-            )
+            ),
         )
