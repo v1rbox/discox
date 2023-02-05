@@ -5,6 +5,7 @@ from re import search, sub
 import aiohttp
 from colorthief import ColorThief
 from discord import Colour
+import orjson
 
 from bot.base import Command
 from bot.config import Embed
@@ -22,8 +23,8 @@ class cmd(Command):
             async with session.get(
                 f"https://diwa.demo-web-fahmi.my.id/api/v2/distributions/{arguments[0]}"
             ) as result:
-                j = await result.json()
-        if result.status_code != 200 or j["message"] != "success":
+                j = await result.json(loads=orjson.loads)
+        if result.status != 200 or j["message"] != "success":
             embed = Embed(
                 title="Distro",
                 description=f"**Not found**\n\nThe distro named `{arguments[0]}` not found.",
@@ -64,9 +65,13 @@ class cmd(Command):
                         f"https://distrowatch.com/images/yvzhuwbpy/{distro_codename}.png"
                     ) as b:
                         b = io.BytesIO(await b.read())
+                        b.seek(0)
                 color_thief = ColorThief(b)
                 dominant_color = color_thief.get_color(quality=1)
-        except:
+                print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        except Exception as e:
+            print("IT FAILED")
+            raise e
             pass
 
         embed = Embed(
@@ -98,5 +103,6 @@ class cmd(Command):
             embed.color = Colour.from_rgb(
                 dominant_color[0], dominant_color[1], dominant_color[2]
             )
+            print("DO WE GOT IT")
 
         await message.channel.send(embed=embed)
