@@ -1,4 +1,4 @@
-from re import sub
+from re import sub, search
 
 from bot.base import Event
 from bot.config import Config, Embed
@@ -10,6 +10,7 @@ class event(Event):
     name = "on_raw_reaction_add"
 
     async def execute(self, payload) -> None:
+        IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)"
         REACTION = "⭐"
         starboard = await self.bot.fetch_channel(Config.starboard_channel)
         if not payload.emoji.name == REACTION:
@@ -45,6 +46,13 @@ class event(Event):
                             embed.add_field(name="Attachment", value=f'[{attachment_name}]({messageObj.attachments[0].url})')
                             board_message = await starboard.send(content=f'{REACTION} **{reaction.count}**', embed=embed)
                     else:
+                        direct_image_link = search(IMAGE_REGEX, messageObj.content)
+                        if direct_image_link:
+                            embed.set_image(url=direct_image_link.group())
+                            if len(sub(IMAGE_REGEX, "", messageObj.content)) == 0:
+                                embed.description = None
+                            else:
+                                embed.description = sub(IMAGE_REGEX, "[the image link]", messageObj.content)
                         board_message = await starboard.send(content=f'{REACTION} **{reaction.count}**', embed=embed)
                     await self.db.raw_exec_commit(
                         """INSERT INTO starboard(message_id, board_message_id) VALUES (?,?)""",
