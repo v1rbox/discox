@@ -18,6 +18,19 @@ Documentation and installation guide can be found at our [wiki](https://github.c
 6. If you want to add your own dependencies you could with `make add <package>` and to remove it you could with `make remove <package>` like pip
 7. Read [wiki](https://github.com/v1rbox/discox/wiki) for how to create commands et cetera.
 
+### Setting up the MySQL database
+
+The bot relies on a MySQL database to function, to set it up you want to download MySQL / mariaDB
+
+Then simply start / enable it with systemd
+
+```
+stsystemctl start mariadb
+```
+
+The client expects a user `root@localhost` with the password of `''` aka no password. It will automatically set everything up from there when running for the first time
+
+
 ## Contributors & Authors
 
 [![contributors](https://contrib.rocks/image?repo=v1rbox/discox)](https://github.com/v1rbox/discox/graphs/contributors)
