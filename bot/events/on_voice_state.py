@@ -14,8 +14,13 @@ class event(Event):
                 await member.move_to(None, reason="No more avaliable voice channels")
                 await member.send("No more avaliable voice channels.")
             else:
-                channel = await category.create_voice_channel(f"Voice Channel #{len(category.voice_channels)}")
+                channel = await category.create_voice_channel(
+                    f"Voice Channel #{len(category.voice_channels)}"
+                )
                 await member.move_to(channel, reason="Created private channel")
 
-        elif "Voice Channel #" in before.channel.name and len(before.channel.members) == 0:
+        elif (
+            "Voice Channel #" in before.channel.name
+            and len(before.channel.members) == 0
+        ):
             await before.channel.delete(reason="Empty channel")
