@@ -11,10 +11,6 @@ class cmd(Command):
     description = f"Shows user's current distro roles"
 
     async def execute(self, arguments, message) -> None:
-       distroroles = DistroRoles() 
-       embed = Embed(
-                title="Distro",
-                description=distroroles.getRoles(message)
-                )
-       await message.channel.send(embed=embed)
- 
+        distroroles = DistroRoles()
+        embed = Embed(title="Distro", description=distroroles.getRoles(message))
+        await message.channel.send(embed=embed)

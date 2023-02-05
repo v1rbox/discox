@@ -12,10 +12,5 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         distroroles = DistroRoles()
-        embed = Embed(
-                title="Distro",
-                description=distroroles.getLeaderboard(message)
-                )
+        embed = Embed(title="Distro", description=distroroles.getLeaderboard(message))
         await message.channel.send(embed=embed)
-
-        

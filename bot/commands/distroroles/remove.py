@@ -11,10 +11,9 @@ class cmd(Command):
     description = f"Removes a distro role from user"
 
     async def execute(self, arguments, message) -> None:
-        distroroles = DistroRoles() 
+        distroroles = DistroRoles()
         embed = Embed(
-                title="Distro",
-                description=await distroroles.removeRole(message, arguments[0])
-                )
+            title="Distro",
+            description=await distroroles.removeRole(message, arguments[0]),
+        )
         await message.channel.send(embed=embed)
-

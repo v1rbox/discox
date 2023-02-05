@@ -181,12 +181,13 @@ class Task(ABC):
 
         raise NotImplementedError("Task execute method is required")
 
+
 class Roles:
     prefix = None
     whitelist = None
     role_color = None
     max = None
-    
+
     def getRoleByName(self, message, role_name):
         for role in message.guild.roles:
             if role.name == role_name:
@@ -198,53 +199,85 @@ class Roles:
     def getGuildRolesNames(self, message):
         return [x.name for x in message.guild.roles]
 
-    def isWhitelisted(self,argument):
-        return True if argument.lower() in [x.lower() for x in self.whitelist] else False
+    def isWhitelisted(self, argument):
+        return (
+            True if argument.lower() in [x.lower() for x in self.whitelist] else False
+        )
 
-    def authorHasRole(self,message,argument): 
-        return True if argument.lower() in [x.lower() for x in self.getAuthorRolesNames(message)] else False
+    def authorHasRole(self, message, argument):
+        return (
+            True
+            if argument.lower()
+            in [x.lower() for x in self.getAuthorRolesNames(message)]
+            else False
+        )
 
-    def guildHasRole(self,message,argument):
-        return True if argument.lower() in [x.lower() for x in self.getGuildRolesNames(message)] else False
+    def guildHasRole(self, message, argument):
+        return (
+            True
+            if argument.lower() in [x.lower() for x in self.getGuildRolesNames(message)]
+            else False
+        )
 
-    def hasMaxRoles(self,message):
-        return True if len([x for x in self.getAuthorRolesNames(message) if x in self.whitelist]) >= self.max else False
+    def hasMaxRoles(self, message):
+        return (
+            True
+            if len(
+                [x for x in self.getAuthorRolesNames(message) if x in self.whitelist]
+            )
+            >= self.max
+            else False
+        )
 
-    async def addRole(self,message,argument):
+    async def addRole(self, message, argument):
         if not self.isWhitelisted(argument):
             return f"***{argument} is not a whitelisted {self.prefix} role***"
         elif self.hasMaxRoles(message):
-            return f"***{message.author.name} has the max amount of {self.prefix} roles***"
+            return (
+                f"***{message.author.name} has the max amount of {self.prefix} roles***"
+            )
         elif self.authorHasRole(message, argument):
             return f"***{message.author.name} already has the {argument} {self.prefix} role***"
         elif self.guildHasRole(message, argument):
-            argument = self.whitelist[list(map(lambda distro: distro.lower(), self.whitelist)).index(argument.lower())]
-            await message.author.add_roles(self.getRoleByName(message,argument)) 
+            argument = self.whitelist[
+                list(map(lambda distro: distro.lower(), self.whitelist)).index(
+                    argument.lower()
+                )
+            ]
+            await message.author.add_roles(self.getRoleByName(message, argument))
             return f"***{message.author.name} has been added to the {argument} {self.prefix} role***"
-        #Creates role and adds to role if role does not exist yet
+        # Creates role and adds to role if role does not exist yet
         elif not self.guildHasRole(message, argument):
-            argument = self.whitelist[list(map(lambda distro: distro.lower(), self.whitelist)).index(argument.lower())]
+            argument = self.whitelist[
+                list(map(lambda distro: distro.lower(), self.whitelist)).index(
+                    argument.lower()
+                )
+            ]
             await message.guild.create_role(name=argument, colour=self.role_color)
-            await message.author.add_roles(self.getRoleByName(message,argument)) 
+            await message.author.add_roles(self.getRoleByName(message, argument))
             return f"***{message.author.name} has been added to the {argument} {self.prefix} role***"
         else:
             return f"***Cannot add to {self.prefix} role***"
 
-    async def removeRole(self,message,argument):
+    async def removeRole(self, message, argument):
         if not self.isWhitelisted(argument):
             return f"***{argument} is not a whitelisted {self.prefix} role***"
         elif not self.authorHasRole(message, argument):
             return f"***{message.author.name} does not have the {argument} {self.prefix} role***"
         else:
-            argument = self.whitelist[list(map(lambda distro: distro.lower(), self.whitelist)).index(argument.lower())]
+            argument = self.whitelist[
+                list(map(lambda distro: distro.lower(), self.whitelist)).index(
+                    argument.lower()
+                )
+            ]
             role = self.getRoleByName(message, argument)
             await message.author.remove_roles(role)
-            #Removes the role if the role is now empty
+            # Removes the role if the role is now empty
             if len(role.members) == 0:
                 await role.delete()
             return f"***{message.author.name} has been removed from the {argument} {self.prefix} role***"
 
-    def getRoles(self,message):
+    def getRoles(self, message):
         roles = [x for x in self.getAuthorRolesNames(message) if x in self.whitelist]
         if len(roles) == 0:
             return f"***{message.author.name} has no {self.prefix} roles yet***"
@@ -263,11 +296,19 @@ class Roles:
                 desc += f"{role}\n"
             return f"***Whitelisted {self.prefix} roles:\n\n{desc}***"
 
-    def getLeaderboard(self,message):
-        leaderboard=[]
+    def getLeaderboard(self, message):
+        leaderboard = []
         for role in self.getGuildRolesNames(message):
-            if role in self.whitelist and len(self.getRoleByName(message, role).members) > 0:
-                leaderboard.append({"role":role,"count":len(self.getRoleByName(message, role).members)}) 
+            if (
+                role in self.whitelist
+                and len(self.getRoleByName(message, role).members) > 0
+            ):
+                leaderboard.append(
+                    {
+                        "role": role,
+                        "count": len(self.getRoleByName(message, role).members),
+                    }
+                )
         if leaderboard == []:
             return f"***Nobody has any {self.prefix} roles yet***"
         else:

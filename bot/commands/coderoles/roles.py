@@ -11,10 +11,6 @@ class cmd(Command):
     description = f"Shows user's current code roles"
 
     async def execute(self, arguments, message) -> None:
-       coderoles = CodeRoles() 
-       embed = Embed(
-                title="Code",
-                description=coderoles.getRoles(message)
-                )
-       await message.channel.send(embed=embed)
- 
+        coderoles = CodeRoles()
+        embed = Embed(title="Code", description=coderoles.getRoles(message))
+        await message.channel.send(embed=embed)

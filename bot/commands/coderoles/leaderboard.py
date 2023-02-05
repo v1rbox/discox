@@ -12,10 +12,5 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         coderoles = CodeRoles()
-        embed = Embed(
-                title="Code",
-                description=coderoles.getLeaderboard(message)
-                )
+        embed = Embed(title="Code", description=coderoles.getLeaderboard(message))
         await message.channel.send(embed=embed)
-
-        
