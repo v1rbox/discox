@@ -1,6 +1,7 @@
 from re import findall
 from colorthief import ColorThief
-import requests
+import aiohttp
+import io
 import os
 from discord import Colour
 
@@ -26,11 +27,16 @@ class cmd(Command):
 
         avatar_color = None
         try:
-            b = requests.get(message.author.display_avatar.url, allow_redirects=True)
-            open('avatar.png', 'wb').write(b.content)
-            color_thief = ColorThief('avatar.png')
-            avatar_color = color_thief.get_color(quality=1)
-            os.remove("avatar.png")
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    message.author.display_avatar.url,
+                    headers={
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+                    }
+                    ) as b:
+                        b = io.BytesIO(await b.read())
+                        color_thief = ColorThief(b)
+                        avatar_color = color_thief.get_color(quality=1)
         except:
             pass
 
