@@ -1,3 +1,5 @@
+import discord
+
 from bot.base import Event
 from bot.config import Config, Embed
 
@@ -37,3 +39,26 @@ class event(Event):
                         await message.channel.send(
                             f"Congratulations {message.author.mention}, you just advanced to level {result[0][1] + 1}!"
                         )
+
+            if isinstance(message.channel, discord.channel.DMChannel):
+                channel = await self.bot.fetch_channel(Config.report_channel_id)
+                found = False
+                for i in channel.threads:
+                    if (
+                        i.name.startswith(str(message.author.id))
+                        and len(i.applied_tags) == 1
+                    ):
+                        embed = Embed(description=message.content)
+                        embed.set_author(
+                            name=str(message.author),
+                            icon_url=message.author.display_avatar.url,
+                        )
+                        await i.send(embed=embed)
+
+                        for a in message.attachments:
+                            await i.send(
+                                f"User sent an attachment `{a.filename}`\n{a.url}"
+                            )
+
+                        await message.add_reaction("✅")
+                        found = True
