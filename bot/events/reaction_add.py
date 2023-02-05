@@ -34,7 +34,9 @@ class event(Event):
                         text=f"{reaction.count} stars",
                         icon_url="https://cdn.discordapp.com/icons/1052597660860821604/8fd53af279aa7d8d77a0451776c4fa35.webp?size=96",
                     )
-                    embed.add_field(name="Original", value=f"[Jump!]({messageObj.jump_url})")
+                    embed.add_field(
+                        name="Original", value=f"[Jump!]({messageObj.jump_url})"
+                    )
 
                     if messageObj.content:
                         embed.description = messageObj.content
