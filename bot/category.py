@@ -59,7 +59,7 @@ class DistroCategory(Category):
     name = "distroroles"
     prefix = "distro"
     commands: List[Command] = []
-    channels = [config.role_channel]
+    # channels = [config.role_channel]
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
