@@ -17,8 +17,11 @@ class cmd(Command):
         await member.timeout(
             datetime.timedelta(hours=3), reason=f"Report - {message.author}"
         )
-        
-        embedf = Embed(title="Pending Report", description="A report has been opened on your account and is awaiting review by an administrator.\n\nYou can send messages in this DM channel once the reason has been supplied and they will be relaied to the administrator reviewing your report.\n\nYou have also been applied a 3 hour timeout, this is simply while we complete our review, this may be lifted after the process is complete. Thank you for your patience!")
+
+        embedf = Embed(
+            title="Pending Report",
+            description="A report has been opened on your account and is awaiting review by an administrator.\n\nYou can send messages in this DM channel once the reason has been supplied and they will be relaied to the administrator reviewing your report.\n\nYou have also been applied a 3 hour timeout, this is simply while we complete our review, this may be lifted after the process is complete. Thank you for your patience!",
+        )
         embedf.add_field(name="Reason", value="```Pending...```")
 
         embedf_msg = await member.send(embed=embedf)
@@ -48,7 +51,9 @@ class cmd(Command):
                 datetime.timedelta(seconds=3),
                 reason=f"Report Canceled - {message.author}",
             )
-            await member.send("Your report has been canseled. Sorry for the incontinence. Your timeout will be lifted in 3 seconds.")
+            await member.send(
+                "Your report has been canseled. Sorry for the incontinence. Your timeout will be lifted in 3 seconds."
+            )
             return
 
         reason: str = msg.content
@@ -76,7 +81,9 @@ class cmd(Command):
                 datetime.timedelta(seconds=3),
                 reason=f"Report Canceled - {message.author}",
             )
-            await member.send("Your report has been canseled. Sorry for the incontinence. Your timeout will be lifted in 3 seconds.")
+            await member.send(
+                "Your report has been canseled. Sorry for the incontinence. Your timeout will be lifted in 3 seconds."
+            )
             return
 
         if str(reaction.emoji) == "✅":

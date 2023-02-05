@@ -1,7 +1,8 @@
+import asyncio
 from typing import Any, Dict, List, Optional, Tuple
 
-import asyncio
 import aiomysql
+
 
 class SQLParser:
     def __init__(self, file: str, create_statemets: List[str]) -> None:
@@ -17,9 +18,13 @@ class SQLParser:
             if len(args) > 0 and isinstance(args[0], aiomysql.connection.Connection):
                 res = await func(self, *args, **kwargs)
             else:
-                pool = await aiomysql.create_pool(host='127.0.0.1', port=3306,
-                    user='root', password='',
-                    db='discox', autocommit=True
+                pool = await aiomysql.create_pool(
+                    host="127.0.0.1",
+                    port=3306,
+                    user="root",
+                    password="",
+                    db="discox",
+                    autocommit=True,
                 )
                 async with pool.acquire() as db:
                     async with db.cursor() as cur:
@@ -31,7 +36,11 @@ class SQLParser:
 
     @connect
     async def raw_exec_select(
-        self, db: aiomysql.connection.Connection, cur: aiomysql.cursors.Cursor, sql: str, vals: Tuple = ()
+        self,
+        db: aiomysql.connection.Connection,
+        cur: aiomysql.cursors.Cursor,
+        sql: str,
+        vals: Tuple = (),
     ) -> List[Tuple]:
         """Get a result(s) from the database"""
         sql = sql.replace("?", "%s")
@@ -44,7 +53,11 @@ class SQLParser:
 
     @connect
     async def raw_exec_commit(
-        self, db: aiomysql.connection.Connection, cur: aiomysql.cursors.Cursor, sql: str, vals: Tuple = ()
+        self,
+        db: aiomysql.connection.Connection,
+        cur: aiomysql.cursors.Cursor,
+        sql: str,
+        vals: Tuple = (),
     ) -> None:
         """Execute an sql statement and commit it to the database"""
         sql = sql.replace("?", "%s")
@@ -54,7 +67,9 @@ class SQLParser:
     # Add custom db methods here if you need more control
 
     @connect
-    async def initialise(self, db: aiomysql.connection.Connection, cur: aiomysql.cursors.Cursor):
+    async def initialise(
+        self, db: aiomysql.connection.Connection, cur: aiomysql.cursors.Cursor
+    ):
         """Execute all the create statements on load"""
         for sql in self.create_statemets:
             await self.raw_exec_commit(db, cur, sql)
