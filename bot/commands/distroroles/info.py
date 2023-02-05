@@ -62,16 +62,15 @@ class cmd(Command):
             if distro_codename:
                 async with aiohttp.ClientSession() as session:
                     async with session.get(
-                        f"https://distrowatch.com/images/yvzhuwbpy/{distro_codename}.png"
+                        f"https://distrowatch.com/images/yvzhuwbpy/{distro_codename}.png",
+                        headers={
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+                        }
                     ) as b:
                         b = io.BytesIO(await b.read())
-                        b.seek(0)
                 color_thief = ColorThief(b)
                 dominant_color = color_thief.get_color(quality=1)
-                print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        except Exception as e:
-            print("IT FAILED")
-            raise e
+        except:
             pass
 
         embed = Embed(
@@ -103,6 +102,5 @@ class cmd(Command):
             embed.color = Colour.from_rgb(
                 dominant_color[0], dominant_color[1], dominant_color[2]
             )
-            print("DO WE GOT IT")
 
         await message.channel.send(embed=embed)
