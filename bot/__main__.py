@@ -56,7 +56,8 @@ CREATE_STATEMENTS = [
     """,
     """
     CREATE TABLE IF NOT EXISTS "starboard" (
-        "message_id" INT UNIQUE
+        "message_id" INT UNIQUE,
+        "board_message_id" INT
     )
     """
 ]
