@@ -72,6 +72,7 @@ class Config:
     starboard_channel: int = int(
         os.getenv("DISCOX_STARBOARD_CHANNEL", "0")
     )  # starboard channel
+    mysql_pass: str = os.getenv("MYSQL_LOGIN", "")
 
 
 if __name__ == "__main__":

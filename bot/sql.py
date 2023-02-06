@@ -1,5 +1,6 @@
 import asyncio
 from typing import Any, Dict, List, Optional, Tuple
+from .config import Config
 
 import aiomysql
 
@@ -22,7 +23,7 @@ class SQLParser:
                     host="127.0.0.1",
                     port=3306,
                     user="root",
-                    password="",
+                    password=Config.mysql_pass,
                     db="discox",
                     autocommit=True,
                 )
