@@ -1,8 +1,9 @@
 import asyncio
 from typing import Any, Dict, List, Optional, Tuple
-from .config import Config
 
 import aiomysql
+
+from .config import Config
 
 
 class SQLParser:
