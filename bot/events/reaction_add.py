@@ -35,6 +35,7 @@ class event(Event):
                         icon_url=messageObj.author.display_avatar.url
                     )
                     embed.add_field(name="Original", value=f'[Jump!]({messageObj.jump_url})')
+
                     if messageObj.content:
                         embed.description = messageObj.content
                     if len(messageObj.attachments) != 0:
@@ -45,6 +46,7 @@ class event(Event):
                             attachment_name = sub("http(s)?:\/\/.*\/attachments\/.*\/", "", messageObj.attachments[0].url)
                             embed.add_field(name="Attachment", value=f'[{attachment_name}]({messageObj.attachments[0].url})')
                             board_message = await starboard.send(content=f'{REACTION} **{reaction.count}**', embed=embed)
+
                     else:
                         direct_image_link = search(IMAGE_REGEX, messageObj.content)
                         if direct_image_link:
@@ -74,3 +76,4 @@ class event(Event):
                     if messageObj.content:
                         new_embed.description = messageObj.content
                         await board_message.edit(content=f'{REACTION} **{reaction.count}**', embed=new_embed)
+
