@@ -1,3 +1,5 @@
+from re import sub, search
+
 from bot.base import Event
 from bot.config import Config, Embed
 
@@ -8,6 +10,7 @@ class event(Event):
     name = "on_raw_reaction_add"
 
     async def execute(self, payload) -> None:
+        IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)"
         REACTION = "⭐"
         starboard = await self.bot.fetch_channel(Config.starboard_channel)
         if not payload.emoji.name == REACTION:
@@ -20,69 +23,57 @@ class event(Event):
             if reaction.count >= 5:
                 already = await self.db.raw_exec_select(
                     "SELECT message_id FROM starboard WHERE message_id = ?",
-                    (messageObj.id,),
+                    (messageObj.id,)
                 )
                 if len(already) == 0:
                     board_message = None
                     embed = Embed()
                     embed.set_color("yellow")
                     embed.set_author(
-                        name=str(messageObj.author),
-                        icon_url=messageObj.author.display_avatar.url,
+                        name=f'{messageObj.author}',
+                        url=f'https://discord.com/users/{messageObj.author.id}',
+                        icon_url=messageObj.author.display_avatar.url
                     )
-                    embed.set_footer(
-                        text=f"{reaction.count} stars",
-                        icon_url="https://cdn.discordapp.com/icons/1052597660860821604/8fd53af279aa7d8d77a0451776c4fa35.webp?size=96",
-                    )
-                    embed.add_field(
-                        name="Original", value=f"[Jump!]({messageObj.jump_url})"
-                    )
+                    embed.add_field(name="Original", value=f'[Jump!]({messageObj.jump_url})')
 
                     if messageObj.content:
                         embed.description = messageObj.content
                     if len(messageObj.attachments) != 0:
                         if "image" in messageObj.attachments[0].content_type:
                             embed.set_image(url=messageObj.attachments[0].url)
-                            board_message = await starboard.send(embed=embed)
-                        # else:
-                        #     content = ""
-                        #     if messageObj.content:
-                        #         content += f"{messageObj.content} • "
-                        #     content += f"{reaction.count} stars • by {messageObj.author}\n{messageObj.attachments[0].url}"
-                        #    board_message = await starboard.send(content)
+                            board_message = await starboard.send(content=f'{REACTION} **{reaction.count}**', embed=embed)
+                        else:
+                            attachment_name = sub("http(s)?:\/\/.*\/attachments\/.*\/", "", messageObj.attachments[0].url)
+                            embed.add_field(name="Attachment", value=f'[{attachment_name}]({messageObj.attachments[0].url})')
+                            board_message = await starboard.send(content=f'{REACTION} **{reaction.count}**', embed=embed)
+
                     else:
-                        board_message = await starboard.send(embed=embed)
+                        direct_image_link = search(IMAGE_REGEX, messageObj.content)
+                        if direct_image_link:
+                            embed.set_image(url=direct_image_link.group())
+                            if len(sub(IMAGE_REGEX, "", messageObj.content)) == 0:
+                                embed.description = None
+                            else:
+                                embed.description = sub(IMAGE_REGEX, "[image link]", messageObj.content)
+                        board_message = await starboard.send(content=f'{REACTION} **{reaction.count}**', embed=embed)
                     await self.db.raw_exec_commit(
                         """INSERT INTO starboard(message_id, board_message_id) VALUES (?,?)""",
-                        (
-                            messageObj.id,
-                            board_message.id,
-                        ),
+                        (messageObj.id,board_message.id,)
                     )
                 else:
                     board_message_id = await self.db.raw_exec_select(
                         "SELECT board_message_id FROM starboard WHERE message_id = ?",
-                        (messageObj.id,),
+                        (messageObj.id,)
                     )
                     board_message_id = board_message_id[0][0]
                     board_message = await starboard.fetch_message(board_message_id)
-                    # if (
-                    #     len(board_message.embeds) != 0
-                    #     and board_message.embeds[0].footer
-                    # ):
-                    if True:
-                        new_embed = board_message.embeds[0]
-                        new_embed.set_footer(
-                            text=f"{reaction.count} stars",
-                            icon_url="https://cdn.discordapp.com/icons/1052597660860821604/8fd53af279aa7d8d77a0451776c4fa35.webp?size=96",
-                        )
-                        if messageObj.content:
-                            new_embed.description = messageObj.content
-                        await board_message.edit(embed=new_embed)
-                    # Commented out due to issues with mentioning everyone (this is a really bad idea, keep user defined messages in an embed)
-                    # else:
-                    #     content = ""
-                    #     if messageObj.content:
-                    #         content += f"{messageObj.content} • "
-                    #     content += f"{reaction.count} stars • by {messageObj.author}\n{messageObj.attachments[0].url}"
-                    #     await board_message.edit(content=content)
+                    new_embed = board_message.embeds[0]
+                    new_embed.set_author(
+                        name=f'{messageObj.author}',
+                        url=f'https://discord.com/users/{messageObj.author.id}',
+                        icon_url=messageObj.author.display_avatar.url
+                    )
+                    if messageObj.content:
+                        new_embed.description = messageObj.content
+                        await board_message.edit(content=f'{REACTION} **{reaction.count}**', embed=new_embed)
+
