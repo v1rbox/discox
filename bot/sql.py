@@ -3,6 +3,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import aiomysql
 
+from .config import Config
+
 
 class SQLParser:
     def __init__(self, file: str, create_statemets: List[str]) -> None:
@@ -22,7 +24,7 @@ class SQLParser:
                     host="127.0.0.1",
                     port=3306,
                     user="root",
-                    password="",
+                    password=Config.mysql_pass,
                     db="discox",
                     autocommit=True,
                 )
@@ -45,9 +47,7 @@ class SQLParser:
         """Get a result(s) from the database"""
         sql = sql.replace("?", "%s")
         await cur.execute(sql, vals)
-        print(sql, vals)
         res = await cur.fetchall()
-        print(res)
 
         return res
 
@@ -61,7 +61,6 @@ class SQLParser:
     ) -> None:
         """Execute an sql statement and commit it to the database"""
         sql = sql.replace("?", "%s")
-        print(sql, vals)
         await cur.execute(sql, vals)
 
     # Add custom db methods here if you need more control
