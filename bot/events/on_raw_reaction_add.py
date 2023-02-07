@@ -2,9 +2,14 @@ from re import search, sub
 
 from bot.base import Event
 from bot.config import Config, Embed
-
+import typing
 import discord
+import datetime
+import enum
 
+class EnumPollType(enum.Enum):
+    single = "single"
+    multiple = "multiple"
 
 class event(Event):
     """A discord event instance."""
@@ -15,11 +20,39 @@ class event(Event):
         await self.starboard(*args, **kwargs)
         await self.poll_checker(*args, **kwargs)
         
+    async def convert_and_typehint_this(self,a: tuple[typing.Any]) -> tuple[
+        discord.Guild,
+        discord.TextChannel,
+        discord.Message,
+        int,
+        datetime.datetime,
+        bool,
+        EnumPollType
+    ]:
+        j = self.bot.get_channel(a[1])
+        return tuple(
+            self.bot.get_guild(a[0]),
+            j,
+            await j.fetch_message(a[2]),
+            int(a[3]),
+            datetime.datetime.fromtimestamp(int(a[4])),
+            bool(a[5]),
+            EnumPollType(a[6])
+        )
+        
     async def poll_checker(self, payload: discord.RawReactionActionEvent):
         message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
         a = await self.db.raw_exec_select(
-            "SELECT * FROM polls WHERE guild_id = ?"
+            "SELECT * FROM polls WHERE guild_id = ? AND channel_id = ? AND message_id = ?",
+            (
+                message.guild.id,
+                message.channel.id,
+                message.id
+            )
         )
+        assert a and a[0], "No polls found with that ID"
+        info = self.convert_and_typehint_this(a[0])
+        
     async def starboard(self, payload: discord.RawReactionActionEvent) -> None:
         IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)"
         REACTION = "⭐"
