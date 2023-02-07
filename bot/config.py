@@ -74,6 +74,9 @@ class Config:
     mysql_user: str = os.getenv("DISCOX_MYSQL_USER", "root")
     mysql_password: str = os.getenv("DISCOX_MYSQL_PASSWORD", "") # recommendaton :tf:
     mysql_database: str = os.getenv("DISCOX_MYSQL_DATABASE","discox")
+    starboard_channel: int = int(
+        os.getenv("DISCOX_STARBOARD_CHANNEL", "0")
+    )  # starboard channel
 
 
 if __name__ == "__main__":
