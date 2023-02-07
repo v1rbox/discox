@@ -17,8 +17,7 @@ config = Config()
 
 CREATE_STATEMENTS = [
     """
-<<<<<<< HEAD
-    CREATE TABLE IF NOT EXISTS "polls" (
+    CREATE TABLE IF NOT EXISTS "discox.polls" (
         "guild_id"	INTEGER,
         "channel_id"	INTEGER,
         "message_id"	INTEGER UNIQUE,
@@ -29,18 +28,8 @@ CREATE_STATEMENTS = [
         PRIMARY KEY("message_id")
     )
     """,
-    """
-        CREATE TABLE IF NOT EXISTS "levels" (
-	        "user_id"	TEXT UNIQUE,
-	        "level"	INTEGER,
-	        "exp"	INTEGER,
-            "font_color"	TEXT,
-            "bg"	TEXT DEFAULT NULL,
-	        PRIMARY KEY("user_id")
-        )
-=======
+    """,
         CREATE DATABASE IF NOT EXISTS discox;
->>>>>>> 80aa46388ff8839591f580d5c24e28cfc5711f0f
     """,
     """
         CREATE TABLE IF NOT EXISTS discox.levels (

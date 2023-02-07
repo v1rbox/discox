@@ -3,13 +3,24 @@ from re import search, sub
 from bot.base import Event
 from bot.config import Config, Embed
 
+import discord
+
 
 class event(Event):
     """A discord event instance."""
 
     name = "on_raw_reaction_add"
 
-    async def execute(self, payload) -> None:
+    async def execute(self, *args, **kwargs) -> None:
+        await self.starboard(*args, **kwargs)
+        await self.poll_checker(*args, **kwargs)
+        
+    async def poll_checker(self, payload: discord.RawReactionActionEvent):
+        message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
+        a = await self.db.raw_exec_select(
+            "SELECT * FROM polls WHERE guild_id = ?"
+        )
+    async def starboard(self, payload: discord.RawReactionActionEvent) -> None:
         IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)"
         REACTION = "⭐"
         starboard = await self.bot.fetch_channel(Config.starboard_channel)
