@@ -17,6 +17,8 @@ class event(Event):
             return
         channelObj = await self.bot.fetch_channel(payload.channel_id)
         messageObj = await channelObj.fetch_message(payload.message_id)
+        if messageObj.author.id == self.bot.user.id:
+            return
         for reaction in messageObj.reactions:
             if not reaction == REACTION:
                 pass
