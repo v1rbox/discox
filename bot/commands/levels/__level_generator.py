@@ -45,7 +45,6 @@ class Generator:
             255,
         ),
     ) -> discord.File:
-        level += 1  # i hate you rgbcube
         current_xp = 0
         if not bg_image:
             card = Image.open(self.default_bg).convert("RGBA")
