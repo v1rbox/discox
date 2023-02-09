@@ -10,7 +10,7 @@ class event(Event):
     name = "on_raw_reaction_add"
 
     async def execute(self, payload) -> None:
-        IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)"
+        IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)\?.*[^\s]"
         REACTION = "⭐"
         starboard = await self.bot.fetch_channel(Config.starboard_channel)
         if not payload.emoji.name == REACTION:
@@ -61,7 +61,6 @@ class event(Event):
                             board_message = await starboard.send(
                                 content=f"{REACTION} **{reaction.count}**", embed=embed
                             )
-
                     else:
                         direct_image_link = search(IMAGE_REGEX, messageObj.content)
                         if direct_image_link:
@@ -97,6 +96,17 @@ class event(Event):
                     )
                     if messageObj.content:
                         new_embed.description = messageObj.content
-                        await board_message.edit(
-                            content=f"{REACTION} **{reaction.count}**", embed=new_embed
-                        )
+                    direct_image_link = search(IMAGE_REGEX, messageObj.content)
+                    if direct_image_link:
+                        new_embed.set_image(url=direct_image_link.group())
+                        if len(sub(IMAGE_REGEX, "", messageObj.content)) == 0:
+                            new_embed.description = None
+                        else:
+                            new_embed.description = sub(
+                                IMAGE_REGEX, "[image link]", messageObj.content
+                            )
+                    if not direct_image_link and len(messageObj.attachments) == 0:
+                        new_embed.set_image(url=None)
+                    await board_message.edit(
+                        content=f"{REACTION} **{reaction.count}**", embed=new_embed
+                    )
