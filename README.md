@@ -25,7 +25,7 @@ The bot relies on a MySQL database to function, to set it up you want to downloa
 Then simply start / enable it with systemd
 
 ```
-stsystemctl start mariadb
+systemctl start mariadb
 ```
 
 The client expects a user `root@localhost` with the password of `''` aka no password. It will automatically set everything up from there when running for the first time
