@@ -147,6 +147,7 @@ class MineBoard(discord.ui.View):
         self.remaining_tiles -= 1
         if button.near_mines > 0:
             button.label = button.near_mines
+            return
         while not q.empty():
             current = q.get()
             for butt in current.neighbors:
