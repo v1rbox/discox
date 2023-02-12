@@ -15,6 +15,8 @@ rich = "^13.1.0"
 pillow = "^9.4.0"
 aiohttp = "^3.8.3"
 colorthief = "0.2.1"
+orjson = "^3.8.5"
+aiomysql = "^0.1.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.12.0"

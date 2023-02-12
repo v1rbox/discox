@@ -31,17 +31,6 @@ class Category(ABC):
         raise NotImplementedError("Check permissions method is required")
 
 
-class FunCategory(Category):
-    """A command category instance."""
-
-    name = "fun"
-    prefix = None
-    commands: List[Command] = []
-
-    def check_permissions(self, message: discord.Message) -> bool:
-        return True
-
-
 class UtilityCategory(Category):
     """A command category instance."""
 
@@ -59,7 +48,7 @@ class DistroCategory(Category):
     name = "distroroles"
     prefix = "distro"
     commands: List[Command] = []
-    channels = [config.role_channel]
+    # channels = [config.role_channel]
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
@@ -105,7 +94,7 @@ class RemindCategory(Category):
     """A command category instance."""
 
     name = "reminders"
-    prefix = "remind"
+    prefix = "reminder"
     commands: List[Command] = []
 
     def check_permissions(self, message: discord.Message) -> bool:
