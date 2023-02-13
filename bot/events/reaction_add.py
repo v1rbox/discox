@@ -61,6 +61,7 @@ class event(Event):
                             board_message = await starboard.send(
                                 content=f"{REACTION} **{reaction.count}**", embed=embed
                             )
+
                     else:
                         direct_image_link = search(IMAGE_REGEX, messageObj.content)
                         if direct_image_link:
@@ -96,6 +97,7 @@ class event(Event):
                     )
                     if messageObj.content:
                         new_embed.description = messageObj.content
+
                     direct_image_link = search(IMAGE_REGEX, messageObj.content)
                     if direct_image_link:
                         new_embed.set_image(url=direct_image_link.group())
@@ -110,3 +112,4 @@ class event(Event):
                     await board_message.edit(
                         content=f"{REACTION} **{reaction.count}**", embed=new_embed
                     )
+
