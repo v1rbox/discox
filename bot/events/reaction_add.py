@@ -112,4 +112,3 @@ class event(Event):
                     await board_message.edit(
                         content=f"{REACTION} **{reaction.count}**", embed=new_embed
                     )
-
