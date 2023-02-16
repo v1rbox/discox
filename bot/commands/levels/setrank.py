@@ -5,10 +5,10 @@ from bot.config import Config, Embed
 
 
 class cmd(Command):
-    """A discord command instance."""
+    """Set rank to other user. Only <@936357105760370729> can use this command."""
 
     name = "setrank"
-    usage = "setrank <user> [exp]"
+    usage = "setrank <user:member> [exp:int]"
     description = "Set the rank for another user. Administrator only."
 
     async def execute(self, arguments, message) -> None:
@@ -17,7 +17,7 @@ class cmd(Command):
 
         # Calculate level
         lvl = 0
-        exp = int(arguments[1])
+        exp = arguments[1]
         while True:
             if exp >= (lvl + 1) * 25 + 100:
                 lvl += 1
@@ -25,16 +25,8 @@ class cmd(Command):
             else:
                 break
 
-        cursor = await self.db.cursor()
-
-        await cursor.execute(f"DELETE FROM levels WHERE user_id = ?", (arguments[0],))
-        await self.db.commit()
-
-        sql = "INSERT INTO levels(exp, level, user_id) VALUES (?,?,?)"
-        val = (exp, lvl, arguments[0])
-        await cursor.execute(sql, val)
-        await self.db.commit()
-
-        await cursor.close()
-
+        await self.db.raw_exec_commit(
+            "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
+            (lvl, exp, arguments[0].id),
+        )
         await message.channel.send(f"Updated rank to {lvl}.{exp}")

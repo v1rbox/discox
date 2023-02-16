@@ -1,21 +1,68 @@
 import os
 import re
+import threading
 import traceback
 from typing import List, Tuple
 
-import aiosqlite
 import discord
-from discord.ext import tasks
-from rich.console import Console
-from rich.table import Table
 
-from .base import Command
 from .config import Config, Embed
 from .logger import Logger
-from .manager import CommandsManager, EventsManager, TasksManager
+from .manager import (CommandsManager, EventsManager, PoolingManager,
+                      TasksManager)
+from .sql import SQLParser
 
 logger = Logger()
 config = Config()
+
+CREATE_STATEMENTS = [
+    """
+        CREATE DATABASE IF NOT EXISTS discox;
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS discox.levels (
+            user_id VARCHAR(100) PRIMARY KEY,
+            level INTEGER,
+            exp INTEGER,
+            font_color VARCHAR(25),
+            bg VARCHAR(2048) DEFAULT NULL
+        );
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS discox.latest_video (
+	        video_id VARCHAR(50) PRIMARY KEY
+        );
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS discox.request (
+            Number_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            Member_id VARCHAR(100) NOT NULL,
+            Title VARCHAR(255) NOT NULL,
+            Description VARCHAR(2048) NOT NULL
+        );
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS discox.reminders (
+            id INTEGER AUTO_INCREMENT PRIMARY KEY,
+            User VARCHAR(100),
+            Timestamp INTEGER,
+            Reminder VARCHAR(2048),
+            Channel VARCHAR(100),
+            Message VARCHAR(100)
+        );
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS discox.membercount (
+            membercount INT PRIMARY KEY
+        );
+    """,
+    """
+    	CREATE TABLE IF NOT EXISTS discox.starboard (
+	    message_id VARCHAR(100) PRIMARY KEY,
+	    board_message_id VARCHAR(100)
+	);
+    """,
+]
 
 
 def parse_user_input(user_input: str) -> Tuple[str, List[str]]:
@@ -90,40 +137,112 @@ async def parse_usage_text(
     return True
 
 
+async def match_type(type: str, arg: str, message: discord.Message) -> any:
+    match type:
+        case "int":
+            if arg.removeprefix("-").isdigit():
+                return int(arg)
+            else:
+                await logger.send_error(f"'{arg}' is not an integer.", message)
+                raise ValueError()
+
+        case "float":
+            if re.match("^-?\d+(?:\.\d+)$", arg) is not None:
+                return float(arg)
+            else:
+                await logger.send_error(f"'{arg}' is not a float.", message)
+                raise ValueError()
+
+        case "bool":
+            if arg.lower() == "true":
+                return True
+            elif arg.lower() == "false":
+                return False
+            else:
+                await logger.send_error(f"'{arg}' is not a boolean.", message)
+                raise ValueError()
+
+        case "member":
+            # temp fix
+            if arg == "":
+                arg = str(message.author.id)
+            try:
+                user = message.guild.get_member_named(arg)
+                assert user is not None
+            except AssertionError:
+                try:
+                    user = await message.guild.fetch_member(arg)
+                except (discord.NotFound, discord.HTTPException, discord.Forbidden):
+                    try:
+                        user = await message.guild.fetch_member(message.mentions[0].id)
+                    except IndexError:
+                        await logger.send_error(
+                            f"The user `{arg}` was not found.\nNote: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.",
+                            message,
+                        )
+                        raise ValueError()
+                    except (
+                        discord.NotFound,
+                        discord.HTTPException,
+                        discord.Forbidden,
+                    ):
+                        logger.send_error(
+                            f"The user `{arg}` was not found.\nNote: This command is case sensitive. E.g use `Virbox#2050` instead of `virbox#2050`.",
+                            message,
+                        )
+                        raise ValueError()
+            return user
+        case _:
+            return arg
+
+
+async def parse_types(
+    usage: str, arguments: List[str], message: discord.Message
+) -> List:
+    required_args: List[str] = re.findall("\<(.*?)\>", usage)
+    optional_args: List[str] = re.findall("\[(.*?)\]", usage)
+    usage_args = [*required_args, *optional_args]
+
+    args_raw: List[str] = re.findall("\[.+\]|<.+>", usage)
+    usage_types = []
+    for i in usage_args:
+        if i[1] is None:
+            usage_types.append([i[0], "str"])
+        else:
+            usage_types.append([i[0], i[1]])
+    result = []
+
+    for i in range(len(arguments)):
+        type = (
+            "str" if len(usage_args[i].split(":")) == 1 else usage_args[i].split(":")[1]
+        )
+        try:
+            typed = await match_type(type, arguments[i], message)
+            result.append(typed)
+        except ValueError:
+            return False
+    return result
+
+
 def main() -> None:
     """Main setup function."""
 
-    db = None
+    db = SQLParser("bot/assets/main.db", CREATE_STATEMENTS)
     bot = discord.Client(intents=discord.Intents.all())
 
-    manager = CommandsManager(bot, db)
-    event_manager = EventsManager(bot, db)
+    bot.manager = CommandsManager(bot, db)
+    bot.event_manager = EventsManager(bot, db)
     tasks_manager = TasksManager(bot, db)
 
-    @bot.event
-    async def on_ready():
-        """When the bot is connected."""
+    # Start autoreloads
+    threading.Thread(target=PoolingManager, args=(bot,)).start()
 
-        if bot.user is None:
-            raise RuntimeError("Bot user is None")
-
-        db = await aiosqlite.connect("bot/assets/main.db")
-        manager.db = db
-        event_manager.db = db
-        tasks_manager.db = db
-
-        logger.log("Bot is ready!")
-        logger.log(f"Logged in as {bot.user}")
-
-        logger.newline()
-        logger.log("Username:", f"{bot.user.name}#{bot.user.discriminator}")
-        logger.log("ID:", f"{bot.user.id}")
-        logger.log("Guilds:", f"{len(bot.guilds)}")
-        logger.log("Prefix:", config.prefix)
-        logger.newline()
-
+    async def register_all():
         # Stop the bot attempting to load the commands multiple times
-        if len(manager.commands) != 0:
+        if len(bot.manager.commands) != 0:
+            # bot.manager.reset()
+            # bot.event_manager.reset()
+            # tasks_manager.reset()
             return
 
         # Load the commands
@@ -135,7 +254,7 @@ def main() -> None:
         for entry in entries:
             cmd = entry.split(".")[0]
             if os.path.isfile(os.path.join("bot", "commands", entry)):
-                manager.register(
+                bot.manager.register(
                     __import__(
                         f"bot.commands.{cmd}", globals(), locals(), ["cmd"], 0
                     ).cmd,
@@ -148,7 +267,7 @@ def main() -> None:
                     for i in os.listdir(os.path.join("bot", "commands", entry))
                     if not i.startswith("__")
                 ]:
-                    manager.register(
+                    bot.manager.register(
                         __import__(
                             f"bot.commands.{entry}.{cmd}",
                             globals(),
@@ -160,15 +279,7 @@ def main() -> None:
                         file=os.path.join(entry, cmd + ".py"),
                     )
 
-        logger.log("Registered commands")
-        for idx, command in enumerate(manager.commands, 1):
-            logger.custom(
-                str(idx), f"{config.prefix}{command.name} :", command.description
-            )
-
         # Setup events
-        logger.newline()
-        logger.log("Registered events")
         entries = [
             i.split(".")[0]
             for i in os.listdir(os.path.join("bot", "events"))
@@ -178,13 +289,9 @@ def main() -> None:
             event = __import__(
                 f"bot.events.{entry}", globals(), locals(), ["event"], 0
             ).event
-            event_manager.register(event)
-            logger.custom(str(idx), f"{event.name} ")
-
-        logger.newline()
+            bot.event_manager.register(event)
 
         # Setup tasks
-        logger.log("Registered tasks")
         entries = [
             i.split(".")[0]
             for i in os.listdir(os.path.join("bot", "tasks"))
@@ -195,13 +302,34 @@ def main() -> None:
             task = [getattr(imp, i) for i in dir(imp) if i.endswith("Loop")][0]
 
             tasks_manager.register(task)
-            logger.custom(str(idx), f"{event.name} ")
 
+    bot.register_all = register_all
+
+    @bot.event
+    async def on_ready():
+        """When the bot is connected."""
+
+        await db.initialise()
+
+        if bot.user is None:
+            raise RuntimeError("Bot user is None")
+
+        logger.log("Bot is ready!")
+        logger.log(f"Logged in as {bot.user}")
+
+        logger.newline()
+        logger.log("Username:", f"{bot.user.name}#{bot.user.discriminator}")
+        logger.log("ID:", f"{bot.user.id}")
+        logger.log("Guilds:", f"{len(bot.guilds)}")
+        logger.log("Prefix:", config.prefix)
         logger.newline()
 
         activity = discord.Activity(
             type=discord.ActivityType.watching, name=f"Virbox videos"
         )
+
+        await bot.register_all()
+
         await bot.change_presence(activity=activity)
         bot.current_activity = activity
         bot.current_status = discord.Status.online
@@ -214,17 +342,17 @@ def main() -> None:
             or not message.content.startswith(config.prefix)
             or not bot.is_ready()
         ):
-            await event_manager.event_map()["on_message"].execute(message)
+            await bot.event_manager.event_map()["on_message"].execute(message)
             return
 
         command, arguments = parse_user_input(message.content[len(config.prefix) :])
 
         # Check for category
-        prefixes: List[str] = [i.prefix for i in manager.categories]
+        prefixes: List[str] = [i.prefix for i in bot.manager.categories]
         if command in prefixes:
             try:
                 cmdobj = {
-                    i.prefix: i for i in manager.categories if i.prefix is not None
+                    i.prefix: i for i in bot.manager.categories if i.prefix is not None
                 }[command].commands_map()[arguments[0]]
             except KeyError:
                 await logger.send_error(
@@ -242,12 +370,12 @@ def main() -> None:
             arguments = arguments[1:]
         else:
             try:
-                cmdobj = manager[command]
+                cmdobj = bot.manager[command]
             except KeyError:
                 try:
                     cmdobj = [
                         [c for c in i.commands if c.name == command]
-                        for i in manager.categories
+                        for i in bot.manager.categories
                         if i.prefix is None
                     ]
                     cmdobj = [i for i in cmdobj if len(i) != 0][0][0]
@@ -265,6 +393,13 @@ def main() -> None:
                 logger.error("Insufficient permissions.")
                 await logger.send_error("Insufficient permissions.", message)
                 return
+            if (
+                len(cmdobj.category.channels)
+                and not message.channel.id in cmdobj.category.channels
+            ):
+                logger.error("Channel not allowed.")
+                await logger.send_error("Channel not allowed.", message)
+                return
 
         # Join args
         usage_args: List[Tuple[str, str]] = re.findall(
@@ -278,8 +413,11 @@ def main() -> None:
 
         # Check if a valid number of arguments have been passed
         if await parse_usage_text(cmdobj.usage, arguments, message):
+            arguments_typed = await parse_types(cmdobj.usage, arguments, message)
+            if arguments_typed == False:
+                return
             try:
-                await cmdobj.execute(arguments, message)
+                await cmdobj.execute(arguments_typed, message)
             except Exception as e:
                 await logger.send_error(str(e), message)
                 print(traceback.format_exc())

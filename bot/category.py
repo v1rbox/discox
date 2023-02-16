@@ -15,6 +15,7 @@ class Category(ABC):
     name: Optional[str] = None
     prefix: Optional[str] = None
     commands: List[Command] = []
+    channels: List[int] = []
 
     def __init__(self) -> None:
         """Initialize the category."""
@@ -28,17 +29,6 @@ class Category(ABC):
     @abstractmethod
     def check_permissions(self, message: discord.Message) -> bool:
         raise NotImplementedError("Check permissions method is required")
-
-
-class FunCategory(Category):
-    """A command category instance."""
-
-    name = "fun"
-    prefix = None
-    commands: List[Command] = []
-
-    def check_permissions(self, message: discord.Message) -> bool:
-        return True
 
 
 class UtilityCategory(Category):
@@ -58,6 +48,7 @@ class DistroCategory(Category):
     name = "distroroles"
     prefix = "distro"
     commands: List[Command] = []
+    # channels = [config.role_channel]
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
@@ -69,6 +60,7 @@ class CodeCategory(Category):
     name = "coderoles"
     prefix = "code"
     commands: List[Command] = []
+    channels = [config.role_channel]
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
@@ -98,11 +90,23 @@ class ModCategory(Category):
         return any([i.id in config.mod_role_id for i in message.author.roles])
 
 
+class RemindCategory(Category):
+    """A command category instance."""
+
+    name = "reminders"
+    prefix = "reminder"
+    commands: List[Command] = []
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
+
+
 class RequestCategory(Category):
     """A command category instance."""
 
     name = "request"
     prefix = "req"
+    config = config
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
