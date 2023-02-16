@@ -37,6 +37,6 @@ class cmd(Command):
         if memberCount >= 1000 and memberCount < 1050:
             embed = Embed(
                 title=":tada: We did it! :tada:",
-                description="We have hit 1000 members. Thank you to everyone who joined!"
+                description="We have hit 1000 members. Thank you to everyone who joined!",
             )
             await message.channel.send(embed=embed)
