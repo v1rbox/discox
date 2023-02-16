@@ -24,6 +24,12 @@ class MineButton(discord.ui.Button):
     # On Click
     async def callback(self, interaction):
         if self.board.player != interaction.user.id:
+            embed = Embed(
+                title="Minesweeper",
+                description="Hey! You can't interact with another user's game!",
+            )
+            embed.set_color("red")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return
 
         if self.board.moves == 0:
