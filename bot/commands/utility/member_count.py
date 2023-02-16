@@ -21,10 +21,10 @@ class cmd(Command):
         status = "increased"
         extra = ""
         isgood = ":fire:"
-        if result[0][0] > message.guild.member_count:
+        if result[0][0] > memberCount:
             status = "decreased"
             isgood = ""
-        if result[0][0] != message.guild.member_count:
+        if result[0][0] != memberCount:
             extra = f"\nThe member count has {status} by {abs(memberCount - result[0][0])} since last execution {isgood}"
         embed = Embed(
             title="Member Count",
