@@ -28,15 +28,15 @@ class cmd(Command):
             extra = f"\nThe member count has {status} by {abs(memberCount - result[0][0])} since last execution {isgood}"
         embed = Embed(
             title="Member Count",
-            description=f"Currently the server has `{memberCount}` members.{extra}",
+            description=f"Currently the server has `{memberCount}` members.{extra}\n`{(int(math.ceil(memberCount / 1000)) * 1000)-memberCount} members left to {int(math.ceil(memberCount / 1000)) * 1000}`",
         )
         await message.channel.send(embed=embed)
         await self.db.raw_exec_commit(
             f"UPDATE membercount SET membercount = ?", (memberCount,)
         )
-        if memberCount >= 1000 and memberCount < 1050:
+        if memberCount - (int(math.floor(memberCount / 1000)) * 1000) < 50:
             embed = Embed(
                 title=":tada: We did it! :tada:",
-                description="We have hit 1000 members. Thank you to everyone who joined!",
+                description=f"We have hit {int(math.floor(memberCount / 1000)) * 1000} members. Thank you to everyone who joined!",
             )
             await message.channel.send(embed=embed)
