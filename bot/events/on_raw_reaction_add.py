@@ -35,6 +35,8 @@ class event(Event):
             "7️⃣",
             "8️⃣",
             "9️⃣",
+            "✅",
+            "❌",
         ]
         if payload.emoji.name not in bind:
             return
@@ -59,7 +61,8 @@ class event(Event):
             return
         if type == EnumPollType.single.value:
             for reaction in message.reactions:
-                if reaction.emoji.name == payload.emoji.name:
+                print(reaction.emoji, payload.emoji.name)
+                if reaction.emoji == payload.emoji.name:
                     continue
                 try:
                     await message.remove_reaction(reaction.emoji, payload.member)
@@ -71,7 +74,10 @@ class event(Event):
     async def starboard(self, payload: discord.RawReactionActionEvent) -> None:
         IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)\?.*[^\s]"
         REACTION = "⭐"
-        starboard = await self.bot.fetch_channel(Config.starboard_channel)
+        try:
+            starboard = await self.bot.fetch_channel(Config.starboard_channel)
+        except:
+            return
         if not payload.emoji.name == REACTION:
             return
         channelObj = await self.bot.fetch_channel(payload.channel_id)

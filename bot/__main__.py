@@ -20,7 +20,7 @@ CREATE_STATEMENTS = [
     CREATE TABLE IF NOT EXISTS discox.polls (
         channel_id BIGINT NOT NULL,
         message_id BIGINT NOT NULL PRIMARY KEY,
-        type TEXT NOT NULL
+        type ENUM('single', 'multiple')
     );
     """,
     """
