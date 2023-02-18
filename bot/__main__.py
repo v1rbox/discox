@@ -17,14 +17,13 @@ config = Config()
 
 CREATE_STATEMENTS = [
     """
-    CREATE TABLE IF NOT EXISTS "discox.polls" (
-        "channel_id" INTEGER NOT NULL,
-        "message_id" INTEGER NOT NULL,
-        "type" STRING NOT NULL,
-        PRIMARY KEY("message_id")
-    )
+    CREATE TABLE IF NOT EXISTS discox.polls (
+        channel_id BIGINT NOT NULL,
+        message_id BIGINT NOT NULL PRIMARY KEY,
+        type TEXT NOT NULL
+    );
     """,
-    """,
+    """
         CREATE DATABASE IF NOT EXISTS discox;
     """,
     """

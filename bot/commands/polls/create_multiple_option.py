@@ -4,7 +4,7 @@ import colorthief
 import discord
 
 from bot.base import Command
-from bot.config import Embed
+from bot.config import Colour, Embed
 
 
 class cmd(Command):
@@ -33,23 +33,32 @@ class cmd(Command):
         embed = Embed(
             title=f"Poll: {question}",
             description=f"{'Single' if single else 'Multiple'} option poll.",
-            color=colorthief.ColorThief(
-                io.BytesIO(
-                    await message.author.avatar.read()
-                    if message.author.avatar
-                    else await message.author.default_avatar.read()
-                )
-            ).get_color(quality=1),
+            color=Colour.from_rgb(
+                *colorthief.ColorThief(
+                    io.BytesIO(
+                        await message.author.avatar.read()
+                        if message.author.avatar
+                        else await message.author.default_avatar.read()
+                    )
+                ).get_color(quality=1)
+            ),
         )
         i = 0
         for option in options:
             embed.add_field(name=f"{self.bind[i]}. ", value=option, inline=False)
             i += 1
-        embed.set_footer(text=f"Poll created by {message.author} and when {message.created_at}")
-        embed.set_thumbnail(url=message.author.avatar.url if message.author.avatar else message.author.default_avatar.url)
+        embed.set_footer(
+            text=f"Poll created by {message.author} and when {message.created_at}"
+        )
+        embed.set_thumbnail(
+            url=message.author.avatar.url
+            if message.author.avatar
+            else message.author.default_avatar.url
+        )
         a = await message.channel.send(embed=embed)
         for i in range(len(options)):
             await a.add_reaction(self.bind[i])
-        await self.db.raw_exec_commit("INSERT INTO polls (channel_id, message_id, type) VALUES (?, ?, ?)", (message.channel.id, a.id, "multiple" if single else "single"))
-        
-        
+        await self.db.raw_exec_commit(
+            "INSERT INTO polls (channel_id, message_id, type) VALUES (?, ?, ?)",
+            (message.channel.id, a.id, "multiple" if single else "single"),
+        )

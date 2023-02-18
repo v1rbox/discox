@@ -21,27 +21,40 @@ class event(Event):
         await self.starboard(*args, **kwargs)
         await self.poll_single_or_multiple(*args, **kwargs)
 
-    async def poll_single_or_multiple(self, payload: discord.RawReactionActionEvent) -> None:
+    async def poll_single_or_multiple(
+        self, payload: discord.RawReactionActionEvent
+    ) -> None:
         bind = [
-        "0️⃣",
-        "1️⃣",
-        "2️⃣",
-        "3️⃣",
-        "4️⃣",
-        "5️⃣",
-        "6️⃣",
-        "7️⃣",
-        "8️⃣",
-        "9️⃣",
-    ]
+            "0️⃣",
+            "1️⃣",
+            "2️⃣",
+            "3️⃣",
+            "4️⃣",
+            "5️⃣",
+            "6️⃣",
+            "7️⃣",
+            "8️⃣",
+            "9️⃣",
+        ]
         if payload.emoji.name not in bind:
             return
-        message = await (await self.bot.fetch_channel(payload.channel_id)).fetch_message(payload.message_id)
+        message = await (
+            await self.bot.fetch_channel(payload.channel_id)
+        ).fetch_message(payload.message_id)
         if message.author.id != self.bot.user.id:
             return
-        type = (await self.db.raw_exec_select("SELECT type FROM polls WHERE message_id = ?", (message.id,)))[0][0]
+        type = (
+            await self.db.raw_exec_select(
+                "SELECT type FROM polls WHERE message_id = ?", (message.id,)
+            )
+        )[0][0]
         # now check for it's channel id and message id if its same
-        message_id, channel_id = (await self.db.raw_exec_select("SELECT message_id, channel_id FROM polls WHERE message_id = ?", (message.id,)))[0]
+        message_id, channel_id = (
+            await self.db.raw_exec_select(
+                "SELECT message_id, channel_id FROM polls WHERE message_id = ?",
+                (message.id,),
+            )
+        )[0]
         if message_id != message.id or channel_id != message.channel.id:
             return
         if type == EnumPollType.single.value:
@@ -54,7 +67,7 @@ class event(Event):
                     continue
         elif type == EnumPollType.multiple.value:
             pass
-        
+
     async def starboard(self, payload: discord.RawReactionActionEvent) -> None:
         IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)"
         REACTION = "⭐"
