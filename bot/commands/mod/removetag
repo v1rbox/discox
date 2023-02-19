@@ -5,8 +5,8 @@ from bot.base import Command
 class cmd(Command):
     """ A discord command instance. """
 
-    name = "del"
-    usage = "del <*name>"
+    name = "removetag"
+    usage = "removetag <*name>"
     description = "Removes a tag"
 
     async def execute(self, arguments, message) -> None:
