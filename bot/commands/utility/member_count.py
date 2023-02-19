@@ -3,6 +3,7 @@ import math
 from bot.base import Command
 from bot.config import Config, Embed
 
+
 class cmd(Command):
     """A discord command instance."""
 
@@ -35,7 +36,10 @@ class cmd(Command):
         await self.db.raw_exec_commit(
             f"UPDATE membercount SET membercount = ?", (member_count,)
         )
-        if member_count - (int(math.floor(member_count / 1000)) * 1000) < 50 and (int(math.floor(member_count / 1000)) * 1000) != 0:
+        if (
+            member_count - (int(math.floor(member_count / 1000)) * 1000) < 50
+            and (int(math.floor(member_count / 1000)) * 1000) != 0
+        ):
             embed = Embed(
                 title=":tada: We did it! :tada:",
                 description=f"We have hit {int(math.floor(member_count / 1000)) * 1000} members. Thank you to everyone who joined!",
