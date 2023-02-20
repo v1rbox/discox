@@ -38,9 +38,18 @@ class Embed(DiscordEmbed):
             "lightpink": Colour(int("ff88dc", 16)),
             "lightcyan": Colour(int("bcfbff", 16)),
         }
-
+        commit = subprocess.run(
+                [
+                    "git",
+                    "log",
+                    "--pretty=format:'%h'",
+                    "-n 1"
+                ],
+                capture_output=True,
+            )
+            .stdout.decode()
         self.set_footer(
-            text="Virbox Community Bot",
+            text=f"Virbox Community Bot - commit: {commit}",
             icon_url="https://cdn.discordapp.com/icons/1052597660860821604/8fd53af279aa7d8d77a0451776c4fa35.webp?size=96",
         )
         self.timestamp = datetime.datetime.now()
