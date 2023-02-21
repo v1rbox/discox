@@ -64,8 +64,8 @@ CREATE_STATEMENTS = [
     """,
     """
         CREATE TABLE IF NOT EXISTS discox.tags (
-            Name VARCHAR(100) UNIQUE PRIMARY KEY,
-            Content VARCHAR(100)
+            Name VARCHAR(2048) UNIQUE PRIMARY KEY,
+            Content VARCHAR(2048)
         );
     """,
 ]
