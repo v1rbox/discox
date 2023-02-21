@@ -1,11 +1,12 @@
 import asyncio
-
 from urllib.parse import quote
-from bot.config import Config, Embed
+
 from bot.base import Command
+from bot.config import Config, Embed
+
 
 class cmd(Command):
-    """ A discord command instance. """
+    """A discord command instance."""
 
     name = "set"
     usage = "set <*name>"
@@ -16,8 +17,7 @@ class cmd(Command):
             return await self.logger.send_error("Please provide a name", message)
 
         embed = Embed(
-            title="New Tag",
-            description="What should the content of the tag be?"
+            title="New Tag", description="What should the content of the tag be?"
         )
         await message.reply(embed=embed)
 
@@ -32,13 +32,13 @@ class cmd(Command):
         except asyncio.exceptions.TimeoutError:
             return await self.logger.send_error("No content was provided", message)
 
-        await self.db.raw_exec_commit("""INSERT INTO tags VALUES(?, ?)""", (
-            quote(arguments[0]),
-            quote(msg.content),
-        ))
-
-        embed = Embed(
-            title="Tag set",
-            description=f"Tag `{arguments[0]}` set"
+        await self.db.raw_exec_commit(
+            """INSERT INTO tags VALUES(?, ?)""",
+            (
+                quote(arguments[0]),
+                quote(msg.content),
+            ),
         )
+
+        embed = Embed(title="Tag set", description=f"Tag `{arguments[0]}` set")
         await message.reply(embed=embed)
