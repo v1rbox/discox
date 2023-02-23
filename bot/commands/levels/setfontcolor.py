@@ -18,7 +18,7 @@ class cmd(Command):
                 "RGB malformed. Expecting 3 of them to be digits between 0 and 255."
             )
         option = Confirm(message.author)
-        await message.channel.send(
+        a = await message.channel.send(
             "Are you sure you want to set your font color to this?",
             view=option,
             file=generate_color_square(rgb),
@@ -30,6 +30,6 @@ class cmd(Command):
                 "UPDATE levels SET font_color = ? WHERE user_id = ?",
                 (" ".join([str(i) for i in rgb]), message.author.id),
             )
-            await message.channel.send("Font color set.")
+            await a.edit(content="Font color set.")
         else:
-            await message.channel.send("Reverted.")
+            await a.edit(content="Reverted.")
