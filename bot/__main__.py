@@ -58,9 +58,15 @@ CREATE_STATEMENTS = [
     """,
     """
     	CREATE TABLE IF NOT EXISTS discox.starboard (
-	    message_id VARCHAR(100) PRIMARY KEY,
-	    board_message_id VARCHAR(100)
-	);
+	        message_id VARCHAR(100) PRIMARY KEY,
+	        board_message_id VARCHAR(100)
+	    );
+    """,
+    """
+        CREATE TABLE IF NOT EXISTS discox.tags (
+            Name VARCHAR(100) UNIQUE PRIMARY KEY,
+            Content VARCHAR(2048)
+        );
     """,
 ]
 

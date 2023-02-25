@@ -112,6 +112,16 @@ class RequestCategory(Category):
         return True
 
 
+class TagCategory(Category):
+    """A command category instance."""
+
+    name = "tag"
+    prefix = "tag"
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
+
+
 class LevelCategory(Category):
     """A command category instance."""
 

@@ -10,7 +10,7 @@ class event(Event):
     name = "on_raw_reaction_add"
 
     async def execute(self, payload) -> None:
-        IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)\?.*[^\s]"
+        IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)(\?(.[^\s]*))?"
         REACTION = "⭐"
         starboard = await self.bot.fetch_channel(Config.starboard_channel)
         if not payload.emoji.name == REACTION:
