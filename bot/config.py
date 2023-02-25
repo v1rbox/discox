@@ -68,11 +68,14 @@ class Config:
     youtube_announcement_id: int = int(
         os.getenv("DISCOX_YOUTUBE_ANNOUNCEMENT_ID", 1056990617357521009)
     )  # youtube announcement id
+    mysql_host: str = os.getenv("DISCOX_MYSQL_HOST", "localhost")
+    mysql_port: int = int(os.getenv("DISCOX_MYSQL_PORT", 3306))
+    mysql_user: str = os.getenv("DISCOX_MYSQL_USER", "root")
+    mysql_password: str = os.getenv("DISCOX_MYSQL_PASSWORD", "") # recommendaton :tf:
+    mysql_database: str = os.getenv("DISCOX_MYSQL_DATABASE", "discox") # HOW THE FUCK ITS DEFAULTING TO DISCOX ALL THE TIME
     starboard_channel: int = int(
         os.getenv("DISCOX_STARBOARD_CHANNEL", "0")
     )  # starboard channel
-    mysql_pass: str = os.getenv("MYSQL_LOGIN", "")
-
 
 if __name__ == "__main__":
     print(
