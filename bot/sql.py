@@ -2,7 +2,9 @@ import asyncio
 from typing import Any, Dict, List, Optional, Tuple
 
 import aiomysql
+
 from .config import Config
+
 
 class SQLParser:
     def __init__(self, file: str, create_statemets: List[str]) -> None:
