@@ -82,6 +82,9 @@ class cmd(Command):
             embed.set_thumbnail(
                 url=f"https://distrowatch.com/images/yvzhuwbpy/{distro_codename}.png"
             )
+            embed.set_image(
+                url=f"https://distrowatch.com/images/ktyxqzobhgijab/{distro_codename}.png"
+            )
         embed.add_field(name="Average rating", value=j["average_rating"], inline=True)
         embed.add_field(
             name="Architectures", value=", ".join(j["architectures"]), inline=True
