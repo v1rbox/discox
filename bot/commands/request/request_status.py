@@ -1,4 +1,5 @@
 from discord import member
+
 from bot.base import Command
 from bot.config import Config, Embed
 

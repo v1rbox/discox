@@ -65,7 +65,6 @@ class cmd(Command):
         member_discriminator = split_member_id[3].replace("'", "")[14:]
         member_id = member_name + "#" + member_discriminator
 
-
         await self.db.raw_exec_commit(
             "INSERT INTO request(Member_id, Title, Description, Upvote, Downvote, Pending_close) VALUES(?, ?, ?, ?, ?, ?)",
             (member_id, title.content, description.content, 0, 0, 0),

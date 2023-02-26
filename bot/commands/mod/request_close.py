@@ -88,7 +88,9 @@ class cmd(Command):
                     name: request, seq: 2
             """
             # Get the current AUTO_INCREMENT value
-            res = await self.db.raw_exec_select(f"SELECT `AUTO_INCREMENT` FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'discox' AND   TABLE_NAME   = 'request';")
+            res = await self.db.raw_exec_select(
+                f"SELECT `AUTO_INCREMENT` FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'discox' AND   TABLE_NAME   = 'request';"
+            )
 
             # delete the request
             await self.db.raw_exec_commit(
