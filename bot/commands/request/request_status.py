@@ -1,3 +1,4 @@
+from discord import member
 from bot.base import Command
 from bot.config import Config, Embed
 
@@ -25,7 +26,7 @@ class cmd(Command):
         The tuple will look like this:
             (<number_id>, <author_information>, <title>, <description>, <upvote>, <downvote>, <pending_close>)
         For example:
-            (1, "<Member id=917681283595919391 name='imindMan' discriminator='8536' bot=False nick=None guild=<Guild id=1032277950416035930 name='imindworld' shard_id=0 chunked=True member_count=36>>", 'Hello', 'Hello guys', 0, 0, 0)
+            (1, "imindMan#8536", 'Hello', 'Hello guys', 0, 0, 0)
         The bot will then use this tuple, reformat it to a string, then return it
         THe final result will look like this (based on the example):
             1. 'Hello' by imindMan#8536
@@ -35,10 +36,7 @@ class cmd(Command):
         number_id = row[0]
 
         # implement member_id
-        split_member_id = row[1].split(" ")
-        member_name = split_member_id[2].replace("'", "")[5:]
-        member_discriminator = split_member_id[3].replace("'", "")[14:]
-        member_id = member_name + "#" + member_discriminator
+        member_id = row[1]
 
         # implement title
         title = row[2]

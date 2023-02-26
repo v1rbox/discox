@@ -38,7 +38,10 @@ CREATE_STATEMENTS = [
             Number_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
             Member_id VARCHAR(100) NOT NULL,
             Title VARCHAR(255) NOT NULL,
-            Description VARCHAR(2048) NOT NULL
+            Description VARCHAR(2048) NOT NULL,
+            Upvote INTEGER NOT NULL,
+            Downvote INTEGER NOT NULL,
+            Pending_close INTEGER NOT NULL
         );
     """,
     """

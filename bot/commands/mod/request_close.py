@@ -62,8 +62,8 @@ class cmd(Command):
             """
             HOW IT WORKS:
                 By default, the request number_id is an attribute with the AUTO_INCREMENT key.
-                That's why when deleting a request, we also have to update the number_id and sqlite_sequence (which is a table to stores AUTO_INCREMENT updates in SQLite)
-                After deleting the request, the bot will update the sqlite_sequence table in order to keep the number_id AUTO_INCREMENT still works properly. And then it will run a loop, keep track of all the requests and update their number_id.
+                That's why when deleting a request, we also have to update the number_id and AUTO_INCREMENT key.
+                Since we use mysql, we can just ALTER TABLE request AUTO_INCREMENT = (curr_auto_incre - 1)
                 For example, assuming we have a database looks like this:
                     1. "Sample request 1" by Foo
                     2. "Sample request 2" by Bar
@@ -87,8 +87,8 @@ class cmd(Command):
                 Table: sqlite_sequence
                     name: request, seq: 2
             """
-            # select the sqlite_sequence table to get the seq element from the request table
-            res = await self.db.raw_exec_select(f"SELECT * FROM sqlite_sequence")
+            # Get the current AUTO_INCREMENT value
+            res = await self.db.raw_exec_select(f"SELECT `AUTO_INCREMENT` FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'discox' AND   TABLE_NAME   = 'request';")
 
             # delete the request
             await self.db.raw_exec_commit(
@@ -96,8 +96,8 @@ class cmd(Command):
             )
             # Update the sqlite_sequence
             await self.db.raw_exec_commit(
-                f"UPDATE sqlite_sequence SET seq = ? WHERE name = 'request'",
-                (res[0][1] - 1,),
+                f"ALTER TABLE request AUTO_INCREMENT = ?",
+                (res[0][0] - 1,),
             )
 
             # And then run a loop to update the number_id
