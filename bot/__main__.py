@@ -17,9 +17,6 @@ config = Config()
 
 CREATE_STATEMENTS = [
     """
-        CREATE DATABASE IF NOT EXISTS discox;
-    """,
-    """
         CREATE TABLE IF NOT EXISTS discox.levels (
             user_id VARCHAR(100) PRIMARY KEY,
             level INTEGER,
