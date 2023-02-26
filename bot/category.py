@@ -112,6 +112,14 @@ class RequestCategory(Category):
         return True
 
 
+class FunCategory(Category):
+    name = "fun"
+    prefix = None
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
+
+
 class TagCategory(Category):
     """A command category instance."""
 
