@@ -122,6 +122,14 @@ class TagCategory(Category):
         return True
 
 
+class GameCategory(Category):
+    name = "game"
+    prefix = None
+
+    def check_permissions(self, message):
+        return True  # Anyone can use it.
+
+
 class LevelCategory(Category):
     """A command category instance."""
 
