@@ -20,6 +20,7 @@ class DistroRoles(Roles):
         "CalyxOS",
         "CentOS",
         "Debian",
+        "Devuan",
         "Elementary",
         "EndeavourOS",
         "Fedora",
