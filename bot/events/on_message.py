@@ -2,6 +2,7 @@ import discord
 
 from bot.base import Event
 from bot.config import Config, Embed
+from profanity_check import predict
 
 
 class event(Event):
@@ -11,6 +12,8 @@ class event(Event):
     lastMsgAuthorId = None
 
     async def execute(self, message) -> None:
+        if predict([message.content]) > 0.8:
+            await message.add_reaction("🤓")
         if not message.author.bot:
             if self.lastMsgAuthorId != message.author.id:
                 self.lastMsgAuthorId = message.author.id
