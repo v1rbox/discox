@@ -6,8 +6,8 @@ from bot.config import Config, Embed
 class cmd(Command):
     """A discord command instance."""
 
-    name = "whitelist"
-    usage = "whitelist"
+    name = "list"
+    usage = "list"
     description = f"Shows available code role options"
 
     async def execute(self, arguments, message) -> None:
