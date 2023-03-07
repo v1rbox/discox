@@ -16,6 +16,6 @@ A quick description of the changes made to the repository
 **Does this PR introduce changes to the database?**
 (What has changed? Did you make sure to setup the create statements in `__main__.py`?)
 
-**Other information:**  
+**Other information:** 
 
 
