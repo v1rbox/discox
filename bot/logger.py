@@ -49,7 +49,7 @@ class Logger:
 
     async def send_error(self, err: str, message: discord.Message) -> None:
         embed = Embed(
-            title="Whoops",
+            title="Oopsie Woopsie!",
             description=f"Looks like an error occured, please contact a system administrator if you believe this to be a mistake.\n```{err}```",
         )
         embed.set_color("red")
