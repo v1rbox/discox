@@ -23,8 +23,18 @@ class cmd(Command):
             async with session.get(
                 f"https://diwa.demo-web-fahmi.my.id/api/v2/distributions/{arguments[0]}"
             ) as result:
-                j = await result.json(loads=orjson.loads)
-        if result.status != 200 or j["message"] != "success":
+                j = None
+                try:
+                    j = await result.json(loads=orjson.loads)
+                except:
+                    embed = Embed(
+                        title="Distro",
+                        description=f"**Not found**\n\nThe distro named `{arguments[0]}` not found.",
+                    )
+            embed.set_color("red")
+            await message.channel.send(embed=embed)
+            return
+        if not j or result.status != 200 or j["message"] != "success":
             embed = Embed(
                 title="Distro",
                 description=f"**Not found**\n\nThe distro named `{arguments[0]}` not found.",
