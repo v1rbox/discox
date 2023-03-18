@@ -19,20 +19,23 @@ class cmd(Command):
     description = "Shows information about the user entered distro"
 
     async def execute(self, arguments, message) -> None:
+        error_embed = Embed(
+            title="Distro",
+            description=f"**Not found**\n\nThe distro named `{arguments[0]}` not found."
+        )
+        error_embed.set_color("red")
+
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 f"https://diwa.demo-web-fahmi.my.id/api/v2/distributions/{arguments[0]}"
             ) as result:
+                if result.status != 200:
+                    await message.channel.send(embed=error_embed)
+                    return
                 j = await result.json(loads=orjson.loads)
-        if result.status != 200 or j["message"] != "success":
-            embed = Embed(
-                title="Distro",
-                description=f"**Not found**\n\nThe distro named `{arguments[0]}` not found.",
-            )
-            embed.set_color("red")
-            await message.channel.send(embed=embed)
+        if j["message"] != "success":
+            await message.channel.send(embed=error_embed)
             return
-
         dominant_color = None
         distro_codename = None
         try:
