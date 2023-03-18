@@ -16,7 +16,7 @@ class cmd(Command):
     async def execute(self, arguments, message) -> None:
         embed = Embed(
             title="About me",
-            description="I am a community created open source project started by Virbox, you can contribute to me by going to the Github repository.",
+            description="I am a community created open source project started by Virbox, you can contribute to me by going to the Github repository.\n*Type `v!help` to get started!*",
             color=0x00FF00,
         )
         embed.add_field(name="Github:", value="https://github.com/v1rbox/discox")
