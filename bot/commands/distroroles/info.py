@@ -21,7 +21,7 @@ class cmd(Command):
     async def execute(self, arguments, message) -> None:
         error_embed = Embed(
             title="Distro",
-            description=f"**Not found**\n\nThe distro named `{arguments[0]}` not found."
+            description=f"**Not found**\n\nThe distro named `{arguments[0]}` not found.",
         )
         error_embed.set_color("red")
 
