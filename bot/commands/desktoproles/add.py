@@ -53,6 +53,7 @@ class DesktopRoles(Roles):
         "Vivarium",
         "waymonad",
         "Openbox",
+        "QTile",
     ]
 
 
