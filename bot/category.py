@@ -65,6 +65,16 @@ class CodeCategory(Category):
     def check_permissions(self, message: discord.Message) -> bool:
         return True
 
+class DesktopCategory(Category):
+    """A command category instance."""
+
+    name = "desktoproles"
+    prefix = "desktop"
+    commands: List[Command] = []
+    # channels = [config.role_channel]
+
+    def check_permissions(self, message: discord.Message) -> bool:
+        return True
 
 class PresenceCategory(Category):
     """A command category instance."""
