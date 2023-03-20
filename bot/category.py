@@ -65,6 +65,7 @@ class CodeCategory(Category):
     def check_permissions(self, message: discord.Message) -> bool:
         return True
 
+
 class DesktopCategory(Category):
     """A command category instance."""
 
@@ -75,6 +76,7 @@ class DesktopCategory(Category):
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
+
 
 class PresenceCategory(Category):
     """A command category instance."""
