@@ -20,7 +20,8 @@ class cmd(Command):
         )
         if not len(content):
             return await self.logger.send_error(f"Tag '{name}' doesn't exist", message)
+
         embed = Embed(
-            title=f"Tag: `{name}`", description=f"Content: `{unquote(content[0][0])}`"
+            title=f"Tag: `{name}`", description=f"{unquote(content[0][0])}"
         )
         await message.reply(embed=embed)
