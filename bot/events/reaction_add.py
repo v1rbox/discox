@@ -22,7 +22,7 @@ class event(Event):
         for reaction in messageObj.reactions:
             if reaction.emoji != REACTION:
                 continue
-            if reaction.count >= 1:
+            if reaction.count >= 5:
                 already = await self.db.raw_exec_select(
                     "SELECT message_id FROM starboard WHERE message_id = ?",
                     (messageObj.id,),
