@@ -21,7 +21,7 @@ class event(Event):
             return
         for reaction in messageObj.reactions:
             if not reaction == REACTION:
-                pass
+                continue
             if reaction.count >= 5:
                 already = await self.db.raw_exec_select(
                     "SELECT message_id FROM starboard WHERE message_id = ?",
