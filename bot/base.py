@@ -12,8 +12,10 @@ from discord.ext import tasks
 from .logger import Logger
 from .sql import SQLParser
 
-# from .manager import Manager
-Manager = None  # FIX: circular imports :'((
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .manager import Manager
 
 
 # @dataclass
