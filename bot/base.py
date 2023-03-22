@@ -12,9 +12,10 @@ from discord.ext import tasks
 from .logger import Logger
 from .sql import SQLParser
 
-# from .manager import Manager
-Manager = None  # FIX: circular imports :'((
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from .manager import Manager
 
 # @dataclass
 class Command(ABC):
@@ -30,7 +31,7 @@ class Command(ABC):
     db: Optional[SQLParser] = None
     logger = Logger()
 
-    def __init__(self, bot: discord.Client, manager: Manager, db: SQLParser) -> None:
+    def __init__(self, bot: discord.Client, manager: "Manager", db: SQLParser) -> None:
         """Initialize the command.
 
         [Args]:
@@ -121,7 +122,7 @@ class Event(ABC):
     db: Optional[SQLParser] = None
     logger = Logger()
 
-    def __init__(self, bot: discord.Client, manager: Manager, db: SQLParser) -> None:
+    def __init__(self, bot: discord.Client, manager: "Manager", db: SQLParser) -> None:
         """Initialize the command.
 
         [Args]:
@@ -159,7 +160,7 @@ class Task(ABC):
     db: Optional[SQLParser] = None
     logger = Logger()
 
-    def __init__(self, bot: discord.Client, manager: Manager, db: SQLParser) -> None:
+    def __init__(self, bot: discord.Client, manager: "Manager", db: SQLParser) -> None:
         """Initialize the task.
 
         [Args]:
