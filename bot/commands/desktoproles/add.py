@@ -54,6 +54,7 @@ class DesktopRoles(Roles):
         "waymonad",
         "Openbox",
         "QTile",
+        "EXWM",
     ]
 
 
