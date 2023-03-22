@@ -3,7 +3,7 @@ import re
 import subprocess
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import TYPE_CHECKING, List, Optional, Tuple
 
 import aiosqlite
 import discord
@@ -12,10 +12,9 @@ from discord.ext import tasks
 from .logger import Logger
 from .sql import SQLParser
 
-from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
     from .manager import Manager
+
 
 # @dataclass
 class Command(ABC):
