@@ -6,7 +6,7 @@ from bot.config import Config, Embed
 
 class DesktopRoles(Roles):
     max = 3
-    role_color = Color.from_rgb(185, 137, 240)
+    role_color = Color.from_rgb(219, 240, 137)
     prefix = "desktop"
     whitelist = [
         "GNOME",
