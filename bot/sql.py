@@ -21,11 +21,11 @@ class SQLParser:
                 res = await func(self, *args, **kwargs)
             else:
                 pool = await aiomysql.create_pool(
-                    host="127.0.0.1",
-                    port=3306,
-                    user="root",
-                    password=Config.mysql_pass,
-                    db="discox",
+                    host=Config.mysql_host,
+                    port=Config.mysql_port,
+                    user=Config.mysql_user,
+                    password=Config.mysql_password,
+                    db=Config.mysql_database,
                     autocommit=True,
                 )
                 async with pool.acquire() as db:

@@ -6,7 +6,7 @@ Virbox Discord Bot community project ^\_^
 
 Written in ~~blazingly fast~~ **effective** Python.
 
-Documentation and installation guide can be found at our [wiki](https://github.com/v1rbox/discox/wiki) or [guide](#how-to-setup-very-simplified).
+Documentation and installation guide can be found at our [wiki](https://github.com/v1rbox/discox/wiki).
 
 ## Contributors & Authors
 
