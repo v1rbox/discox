@@ -17,6 +17,7 @@ aiohttp = "^3.8.3"
 colorthief = "0.2.1"
 orjson = "^3.8.5"
 aiomysql = "^0.1.1"
+profanity-check = "^1.0.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.12.0"
