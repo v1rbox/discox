@@ -26,7 +26,8 @@ class cmd(Command):
                     embed.set_color("red")
                     await message.channel.send(embed=embed)
                     return
-                gigalist = await result.json()["gigachads"]
+                gigalist = await result.json(content_type=None)
+                gigalist = gigalist['gigachads']
 
         # randomly
         gigachad = random.choice(gigalist)
