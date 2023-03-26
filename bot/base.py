@@ -3,7 +3,7 @@ import re
 import subprocess
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import TYPE_CHECKING, List, Optional, Tuple
 
 import aiosqlite
 import discord
@@ -12,8 +12,8 @@ from discord.ext import tasks
 from .logger import Logger
 from .sql import SQLParser
 
-# from .manager import Manager
-Manager = None  # FIX: circular imports :'((
+if TYPE_CHECKING:
+    from .manager import Manager
 
 
 # @dataclass
@@ -30,7 +30,7 @@ class Command(ABC):
     db: Optional[SQLParser] = None
     logger = Logger()
 
-    def __init__(self, bot: discord.Client, manager: Manager, db: SQLParser) -> None:
+    def __init__(self, bot: discord.Client, manager: "Manager", db: SQLParser) -> None:
         """Initialize the command.
 
         [Args]:
@@ -121,7 +121,7 @@ class Event(ABC):
     db: Optional[SQLParser] = None
     logger = Logger()
 
-    def __init__(self, bot: discord.Client, manager: Manager, db: SQLParser) -> None:
+    def __init__(self, bot: discord.Client, manager: "Manager", db: SQLParser) -> None:
         """Initialize the command.
 
         [Args]:
@@ -159,7 +159,7 @@ class Task(ABC):
     db: Optional[SQLParser] = None
     logger = Logger()
 
-    def __init__(self, bot: discord.Client, manager: Manager, db: SQLParser) -> None:
+    def __init__(self, bot: discord.Client, manager: "Manager", db: SQLParser) -> None:
         """Initialize the task.
 
         [Args]:

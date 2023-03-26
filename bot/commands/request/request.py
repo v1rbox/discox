@@ -60,6 +60,11 @@ class cmd(Command):
             return
 
         # MAIN EXECUTION: after getting all the information, the bot will add all of the information to the database
+        split_member_id = member_id.split(" ")
+        member_name = split_member_id[2].replace("'", "")[5:]
+        member_discriminator = split_member_id[3].replace("'", "")[14:]
+        member_id = member_name + "#" + member_discriminator
+
         await self.db.raw_exec_commit(
             "INSERT INTO request(Member_id, Title, Description, Upvote, Downvote, Pending_close) VALUES(?, ?, ?, ?, ?, ?)",
             (member_id, title.content, description.content, 0, 0, 0),
