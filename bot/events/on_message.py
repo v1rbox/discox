@@ -1,6 +1,8 @@
 import discord
 import yarl
-
+import aiohttp
+from PIL import Image
+import io
 from bot.base import Event
 from bot.config import Config, Embed
 
@@ -100,13 +102,24 @@ class event(Event):
                 name=str(message.author.display_name),
                 icon_url=message.author.display_avatar.url,
             )
-            embed.set_footer(text=f"Sent in {channel.name} at {message.created_at}")
+            embed.set_footer(text=f"Sent in {channel.name}. Embed only supports up to 4 picture attachments only!")
+            s = []
+            for a in message.attachments:
+                if await self.is_image(a.url):
+                    e = Embed(url="https://dummyahhnolongerexist.com")
+                    e.set_image(url=a.url)
+                    s.append(e)
+            await message.reply(embeds=[embed,*s])
             
-            h = []
-            
-            for attachment in message.attachments:
-                e = Embed(url=attachment.url)
-                e.set_image(url=attachment.url)
-                h.append(e)
-                
-            await message.channel.send(embed=embed, embeds=h)
+    async def is_image(self, url: str) -> bool:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                if resp.status == 200:
+                    f = io.BytesIO(await resp.read())
+                    try:
+                        Image.open(f)
+                        return True
+                    except:
+                        return False
+                else:
+                    return False
