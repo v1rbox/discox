@@ -71,6 +71,7 @@ class event(Event):
                         found = True
     async def check_is_link_to_message(self, message: discord.Message) -> None:
         content = message.content
+        j = message
         # check if message have the link (even though it have message content)
         if "https://discord.com/channels/" in content:
             """
@@ -109,7 +110,7 @@ class event(Event):
                     e = Embed(url="https://dummyahhnolongerexist.com")
                     e.set_image(url=a.url)
                     s.append(e)
-            await message.reply(embeds=[embed,*s])
+            await j.reply(embeds=[embed,*s])
             
     async def is_image(self, url: str) -> bool:
         async with aiohttp.ClientSession() as session:
