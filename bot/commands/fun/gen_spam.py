@@ -117,6 +117,7 @@ This method supports a variety of cool algorithms you can choose:
                 e.g: v!gen_spam literal_spam Hehehe```
                     """
             )
+            return
         if arguments[0] == "gen_spam":
             output = self.general_spam(arguments[1])
             await message.channel.send(output)
