@@ -1,4 +1,5 @@
 import discord
+import yarl
 
 from bot.base import Event
 from bot.config import Config, Embed
@@ -10,7 +11,11 @@ class event(Event):
     name = "on_message"
     lastMsgAuthorId = None
 
-    async def execute(self, message) -> None:
+    async def execute(self, message: discord.Message) -> None:
+        await self.check_level(message)
+        await self.check_is_link_to_message(message)
+        
+    async def check_level(self, message: discord.Message) -> None:
         if not message.author.bot:
             if self.lastMsgAuthorId != message.author.id:
                 self.lastMsgAuthorId = message.author.id
@@ -62,3 +67,46 @@ class event(Event):
 
                         await message.add_reaction("✅")
                         found = True
+    async def check_is_link_to_message(self, message: discord.Message) -> None:
+        content = message.content
+        # check if message have the link (even though it have message content)
+        if "https://discord.com/channels/" in content:
+            """
+            ex:
+            https://discord.com/channels/1052597660860821604/1057273716603617311/1089607678466212030
+            
+            first part is guild id
+            second part is channel id
+            third part is message id
+            """
+            # trim out every text except the link
+            content = yarl.URL(content[content.find("https://discord.com/channels/"):].split(" ")[0])
+            assert content.host == "discord.com"
+            assert content.path.startswith("/channels/")
+            assert len(content.parts) == 5 # oh well it contains root too
+            
+            guild_id = int(content.parts[2])
+            channel_id = int(content.parts[3])
+            message_id = int(content.parts[4])
+            
+            guild = self.bot.get_guild(guild_id)
+            assert guild is not None
+            channel = guild.get_channel(channel_id)
+            assert channel is not None
+            message = await channel.fetch_message(message_id)
+            
+            embed = Embed(description=message.content)
+            embed.set_author(
+                name=str(message.author.display_name),
+                icon_url=message.author.display_avatar.url,
+            )
+            embed.set_footer(text=f"Sent in {channel.name} at {message.created_at}")
+            
+            h = []
+            
+            for attachment in message.attachments:
+                e = Embed(url=attachment.url)
+                e.set_image(url=attachment.url)
+                h.append(e)
+                
+            await message.channel.send(embed=embed, embeds=h)
