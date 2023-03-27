@@ -92,6 +92,14 @@ class cmd(Command):
 
         return output
 
+    def literal_spam(self, string: str):
+        # Generate spam till the end of the universe (message length limit)
+        output = ""
+        for x in range(0, 4000):
+            output += string
+        output = output[:4000]
+        return output
+
     async def execute(self, arguments, message) -> None:
         if arguments[0] == "?" and arguments[1] == "?":
             await message.channel.send(
@@ -104,9 +112,12 @@ This method supports a variety of cool algorithms you can choose:
             This is also in general, but Drillenissen's taste for extra.
                 e.g: v!gen_spam drill_spam_4 hi
     3. Addicted spam: this is the most craziest spamming algorithm. (algo input: addict_spam)
-                e.g: v!gen_spam addict_spam hi```
+                e.g: v!gen_spam addict_spam hi
+    4. Literal spam: spam till the end of message limit (algo input: literal_spam)
+                e.g: v!gen_spam literal_spam Hehehe```
                     """
             )
+            return
         if arguments[0] == "gen_spam":
             output = self.general_spam(arguments[1])
             await message.channel.send(output)
@@ -118,6 +129,11 @@ This method supports a variety of cool algorithms you can choose:
         elif arguments[0] == "addict_spam":
             output = self.addict_spam(arguments[1])
             await message.channel.send(output)
+
+        elif arguments[0] == "literal_spam":
+            output = self.literal_spam(arguments[1])
+            await message.channel.send(output)
+
         else:
             embed = Embed(title="Invalid argument detected!")
             embed.set_color("red")
