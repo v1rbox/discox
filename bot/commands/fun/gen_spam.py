@@ -95,9 +95,10 @@ class cmd(Command):
     def literal_spam(self, string: str):
         # Generate spam till the end of the universe (message length limit)
         output = ""
-        for x in range(0, 4000):
+        spam_len_limit = 2000
+        for x in range(0, spam_len_limit):
             output += string
-        output = output[:4000]
+        output = output[:spam_len_limit]
         return output
 
     async def execute(self, arguments, message) -> None:
