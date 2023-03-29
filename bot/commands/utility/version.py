@@ -9,7 +9,7 @@ class cmd(Command):
 
     name = "version"
     usage = "version"
-    description = "Returns the latest commit."
+    description = "Returns the latest commits."
 
     async def execute(self, arguments, message) -> None:
         repoLink = (
