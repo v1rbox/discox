@@ -347,6 +347,7 @@ def main() -> None:
             message.author == bot.user
             or not message.content.startswith(config.prefix)
             or not bot.is_ready()
+	    or message.channel.id == config.general_channel
         ):
             await bot.event_manager.event_map()["on_message"].execute(message)
             return
