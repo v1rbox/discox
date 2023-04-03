@@ -18,6 +18,8 @@ ifeq (remove,$(firstword $(MAKECMDGOALS)))
   $(eval $(RUN_ARGS):;@:)
 endif
 
+.PHONY: init run add remove beautify install-beautifier
+
 init:
 	poetry install
 
