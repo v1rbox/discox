@@ -19,8 +19,7 @@ blocked = [
     "peg",
     "anal",
     "vaginal",
-    "erotic"
-
-    
+    "erotic",
+    "notepad
 
 ]
