@@ -2,7 +2,7 @@ from io import BytesIO
 import base64
 import time
 from craiyon import Craiyon
-from bot.commands.fun.__blocked_prompts import blocked
+from bot.events.__blocked_commands import blocked
 from bot.config import Config, Embed
 from bot.base import Command
 
