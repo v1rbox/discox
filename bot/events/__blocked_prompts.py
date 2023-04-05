@@ -20,6 +20,6 @@ blocked = [
     "anal",
     "vaginal",
     "erotic",
-    "notepad
+    "notepad"
 
 ]
