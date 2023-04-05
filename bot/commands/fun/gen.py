@@ -2,7 +2,7 @@ from io import BytesIO
 import base64
 import time
 from craiyon import Craiyon
-from bot.commands.utility.__blocked_prompts import blocked
+from bot.commands.fun.__blocked_prompts import blocked
 from bot.config import Config, Embed
 from bot.base import Command
 
@@ -16,11 +16,12 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         prompt = arguments[0]
-        if prompt.lower() in blocked:
-            await message.channel.send("I'm not generating that you meanie >:( It's NSFW! Try something else!")
-            return
+        for word in prompt.split():
+            if word.lower() in blocked:
+                await message.channel.send("I'm not generating that you meanie >:( It's NSFW! Try something else!")
+                return
         
-        loadingE = Embed(title=f"Image {prompt} currently generating, please wait a moment!")
+        loadingE = Embed(title=f"Image '{prompt}' currently generating, please wait a moment!")
         loadingM = await message.channel.send(embed=loadingE)
             
         generator = Craiyon()
