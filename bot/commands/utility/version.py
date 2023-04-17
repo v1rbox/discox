@@ -30,10 +30,18 @@ class cmd(Command):
             ],
             capture_output=True,
         ).stdout.decode()
-        commit_diff = int(subprocess.run(
-            ["git", "rev-list", "--count", "HEAD..origin/main"],
-            capture_output=True,
-        ).stdout.decode().strip())
-        diff_message = f"*{commit_diff} commits behind remote*" if commit_diff else "*Up to date with remote*"
+        commit_diff = int(
+            subprocess.run(
+                ["git", "rev-list", "--count", "HEAD..origin/main"],
+                capture_output=True,
+            )
+            .stdout.decode()
+            .strip()
+        )
+        diff_message = (
+            f"*{commit_diff} commits behind remote*"
+            if commit_diff
+            else "*Up to date with remote*"
+        )
         embed = Embed(title="Latest commits", description=f"{diff_message}\n{commits}")
         await message.channel.send(embed=embed)
