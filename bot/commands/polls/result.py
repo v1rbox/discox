@@ -21,7 +21,7 @@ class cmd(Command):
                 embed=Embed(
                     title="This message is not a poll.",
                     description="This message is not a poll. Please make sure you are using the correct message id.",
-                    color = discord.Color.red()
+                    color=discord.Color.red(),
                 )
             )
         message = await (await self.bot.fetch_channel(channel_id[0])).fetch_message(

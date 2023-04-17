@@ -27,9 +27,9 @@ class cmd(Command):
             assert yarl.URL(url).scheme in ("http", "https"), "Malformed URL."
             assert yarl.URL(url).host is not None, "Malformed URL."
             assert yarl.URL(url).host != "", "Malformed URL."
-        except (ValueError) as e:
+        except ValueError as e:
             raise ValueError("Invalid URL. Unable to parse URL") from e
-        except (AssertionError) as e:
+        except AssertionError as e:
             raise ValueError("Invalid URL. URL is malformed.") from e
 
     async def is_valid_picture(self, url: str) -> bool:
