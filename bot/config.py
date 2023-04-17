@@ -54,9 +54,7 @@ class Embed(DiscordEmbed):
 class Config:
     token: str = os.getenv("DISCOX_TOKEN")  # bot token
     prefix: str = os.getenv("DISCOX_PREFIX", "v!")  # prefix (default: v!)
-    general_channel: int = int(
-        os.getenv("DISCOX_GENERAL_ID", 1052597661578051666)
-    )
+    general_channel: int = int(os.getenv("DISCOX_GENERAL_ID", 1052597661578051666))
     report_channel_id: int = int(
         os.getenv("DISCOX_REPORT_ID", 1064539181193375784)
     )  # mod role id
