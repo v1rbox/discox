@@ -18,7 +18,7 @@ class cmd(Command):
             page = 0
         else:
             page = prefixes.index(name) + 1
-        
+
         msg = await message.channel.send("Loading...")
         for i in ["◀️", "🔼", "🔽", "▶️", "🔍"]:
             await msg.add_reaction(i)
@@ -146,9 +146,7 @@ class cmd(Command):
                 }[args[0]].commands_map()[args[1]]
                 return await self.command_help(message, cmdobj)
             except KeyError:
-                raise KeyError(
-                    f"Command {args[0]} {args[1]} not found"
-                )
+                raise KeyError(f"Command {args[0]} {args[1]} not found")
             except IndexError:
                 return await self.category_help(message, args[0])
         else:
