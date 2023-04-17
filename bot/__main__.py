@@ -17,6 +17,13 @@ config = Config()
 
 CREATE_STATEMENTS = [
     """
+    CREATE TABLE IF NOT EXISTS discox.polls (
+        channel_id BIGINT NOT NULL,
+        message_id BIGINT NOT NULL PRIMARY KEY,
+        type ENUM('single', 'multiple')
+    );
+    """,
+    """
         CREATE TABLE IF NOT EXISTS discox.levels (
             user_id VARCHAR(100) PRIMARY KEY,
             level INTEGER,
