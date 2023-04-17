@@ -96,9 +96,25 @@ class cmd(Command):
         # Generate spam till the end of the universe (message length limit)
         output = ""
         spam_len_limit = 2000
+        final_chop = spam_len_limit
+        chop_case = [' ', '<', '>', '\n']  # Order of the elements determine final chop, first checks first
+
         for x in range(0, spam_len_limit):
             output += string
+
+        # early chop to work with less stuff in next step
         output = output[:spam_len_limit]
+
+        # version 1:
+        #return output
+
+        # Chop at the last character that matched with ordered chop_case
+        for x in range(spam_len_limit - 1, 0, -1):
+            if output[x] in chop_case:
+                final_chop = x
+                break
+
+        output = output[:final_chop]
         return output
 
     async def execute(self, arguments, message) -> None:
