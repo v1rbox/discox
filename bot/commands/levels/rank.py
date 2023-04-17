@@ -53,7 +53,7 @@ class cmd(Command):
 
             rank = 1
             for i in range(len(result2)):
-                if result2[i][0] == user.id:
+                if int(result2[i][0]) == user.id:
                     rank = i + 1
                     break
                 rank = i + 1
