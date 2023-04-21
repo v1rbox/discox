@@ -1,8 +1,26 @@
 import math
 import random
+import re
+from typing import List, Tuple
 
 from bot.base import Command
 from bot.config import Embed
+
+
+def contains_mention(string: str) -> Tuple[bool, List[int]]:
+    """Checks if a string (discord message) contains a ping
+
+    [Args]:
+        string (str): discord message
+
+    [Returns]:
+        (bool, List[int]):
+            (bool): if one or more ping is found in the string
+            (List[int]): list of user IDs that were ping
+    """
+
+    pinged_people: List[int] = [found for found in re.findall("<@[0-9]+>", string)]
+    return bool(pinged_people), pinged_people
 
 
 class cmd(Command):
@@ -123,6 +141,10 @@ class cmd(Command):
         return output
 
     async def execute(self, arguments, message) -> None:
+
+        if contains_mention(message.content):
+            return
+
         if arguments[0] == "?" and arguments[1] == "?":
             await message.channel.send(
                 """ ```Usage: v!gen_spam <algo> <spam_string>
