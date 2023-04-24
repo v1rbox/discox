@@ -105,7 +105,9 @@ class event(Event):
                     if messageObj.content:
                         embed.description = messageObj.content
                     elif "MessageType.premium_guild" in str(messageObj.type):
-                        embed.description = f"{messageObj.author} boosted the server :sunglasses:"
+                        embed.description = (
+                            f"{messageObj.author} boosted the server :sunglasses:"
+                        )
                     if len(messageObj.attachments) != 0:
                         if "image" in messageObj.attachments[0].content_type:
                             embed.set_image(url=messageObj.attachments[0].url)
