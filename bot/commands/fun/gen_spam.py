@@ -141,7 +141,6 @@ class cmd(Command):
         return output
 
     async def execute(self, arguments, message) -> None:
-
         if contains_mention(message.content):
             return
 
