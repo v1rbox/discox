@@ -68,6 +68,7 @@ class DistroRoles(Roles):
         "Ubuntu Touch",
         "Ultramarine",
         "UwUntu",
+        "VirbOS",
         "Void",
         "Whonix",
         "Windows",
