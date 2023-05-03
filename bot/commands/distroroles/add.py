@@ -37,6 +37,7 @@ class DistroRoles(Roles):
         "Kali",
         "Kubuntu",
         "LineageOS",
+        "LMDE",
         "Lubuntu",
         "MacOS",
         "Manjaro",
