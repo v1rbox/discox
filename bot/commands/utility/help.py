@@ -162,5 +162,7 @@ class cmd(Command):
                     cmdobj = [i for i in cmdobj if len(i) != 0][0][0]
                     return self.command_help(message, cmdobj)
                 except IndexError:
-                    return await logger.send_error(f"Command '{command}' not found", message)
+                    return await logger.send_error(
+                        f"Command '{command}' not found", message
+                    )
             return await self.command_help(message, cmdobj)
