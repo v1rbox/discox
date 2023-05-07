@@ -153,5 +153,14 @@ class cmd(Command):
             try:
                 cmdobj = self.manager.get(args[0])
             except KeyError:
-                raise KeyError(f"Command {args[0]} not found")
+                try:
+                    cmdobj = [
+                        [c for c in i.commands if c.name == command]
+                        for i in bot.manager.categories
+                        if i.prefix is None
+                    ]
+                    cmdobj = [i for i in cmdobj if len(i) != 0][0][0]
+                    return self.command_help(message, cmdobj)
+                except IndexError:
+                    return await logger.send_error(f"Command '{command}' not found", message)
             return await self.command_help(message, cmdobj)
