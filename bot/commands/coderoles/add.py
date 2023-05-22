@@ -17,6 +17,7 @@ class CodeRoles(Roles):
         "C",
         "C++",
         "C#",
+        "D",
         "Dart",
         "F#",
         "Fortran",
