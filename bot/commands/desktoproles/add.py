@@ -55,6 +55,13 @@ class DesktopRoles(Roles):
         "Openbox",
         "QTile",
         "EXWM",
+        "FVWM",
+        "TWM",
+        "QVWM",
+        "WindowMaker",
+        "AfterStep",
+        "CTWM",
+        "IceWM",
     ]
 
 
