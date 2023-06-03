@@ -62,6 +62,8 @@ class DesktopRoles(Roles):
         "AfterStep",
         "CTWM",
         "IceWM",
+        "Berry",
+        "SOWM",
     ]
 
 
