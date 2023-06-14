@@ -17,7 +17,7 @@ class cmd(Command):
             (message.author.id,),
         )
         embed = Embed(
-            title=f"Reminders of {message.author.name}#{message.author.discriminator}"
+            title=f"Reminders of {message.author.name}"
         )
         for reminder in reminders:
             timestamp, remindMsg = reminder

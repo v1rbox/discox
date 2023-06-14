@@ -331,7 +331,7 @@ def main() -> None:
         logger.log(f"Logged in as {bot.user}")
 
         logger.newline()
-        logger.log("Username:", f"{bot.user.name}#{bot.user.discriminator}")
+        logger.log("Username:", f"{bot.user.name}")
         logger.log("ID:", f"{bot.user.id}")
         logger.log("Guilds:", f"{len(bot.guilds)}")
         logger.log("Prefix:", config.prefix)

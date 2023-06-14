@@ -79,7 +79,7 @@ class cmd(Command):
                     user_xp=result[0],
                     next_xp=result[1] * 25 + 100,
                     server_position=rank,
-                    user_name=f"Unrenderable Username#{user.discriminator}",  # weird ass mf username
+                    user_name=f"Unrenderable Username",  # weird ass mf username
                     user_status=str(user.status),
                     font_color=await self.get_font_color(user.id),
                 )
