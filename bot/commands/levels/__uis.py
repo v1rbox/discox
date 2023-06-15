@@ -8,7 +8,9 @@ class Confirm(discord.ui.View):
         self.intended = intended
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
-    async def confirm(self, interaction: discord.Interaction, _: discord.ui.Button):
+    async def confirm(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
         if interaction.user.id != self.intended.id:
             await interaction.response.send_message(
                 "What are you doing here. This is not for you. ඞ", ephemeral=True
@@ -16,10 +18,12 @@ class Confirm(discord.ui.View):
             return
         await interaction.response.send_message("Confirming", ephemeral=True)
         self.value = True
-        self.stopper()
+        button.disabled = True
+        self.cancel.disabled = True
+        self.stop()
 
     @discord.ui.button(label="Cancel", style=discord.ButtonStyle.grey)
-    async def cancel(self, interaction: discord.Interaction, _: discord.ui.Button):
+    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.intended.id:
             await interaction.response.send_message(
                 "What are you doing here. This is not for you. ඞ", ephemeral=True
@@ -27,9 +31,9 @@ class Confirm(discord.ui.View):
             return
         await interaction.response.send_message("Cancelling", ephemeral=True)
         self.value = False
+        button.disabled = True
+        self.confirm.disabled = True
         self.stopper()
 
     def stopper(self):
-        self.confirm.disabled = True
-        self.cancel.disabled = True
         self.stop()

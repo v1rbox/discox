@@ -17,6 +17,13 @@ config = Config()
 
 CREATE_STATEMENTS = [
     """
+    CREATE TABLE IF NOT EXISTS discox.polls (
+        channel_id BIGINT NOT NULL,
+        message_id BIGINT NOT NULL PRIMARY KEY,
+        type ENUM('single', 'multiple')
+    );
+    """,
+    """
         CREATE TABLE IF NOT EXISTS discox.levels (
             user_id VARCHAR(100) PRIMARY KEY,
             level INTEGER,
@@ -347,6 +354,7 @@ def main() -> None:
             message.author == bot.user
             or not message.content.startswith(config.prefix)
             or not bot.is_ready()
+            or message.channel.id == config.general_channel
         ):
             await bot.event_manager.event_map()["on_message"].execute(message)
             return

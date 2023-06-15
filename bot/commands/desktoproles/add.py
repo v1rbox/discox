@@ -14,7 +14,7 @@ class DesktopRoles(Roles):
         "LXQT",
         "XFCE",
         "MATE",
-        "Cinamon",
+        "Cinnamon",
         "Enlightenment",
         "Deepin",
         "LXDE",

@@ -1,8 +1,26 @@
 import math
 import random
+import re
+from typing import List, Tuple
 
 from bot.base import Command
 from bot.config import Embed
+
+
+def contains_mention(string: str) -> Tuple[bool, List[int]]:
+    """Checks if a string (discord message) contains a ping
+
+    [Args]:
+        string (str): discord message
+
+    [Returns]:
+        (bool, List[int]):
+            (bool): if one or more ping is found in the string
+            (List[int]): list of user IDs that were ping
+    """
+
+    pinged_people: List[int] = [found for found in re.findall("<@[0-9]+>", string)]
+    return bool(pinged_people), pinged_people
 
 
 class cmd(Command):
@@ -92,7 +110,40 @@ class cmd(Command):
 
         return output
 
+    def literal_spam(self, string: str):
+        # Generate spam till the end of the universe (message length limit)
+        output = ""
+        spam_len_limit = 2000
+        final_chop = spam_len_limit
+        chop_case = [
+            " ",
+            "<",
+            ">",
+            "\n",
+        ]  # Order of the elements determine final chop, first checks first
+
+        for x in range(0, spam_len_limit):
+            output += string
+
+        # early chop to work with less stuff in next step
+        output = output[:spam_len_limit]
+
+        # version 1:
+        # return output
+
+        # Chop at the last character that matched with ordered chop_case
+        for x in range(spam_len_limit - 1, 0, -1):
+            if output[x] in chop_case:
+                final_chop = x
+                break
+
+        output = output[:final_chop]
+        return output
+
     async def execute(self, arguments, message) -> None:
+        if contains_mention(message.content):
+            return
+
         if arguments[0] == "?" and arguments[1] == "?":
             await message.channel.send(
                 """ ```Usage: v!gen_spam <algo> <spam_string>
@@ -104,9 +155,12 @@ This method supports a variety of cool algorithms you can choose:
             This is also in general, but Drillenissen's taste for extra.
                 e.g: v!gen_spam drill_spam_4 hi
     3. Addicted spam: this is the most craziest spamming algorithm. (algo input: addict_spam)
-                e.g: v!gen_spam addict_spam hi```
+                e.g: v!gen_spam addict_spam hi
+    4. Literal spam: spam till the end of message limit (algo input: literal_spam)
+                e.g: v!gen_spam literal_spam Hehehe```
                     """
             )
+            return
         if arguments[0] == "gen_spam":
             output = self.general_spam(arguments[1])
             await message.channel.send(output)
@@ -118,6 +172,11 @@ This method supports a variety of cool algorithms you can choose:
         elif arguments[0] == "addict_spam":
             output = self.addict_spam(arguments[1])
             await message.channel.send(output)
+
+        elif arguments[0] == "literal_spam":
+            output = self.literal_spam(arguments[1])
+            await message.channel.send(output)
+
         else:
             embed = Embed(title="Invalid argument detected!")
             embed.set_color("red")

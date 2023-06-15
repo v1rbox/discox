@@ -1,7 +1,15 @@
+import enum
 from re import search, sub
+
+import discord
 
 from bot.base import Event
 from bot.config import Config, Embed
+
+
+class EnumPollType(enum.Enum):
+    single = "single"
+    multiple = "multiple"
 
 
 class event(Event):
@@ -9,7 +17,61 @@ class event(Event):
 
     name = "on_raw_reaction_add"
 
-    async def execute(self, payload) -> None:
+    async def execute(self, *args, **kwargs) -> None:
+        await self.starboard(*args, **kwargs)
+        await self.poll_single_or_multiple(*args, **kwargs)
+
+    async def poll_single_or_multiple(
+        self, payload: discord.RawReactionActionEvent
+    ) -> None:
+        bind = [
+            "0️⃣",
+            "1️⃣",
+            "2️⃣",
+            "3️⃣",
+            "4️⃣",
+            "5️⃣",
+            "6️⃣",
+            "7️⃣",
+            "8️⃣",
+            "9️⃣",
+            "✅",
+            "❌",
+        ]
+        if payload.emoji.name not in bind:
+            return
+        message = await (
+            await self.bot.fetch_channel(payload.channel_id)
+        ).fetch_message(payload.message_id)
+        if message.author.id != self.bot.user.id:
+            return
+        type = (
+            await self.db.raw_exec_select(
+                "SELECT type FROM polls WHERE message_id = ?", (message.id,)
+            )
+        )[0][0]
+        # now check for it's channel id and message id if its same
+        message_id, channel_id = (
+            await self.db.raw_exec_select(
+                "SELECT message_id, channel_id FROM polls WHERE message_id = ?",
+                (message.id,),
+            )
+        )[0]
+        if message_id != message.id or channel_id != message.channel.id:
+            return
+        if type == EnumPollType.single.value:
+            for reaction in message.reactions:
+                print(reaction.emoji, payload.emoji.name)
+                if reaction.emoji == payload.emoji.name:
+                    continue
+                try:
+                    await message.remove_reaction(reaction.emoji, payload.member)
+                except:
+                    continue
+        elif type == EnumPollType.multiple.value:
+            pass
+
+    async def starboard(self, payload: discord.RawReactionActionEvent) -> None:
         IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)(\?(.[^\s]*))?"
         REACTION = "⭐"
         starboard = await self.bot.fetch_channel(Config.starboard_channel)
@@ -42,6 +104,10 @@ class event(Event):
 
                     if messageObj.content:
                         embed.description = messageObj.content
+                    elif "MessageType.premium_guild" in str(messageObj.type):
+                        embed.description = (
+                            f"{messageObj.author} boosted the server :sunglasses:"
+                        )
                     if len(messageObj.attachments) != 0:
                         if "image" in messageObj.attachments[0].content_type:
                             embed.set_image(url=messageObj.attachments[0].url)
