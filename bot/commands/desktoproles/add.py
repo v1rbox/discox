@@ -65,7 +65,7 @@ class DesktopRoles(Roles):
         "Berry",
         "SOWM",
     ]
-
+    whilelist.sort()
 
 class cmd(Command):
     """A discord command instance."""
