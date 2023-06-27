@@ -5,14 +5,37 @@
   env.GREET = "Discox";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git ];
+  packages = with pkgs; 
+  [ 
+    git 
+    tmux
+    # python3Full
+  ];
+
 
   # https://devenv.sh/scripts/
-  scripts.hello.exec = "$GREET Development Environment";
-
   services.mysql = {
       enable = true;
       package = pkgs.mariadb;
+      initialDatabases = [{ name = "discox"; }];
+      ensureUsers =[
+        {
+            name = "discox";
+            password = "YES";
+            ensurePermissions = {
+                "discox.*" = "ALL PRIVILEGES"; 
+            };
+        }
+      ];
+      settings = {
+        mysqld = {
+            max_allowed_packet = "256M";
+            max_connections = "400";
+        };
+        mysqldump = {
+            max_allowed_packet = "256M";
+          };
+      };
   };
 
   enterShell = ''

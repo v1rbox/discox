@@ -24,9 +24,9 @@
 
         devShells.default = pkgs.mkShell {
             packages = [ 
-            pkgs.python3Full
             poetry2nix.packages.${system}.poetry 
             # pkgs.mariadb
+            pkgs.tmux
             devenv.packages.${system}.devenv
             ];
             shellHook = ''
