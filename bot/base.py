@@ -182,27 +182,21 @@ class Task(ABC):
 
         raise NotImplementedError("Task execute method is required")
 
-# class RoleLogic:
-#     def __init__(self, message):
-#         self.message = message
-#
-#     def addRole(self, whitelist,max):
-#         if len([x for x in self.getAuthorRolesNames(message) if x in self.whitelist])
-#     
 class RoleMenu(discord.ui.Select):
-        def __init__(self, whitelist, action):
+        def __init__(self, whitelist):
             super().__init__()
             self.whitelist = sorted(whitelist)
             self.index = 0
             self.page = 1
             self.placeholder = f"Page {self.page}"
-            self.action = action
             self.regenerateMenu()
 
         def regenerateMenu(self):
             options = []
             begin = True;
             end = False;
+            if len(self.whitelist) == 0:
+                options.append(discord.SelectOption(label="No Options Available", value="No Options Available"))
             if begin == True and self.index > 0:
                 options.append(discord.SelectOption(label="<-- Previous Page", value="Previous Page"))
                 begin = False
@@ -230,7 +224,7 @@ class RoleMenu(discord.ui.Select):
             self.regenerateMenu()
 
         async def callback(self, interaction):
-            if self.view.mmessage.author.id != interaction.user.id:
+            if self.view.message.author.id != interaction.user.id:
                 return
             if self.values[0] == "Next Page":
                 self.NextPage()
@@ -241,8 +235,17 @@ class RoleMenu(discord.ui.Select):
                 await interaction.message.edit(view=self.view)
                 await interaction.response.defer()
             else:
-                self.view.selection = self.values[0]
-                
+                if self.view.action == "Remove":
+                    role = self.view.getRoleByName(self.view.message, self.values[0])
+                    await self.view.message.author.remove_roles(role)
+                    # Removes the role if the role is now empty
+                    if len(role.members) == 0:
+                        await role.delete()
+                    embed = Embed(title=f"{self.view.cap}", description=f"{self.view.message.author.name} has been removed from the {self.values[0]} role")
+                    self.view.regenerateMenu()
+                    await interaction.message.edit(embed=embed,view=self.view)
+                    await interaction.response.defer()
+
 class BackButton(discord.ui.Button):
     def __init__(self):
         super().__init__()
@@ -264,8 +267,12 @@ class RolesButton(discord.ui.Button):
     async def callback(self, interaction):
         if self.view.message.author.id != interaction.user.id:
             return
+        self.whitelist = self.view.whitelist
+        if self.action == "Remove":
+            self.whitelist = [x.name for x in self.view.message.author.roles if x.name in self.view.whitelist]
+        self.view.action = self.action
         self.view.clear_items()
-        self.view.add_item(RoleMenu(self.view.whitelist,self.action))
+        self.view.add_item(RoleMenu(self.whitelist))
         self.view.add_item(BackButton())
         cap_prefix = self.view.prefix.capitalize()
         embed = Embed(title=f"{cap_prefix} {self.action}", description=f"Please select and option")
@@ -314,8 +321,9 @@ class RoleView(discord.ui.View):
         # self.message = message.author.id
         self.message = message
         self.selection = None
-        cap = self.prefix.capitalize()
-        self.default_embed = Embed(title=f"{cap}",description="Please select an option")
+        self.action = None
+        self.cap = self.prefix.capitalize()
+        self.default_embed = Embed(title=f"{self.cap}",description="Please select an option")
         self.regenerateMenu()
 
     def regenerateMenu(self):
@@ -326,6 +334,11 @@ class RoleView(discord.ui.View):
         self.add_item(YourRolesButton())
         self.add_item(LeaderboardRolesButton())
         self.add_item(InfoRolesButton())
+
+    def getRoleByName(self, message, role_name):
+        for role in message.guild.roles:
+            if role.name == role_name:
+                return role
 
 class Roles:
     prefix = None
