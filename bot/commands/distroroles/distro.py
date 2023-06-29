@@ -1,10 +1,10 @@
 from discord import Color
 
-from bot.base import Command, NewRoles
+from bot.base import Command, RoleView
 from bot.config import Config, Embed
 
 
-class DistroRoles(NewRoles):
+class DistroRoles(RoleView):
     max = 3
     role_color = Color.from_rgb(185, 137, 240)
     prefix = "distro"
@@ -100,8 +100,4 @@ class cmd(Command):
     description = f"Distro Roles"
 
     async def execute(self, arguments, message) -> None:
-        # distroroles = DistroRoles()
-        # embed = Embed(
-        #     title="Distro"
-        # )
         await message.channel.send(view=DistroRoles(message))

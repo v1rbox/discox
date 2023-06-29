@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, List, Optional, Tuple
 import aiosqlite
 import discord
 from discord.ext import tasks
+from bot.config import Embed
 
 from .logger import Logger
 from .sql import SQLParser
@@ -182,32 +183,31 @@ class Task(ABC):
         raise NotImplementedError("Task execute method is required")
 
 class RoleMenu(discord.ui.Select):
-        def __init__(self, role_list, invoker):
+        def __init__(self, menu_items, message, action):
             super().__init__()
-            self.role_list = role_list
+            self.menu_items = sorted(menu_items)
             self.index = 0
-            self.invoker = invoker
+            self.message= message 
             self.page = 1
             self.placeholder = f"Page {self.page}"
+            self.action = action
             self.regenerateMenu()
-
         def regenerateMenu(self):
             options = []
             begin = True;
             end = False;
             if begin == True and self.index > 0:
-                options.append(discord.SelectOption(label="Previous Page", value="Previous Page"))
+                options.append(discord.SelectOption(label="<-- Previous Page", value="Previous Page"))
                 begin = False
-
             for i in range(self.index, self.index+23):
                 try:
-                    role = self.role_list[i]
+                    role = self.menu_items[i]
                     options.append(discord.SelectOption(label=f"{i+1}. {role}", value=role))
                 except IndexError:
                     end = True
                     pass
             if end == False:
-                options.append(discord.SelectOption(label=f"Next Page", value="Next Page"))
+                options.append(discord.SelectOption(label=f"Next Page -->", value="Next Page"))
             self.options = options  
 
         def NextPage(self):
@@ -223,7 +223,7 @@ class RoleMenu(discord.ui.Select):
             self.regenerateMenu()
 
         async def callback(self, interaction):
-            if self.invoker != interaction.user.id:
+            if self.message.author.id != interaction.user.id:
                 return
             if self.values[0] == "Next Page":
                 self.NextPage()
@@ -233,17 +233,85 @@ class RoleMenu(discord.ui.Select):
                 self.PreviousPage()
                 await interaction.message.edit(view=self.view)
                 await interaction.response.defer()
+            else:
+                if self.action == "Add":
+                    pass
 
-class NewRoles(discord.ui.View):
+class RolesButton(discord.ui.Button):
+    def __init__(self,whitelist,message):
+        super().__init__()
+        self.whitelist = whitelist
+        self.message = message
+        self.style = discord.ButtonStyle.primary
+        self.label = "None"
+        self.action = self.label
+    async def callback(self, interaction):
+        if self.message.author.id != interaction.user.id:
+            return
+        self.view.clear_items()
+        self.view.add_item(RoleMenu(self.whitelist,self.message,self.action))
+        self.view.add_item(BackButton(self.message))
+        await interaction.message.edit(view=self.view)
+        await interaction.response.defer()
+
+class BackButton(discord.ui.Button):
+    def __init__(self,message):
+        super().__init__()
+        self.label = "Back"
+        self.style = discord.ButtonStyle.red
+        self.message = message
+    async def callback(self, interaction):
+        if self.message.author.id != interaction.user.id:
+            return
+        self.view.regenerateMenu()
+        await interaction.message.edit(view=self.view)
+        await interaction.response.defer()
+
+class AddRolesButton(RolesButton):
+    def __init__(self,whitelist,message):
+        super().__init__(whitelist,message)
+        self.label = "Add"
+class RemoveRolesButton(RolesButton):
+    def __init__(self,whitelist,message):
+        super().__init__(whitelist, message)
+        self.label = "Remove"
+class ListRolesButton(RolesButton):
+    def __init__(self,whitelist,message):
+        super().__init__(whitelist, message)
+        self.label = "List"
+class YourRolesButton(RolesButton):
+    def __init__(self,whitelist,message):
+        super().__init__(whitelist, message)
+        self.label = "Your Roles"
+class LeaderboardRolesButton(RolesButton):
+    def __init__(self,whitelist,message):
+        super().__init__(whitelist, message)
+        self.label = "Leaderboard"
+class InfoRolesButton(RolesButton):
+    def __init__(self,whitelist,message):
+        super().__init__(whitelist, message)
+        self.label = "Info"
+
+class RoleView(discord.ui.View):
     max = None
     role_color = None
     prefix = None
     whitelist = None
+
     def __init__(self,message):
         super().__init__()
-        self.invoker = message.author.id
-        self.menu = RoleMenu(self.whitelist,self.invoker)
-        self.add_item(self.menu)
+        # self.message = message.author.id
+        self.message = message
+        self.regenerateMenu()
+
+    def regenerateMenu(self):
+        self.clear_items()
+        self.add_item(AddRolesButton(self.whitelist,self.message))
+        self.add_item(RemoveRolesButton(self.whitelist,self.message))
+        self.add_item(ListRolesButton(self.whitelist,self.message))
+        self.add_item(YourRolesButton(self.whitelist,self.message))
+        self.add_item(LeaderboardRolesButton(self.whitelist,self.message))
+        self.add_item(InfoRolesButton(self.whitelist,self.message))
 
 class Roles:
     prefix = None
