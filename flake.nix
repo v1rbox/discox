@@ -16,27 +16,10 @@
             pkgs = nixpkgs.legacyPackages.${system};
           in
           {
-            default = devenv.lib.mkShell {
+            db = devenv.lib.mkShell {
               inherit inputs pkgs;
               modules = [
                 {
-                  # https://devenv.sh/reference/options/
-                  packages = with pkgs; [ 
-                    git
-                    python3Full
-                    poetry
-                    gnumake
-                  ];
-                    
-                  enterShell = ''
-                       make init
-                       clear
-                       echo "Discox Development Environment"
-                       python --version
-                       mariadb --version
-                       echo "Python packages in environment: "
-                       poetry show
-                  '';
                     services.mysql = {
                       enable = true;
                       package = pkgs.mariadb;
@@ -51,15 +34,40 @@
                         }
                       ];
                       settings = {
-                        mysqld = {
-                            max_allowed_packet = "2560M";
-                            log_warnings = "1";
+                            mysqld = {
+                                max_allowed_packet = "256M";
+                                log_warnings = "1";
                         };
                     };
                   };
+                  enterShell = ''
+                    devenv up
+                  '';
                 }
               ];
             };
-          });
+            dev = devenv.lib.mkShell {
+              inherit inputs pkgs;
+              modules = [
+                {
+                  # https://devenv.sh/reference/options/
+                  packages = with pkgs; [ 
+                    git
+                    python3Full
+                    poetry
+                    gnumake
+                  ];
+                  enterShell = ''
+                       make init
+                       clear
+                       echo "Discox Development Environment"
+                       echo "Python packages in environment: "
+                       poetry show
+                       make run
+                  '';
+                }
+              ];
+            };
+        });
     };
 }
