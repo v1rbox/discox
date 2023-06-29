@@ -1,10 +1,10 @@
 from discord import Color
 
-from bot.base import Command, Roles
+from bot.base import Command, NewRoles
 from bot.config import Config, Embed
 
 
-class DistroRoles(Roles):
+class DistroRoles(NewRoles):
     max = 3
     role_color = Color.from_rgb(185, 137, 240)
     prefix = "distro"
@@ -95,13 +95,13 @@ class DistroRoles(Roles):
 class cmd(Command):
     """A discord command instance."""
 
-    name = "add"
-    usage = "add <distribution>"
-    description = f"Assigns user a role based on selected distro, max of {DistroRoles.max} distro roles per user."
+    name = "distro"
+    usage = "distro"
+    description = f"Distro Roles"
 
     async def execute(self, arguments, message) -> None:
-        distroroles = DistroRoles()
-        embed = Embed(
-            title="Distro", description=await distroroles.addRole(message, arguments[0])
-        )
-        await message.channel.send(embed=embed)
+        # distroroles = DistroRoles()
+        # embed = Embed(
+        #     title="Distro"
+        # )
+        await message.channel.send(view=DistroRoles())

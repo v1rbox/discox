@@ -181,6 +181,35 @@ class Task(ABC):
 
         raise NotImplementedError("Task execute method is required")
 
+class RoleMenu(discord.ui.Select):
+        def __init__(self, role_list):
+            super().__init__()
+            self.role_list = role_list
+            self.index = 0
+            self.regenerateMenu()
+
+        def regenerateMenu(self):
+            options = []
+            for i, r in enumerate(self.role_list):
+                if self.index == 24:
+                    options.append(discord.SelectOption(label="Next Menu"))
+                    self.index += 1
+                    break
+                else:
+                    options.append(discord.SelectOption(label=f"{i+1}. {r}", value=r))
+                    self.index += 1
+                # if len(options) >= 20:
+                    # break
+            self.options = options  
+
+class NewRoles(discord.ui.View):
+    role = None
+    whitelist = None
+    role_color = None
+    max = None
+    def __init__(self):
+        super().__init__()
+        self.add_item(RoleMenu(self.whitelist))
 
 class Roles:
     prefix = None
