@@ -190,16 +190,18 @@ class RoleMenu(discord.ui.Select):
 
         def regenerateMenu(self):
             options = []
-            for i, r in enumerate(self.role_list):
-                if self.index == 24:
-                    options.append(discord.SelectOption(label="Next Menu"))
-                    self.index += 1
-                    break
-                else:
-                    options.append(discord.SelectOption(label=f"{i+1}. {r}", value=r))
-                    self.index += 1
-                # if len(options) >= 20:
-                    # break
+            begin = True;
+            for i in range(self.index, self.index+23):
+                try:
+                    role = self.role_list[i]
+                    if begin == True:
+                        options.append(discord.SelectOption(label="Previous Page", value=0))
+                        begin = False
+                    options.append(discord.SelectOption(label=f"{i+1}. {role}", value=role))
+                except IndexError:
+                    pass
+            options.append(discord.SelectOption(label=f"Next Page", value=1))
+            self.index += 23
             self.options = options  
 
 class NewRoles(discord.ui.View):
