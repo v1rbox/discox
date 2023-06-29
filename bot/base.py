@@ -182,16 +182,24 @@ class Task(ABC):
 
         raise NotImplementedError("Task execute method is required")
 
+# class RoleLogic:
+#     def __init__(self, message):
+#         self.message = message
+#
+#     def addRole(self, whitelist,max):
+#         if len([x for x in self.getAuthorRolesNames(message) if x in self.whitelist])
+#     
 class RoleMenu(discord.ui.Select):
-        def __init__(self, menu_items, message, action):
+        def __init__(self, whitelist, message, action):
             super().__init__()
-            self.menu_items = sorted(menu_items)
+            self.whitelist = sorted(whitelist)
             self.index = 0
             self.message= message 
             self.page = 1
             self.placeholder = f"Page {self.page}"
             self.action = action
             self.regenerateMenu()
+
         def regenerateMenu(self):
             options = []
             begin = True;
@@ -201,7 +209,7 @@ class RoleMenu(discord.ui.Select):
                 begin = False
             for i in range(self.index, self.index+23):
                 try:
-                    role = self.menu_items[i]
+                    role = self.whitelist[i]
                     options.append(discord.SelectOption(label=f"{i+1}. {role}", value=role))
                 except IndexError:
                     end = True
@@ -234,8 +242,20 @@ class RoleMenu(discord.ui.Select):
                 await interaction.message.edit(view=self.view)
                 await interaction.response.defer()
             else:
+                print(self.action)
                 if self.action == "Add":
-                    pass
+                    print("Add")
+                elif self.action == "Remove":
+                    print("Remove")
+                elif self.action == "List":
+                    print("List")
+                elif self.action == "Your Roles":
+                    print("Your Roles")
+                elif self.action == "Leaderboard":
+                    print("Leaderboard")
+                elif self.action == "Info":
+                    print("Info")
+
 
 class RolesButton(discord.ui.Button):
     def __init__(self,whitelist,message):
@@ -271,26 +291,32 @@ class AddRolesButton(RolesButton):
     def __init__(self,whitelist,message):
         super().__init__(whitelist,message)
         self.label = "Add"
+        self.action = self.label
 class RemoveRolesButton(RolesButton):
     def __init__(self,whitelist,message):
         super().__init__(whitelist, message)
         self.label = "Remove"
+        self.action = self.label
 class ListRolesButton(RolesButton):
     def __init__(self,whitelist,message):
         super().__init__(whitelist, message)
         self.label = "List"
+        self.action = self.label
 class YourRolesButton(RolesButton):
     def __init__(self,whitelist,message):
         super().__init__(whitelist, message)
         self.label = "Your Roles"
+        self.action = self.label
 class LeaderboardRolesButton(RolesButton):
     def __init__(self,whitelist,message):
         super().__init__(whitelist, message)
         self.label = "Leaderboard"
+        self.action = self.label
 class InfoRolesButton(RolesButton):
     def __init__(self,whitelist,message):
         super().__init__(whitelist, message)
         self.label = "Info"
+        self.action = self.label
 
 class RoleView(discord.ui.View):
     max = None
