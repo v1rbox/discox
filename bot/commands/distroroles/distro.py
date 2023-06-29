@@ -104,4 +104,4 @@ class cmd(Command):
         # embed = Embed(
         #     title="Distro"
         # )
-        await message.channel.send(view=DistroRoles())
+        await message.channel.send(view=DistroRoles(message))

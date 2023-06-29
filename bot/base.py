@@ -182,36 +182,68 @@ class Task(ABC):
         raise NotImplementedError("Task execute method is required")
 
 class RoleMenu(discord.ui.Select):
-        def __init__(self, role_list):
+        def __init__(self, role_list, invoker):
             super().__init__()
             self.role_list = role_list
             self.index = 0
+            self.invoker = invoker
+            self.page = 1
+            self.placeholder = f"Page {self.page}"
             self.regenerateMenu()
 
         def regenerateMenu(self):
             options = []
             begin = True;
+            end = False;
+            if begin == True and self.index > 0:
+                options.append(discord.SelectOption(label="Previous Page", value="Previous Page"))
+                begin = False
+
             for i in range(self.index, self.index+23):
                 try:
                     role = self.role_list[i]
-                    if begin == True:
-                        options.append(discord.SelectOption(label="Previous Page", value=0))
-                        begin = False
                     options.append(discord.SelectOption(label=f"{i+1}. {role}", value=role))
                 except IndexError:
+                    end = True
                     pass
-            options.append(discord.SelectOption(label=f"Next Page", value=1))
-            self.index += 23
+            if end == False:
+                options.append(discord.SelectOption(label=f"Next Page", value="Next Page"))
             self.options = options  
 
+        def NextPage(self):
+            self.index += 23
+            self.page += 1
+            self.placeholder = f"Page {self.page}"
+            self.regenerateMenu()
+
+        def PreviousPage(self):
+            self.index -= 23
+            self.page -= 1
+            self.placeholder = f"Page {self.page}"
+            self.regenerateMenu()
+
+        async def callback(self, interaction):
+            if self.invoker != interaction.user.id:
+                return
+            if self.values[0] == "Next Page":
+                self.NextPage()
+                await interaction.message.edit(view=self.view)
+                await interaction.response.defer()
+            if self.values[0] == "Previous Page":
+                self.PreviousPage()
+                await interaction.message.edit(view=self.view)
+                await interaction.response.defer()
+
 class NewRoles(discord.ui.View):
-    role = None
-    whitelist = None
-    role_color = None
     max = None
-    def __init__(self):
+    role_color = None
+    prefix = None
+    whitelist = None
+    def __init__(self,message):
         super().__init__()
-        self.add_item(RoleMenu(self.whitelist))
+        self.invoker = message.author.id
+        self.menu = RoleMenu(self.whitelist,self.invoker)
+        self.add_item(self.menu)
 
 class Roles:
     prefix = None
