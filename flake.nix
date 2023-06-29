@@ -50,15 +50,12 @@
                             };
                         }
                       ];
-                      # settings = {
-                      #   mysqld = {
-                      #       max_allowed_packet = "256M";
-                      #       max_connections = "400";
-                      #   };
-                      #   mysqldump = {
-                      #       max_allowed_packet = "256M";
-                      #     };
-                      # };
+                      settings = {
+                        mysqld = {
+                            max_allowed_packet = "2560M";
+                            log_warnings = "1";
+                        };
+                    };
                   };
                 }
               ];
