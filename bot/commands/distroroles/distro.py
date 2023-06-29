@@ -100,4 +100,5 @@ class cmd(Command):
     description = f"Distro Roles"
 
     async def execute(self, arguments, message) -> None:
-        await message.channel.send(view=DistroRoles(message))
+        distro = DistroRoles(message)
+        await message.channel.send(embed=distro.default_embed,view=distro)

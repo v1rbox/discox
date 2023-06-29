@@ -230,7 +230,7 @@ class RoleMenu(discord.ui.Select):
             self.regenerateMenu()
 
         async def callback(self, interaction):
-            if self.view.message.author.id != interaction.user.id:
+            if self.view.mmessage.author.id != interaction.user.id:
                 return
             if self.values[0] == "Next Page":
                 self.NextPage()
@@ -241,20 +241,8 @@ class RoleMenu(discord.ui.Select):
                 await interaction.message.edit(view=self.view)
                 await interaction.response.defer()
             else:
-                print(self.action)
-                if self.action == "Add":
-                    print("Add")
-                elif self.action == "Remove":
-                    print("Remove")
-                elif self.action == "List":
-                    print("List")
-                elif self.action == "Your Roles":
-                    print("Your Roles")
-                elif self.action == "Leaderboard":
-                    print("Leaderboard")
-                elif self.action == "Info":
-                    print("Info")
-
+                self.view.selection = self.values[0]
+                
 class BackButton(discord.ui.Button):
     def __init__(self):
         super().__init__()
@@ -264,7 +252,7 @@ class BackButton(discord.ui.Button):
         if self.view.message.author.id != interaction.user.id:
             return
         self.view.regenerateMenu()
-        await interaction.message.edit(view=self.view)
+        await interaction.message.edit(embed=self.view.default_embed,view=self.view)
         await interaction.response.defer()
 
 class RolesButton(discord.ui.Button):
@@ -279,7 +267,9 @@ class RolesButton(discord.ui.Button):
         self.view.clear_items()
         self.view.add_item(RoleMenu(self.view.whitelist,self.action))
         self.view.add_item(BackButton())
-        await interaction.message.edit(view=self.view)
+        cap_prefix = self.view.prefix.capitalize()
+        embed = Embed(title=f"{cap_prefix} {self.action}", description=f"Please select and option")
+        await interaction.message.edit(embed=embed,view=self.view)
         await interaction.response.defer()
 
 class AddRolesButton(RolesButton):
@@ -323,6 +313,9 @@ class RoleView(discord.ui.View):
         super().__init__()
         # self.message = message.author.id
         self.message = message
+        self.selection = None
+        cap = self.prefix.capitalize()
+        self.default_embed = Embed(title=f"{cap}",description="Please select an option")
         self.regenerateMenu()
 
     def regenerateMenu(self):
