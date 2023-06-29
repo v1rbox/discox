@@ -224,27 +224,56 @@ class RoleMenu(discord.ui.Select):
             self.regenerateMenu()
 
         async def callback(self, interaction):
-            if self.view.message.author.id != interaction.user.id:
+            message = self.view.message
+            whitelist = self.view.whitelist
+            selection = self.values[0]
+            action = self.view.action
+
+            if message.author.id != interaction.user.id:
                 return
-            if self.values[0] == "Next Page":
+            if selection == "Next Page":
                 self.NextPage()
                 await interaction.message.edit(view=self.view)
                 await interaction.response.defer()
-            if self.values[0] == "Previous Page":
+            if selection == "Previous Page":
                 self.PreviousPage()
                 await interaction.message.edit(view=self.view)
                 await interaction.response.defer()
             else:
-                if self.view.action == "Remove":
+                if action == "Remove":
+                    if selection == "No Options Available":
+                        self.view.regenerateMenu()
+                        await interaction.message.edit(embed=self.view.default_embed,view=self.view)
+                        await interaction.response.defer()
+                        return
                     role = self.view.getRoleByName(self.view.message, self.values[0])
-                    await self.view.message.author.remove_roles(role)
+                    await message.author.remove_roles(role)
                     # Removes the role if the role is now empty
                     if len(role.members) == 0:
                         await role.delete()
-                    embed = Embed(title=f"{self.view.cap}", description=f"{self.view.message.author.name} has been removed from the {self.values[0]} role")
+                    embed = Embed(title=f"{self.view.cap}", description=f"{message.author.name} has been removed from the {selection} {self.view.prefix} role")
                     self.view.regenerateMenu()
                     await interaction.message.edit(embed=embed,view=self.view)
                     await interaction.response.defer()
+                elif action == "Add":
+                    roles = [x for x in message.author.roles if x.name.lower() in list(map(lambda x:x.lower(), whitelist))]
+                    if len(roles) >= self.view.max:
+                        embed = Embed(title=f"{self.view.cap}", description=f"{message.author.name} has the max amount of {self.view.prefix} roles")
+                        self.view.regenerateMenu()
+                        await interaction.message.edit(embed=embed,view=self.view)
+                        await interaction.response.defer()
+                    if selection.lower() not in [x.name for x in roles]:
+                        await message.guild.create_role(name=selection, colour=self.view.role_color)
+                    await message.author.add_roles(self.view.getRoleByName(message, selection))
+                    embed = Embed(title=f"{self.view.cap}", description=f"{message.author.name} has been added to the {selection} {self.view.prefix} role")
+                    self.view.regenerateMenu()
+                    await interaction.message.edit(embed=embed,view=self.view)
+                    await interaction.response.defer()
+
+
+
+
+
 
 class BackButton(discord.ui.Button):
     def __init__(self):
@@ -269,7 +298,7 @@ class RolesButton(discord.ui.Button):
             return
         self.whitelist = self.view.whitelist
         if self.action == "Remove":
-            self.whitelist = [x.name for x in self.view.message.author.roles if x.name in self.view.whitelist]
+            self.whitelist = [x.name for x in self.view.message.author.roles if x.name.lower() in list(map(lambda x:x.lower(),self.view.whitelist))]
         self.view.action = self.action
         self.view.clear_items()
         self.view.add_item(RoleMenu(self.whitelist))
@@ -400,7 +429,7 @@ class Roles:
             argument = self.whitelist[
                 list(map(lambda distro: distro.lower(), self.whitelist)).index(
                     argument.lower()
-                )
+                            )
             ]
             await message.author.add_roles(self.getRoleByName(message, argument))
             return f"***{message.author.name} has been added to the {argument} {self.prefix} role***"
