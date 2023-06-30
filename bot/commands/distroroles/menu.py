@@ -95,9 +95,9 @@ class DistroRoles(RoleView):
 class cmd(Command):
     """A discord command instance."""
 
-    name = "distro"
-    usage = "distro"
-    description = f"Distro Roles"
+    name = "menu"
+    usage = "menu"
+    description = f"Distro Roles Menu"
 
     async def execute(self, arguments, message) -> None:
         distro = DistroRoles(message)

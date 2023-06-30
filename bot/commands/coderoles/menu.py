@@ -1,10 +1,8 @@
 from discord import Color
 
-from bot.base import Command, Roles
+from bot.base import Command, RoleView
 from bot.config import Config, Embed
-
-
-class CodeRoles(Roles):
+class CodeRoles(RoleView):
     max = 5
     role_color = Color.from_rgb(137, 204, 240)
     prefix = "code"
@@ -75,13 +73,10 @@ class CodeRoles(Roles):
 class cmd(Command):
     """A discord command instance."""
 
-    name = "add"
-    usage = "add <language>"
-    description = f"Assigns user a role based on selected language, max of {CodeRoles.max} code roles per user."
+    name = "menu"
+    usage = "menu"
+    description = f"Code Roles Menu"
 
     async def execute(self, arguments, message) -> None:
-        coderoles = CodeRoles()
-        embed = Embed(
-            title="Code", description=await coderoles.addRole(message, arguments[0])
-        )
-        await message.channel.send(embed=embed)
+        code = CodeRoles()
+        await message.channel.send(embed=code.default_embed,view=code)
