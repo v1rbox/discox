@@ -18,7 +18,7 @@ class CodeRoles(RoleView):
         "Clojure",
         "Crystal",
         "COBOL",
-        "CofeeScript",
+        "CoffeeScript",
         "D",
         "Dart",
         "Elixir",
@@ -78,5 +78,5 @@ class cmd(Command):
     description = f"Code Roles Menu"
 
     async def execute(self, arguments, message) -> None:
-        code = CodeRoles()
+        code = CodeRoles(message)
         await message.channel.send(embed=code.default_embed,view=code)
