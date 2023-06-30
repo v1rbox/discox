@@ -302,10 +302,6 @@ class RoleMenu(discord.ui.Select):
                     await interaction.response.defer()
                     return
 
-
-
-
-
 class BackButton(discord.ui.Button):
     def __init__(self):
         super().__init__()
@@ -361,8 +357,6 @@ class UsersRolesButton(RolesButton):
         super().__init__()
         self.label = "Users"
         self.action = self.label
-
-
 class YourRolesButton(RolesButton):
     def __init__(self):
         super().__init__()
@@ -378,8 +372,6 @@ class YourRolesButton(RolesButton):
         embed = Embed(title=f"Your {self.view.cap} Roles", description=f"{desc}")
         await interaction.message.edit(embed=embed,view=self.view)
         await interaction.response.defer()
-
-    
 class LeaderboardRolesButton(RolesButton):
     def __init__(self):
         super().__init__()
