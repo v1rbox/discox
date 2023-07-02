@@ -67,4 +67,4 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         desktop = DesktopRoles(message)
-        await message.channel.send(embed=desktop.default_embed,view=desktop)
+        await message.channel.send(embed=desktop.default_embed, view=desktop)
