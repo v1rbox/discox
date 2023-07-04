@@ -55,8 +55,17 @@ class DesktopRoles(Roles):
         "Openbox",
         "QTile",
         "EXWM",
+        "FVWM",
+        "TWM",
+        "QVWM",
+        "WindowMaker",
+        "AfterStep",
+        "CTWM",
+        "IceWM",
+        "Berry",
+        "SOWM",
     ]
-
+    whilelist.sort()
 
 class cmd(Command):
     """A discord command instance."""
