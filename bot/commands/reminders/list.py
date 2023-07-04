@@ -16,9 +16,7 @@ class cmd(Command):
             "SELECT Timestamp, Reminder FROM reminders WHERE User = ?",
             (message.author.id,),
         )
-        embed = Embed(
-            title=f"Reminders of {message.author.name}"
-        )
+        embed = Embed(title=f"Reminders of {message.author.name}")
         for reminder in reminders:
             timestamp, remindMsg = reminder
             embed.add_field(
