@@ -101,4 +101,4 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         distro = DistroRoles(message)
-        await message.channel.send(embed=distro.default_embed,view=distro)
+        await message.channel.send(embed=distro.default_embed, view=distro)

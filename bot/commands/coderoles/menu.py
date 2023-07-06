@@ -2,6 +2,8 @@ from discord import Color
 
 from bot.base import Command, RoleView
 from bot.config import Config, Embed
+
+
 class CodeRoles(RoleView):
     max = 5
     role_color = Color.from_rgb(137, 204, 240)
@@ -79,4 +81,4 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         code = CodeRoles(message)
-        await message.channel.send(embed=code.default_embed,view=code)
+        await message.channel.send(embed=code.default_embed, view=code)
