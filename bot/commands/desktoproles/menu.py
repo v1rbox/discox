@@ -1,10 +1,10 @@
 from discord import Color
 
-from bot.base import Command, Roles
+from bot.base import Command, RoleView
 from bot.config import Config, Embed
 
 
-class DesktopRoles(Roles):
+class DesktopRoles(RoleView):
     max = 3
     role_color = Color.from_rgb(219, 240, 137)
     prefix = "desktop"
@@ -61,14 +61,10 @@ class DesktopRoles(Roles):
 class cmd(Command):
     """A discord command instance."""
 
-    name = "add"
-    usage = "add <distribution>"
-    description = f"Assigns user a role based on selected desktop, max of {DesktopRoles.max} desktop roles per user."
+    name = "menu"
+    usage = "menu"
+    description = f"Desktop Roles Menu"
 
     async def execute(self, arguments, message) -> None:
-        desktoproles = DesktopRoles()
-        embed = Embed(
-            title="Desktop",
-            description=await desktoproles.addRole(message, arguments[0]),
-        )
-        await message.channel.send(embed=embed)
+        desktop = DesktopRoles(message)
+        await message.channel.send(embed=desktop.default_embed,view=desktop)
