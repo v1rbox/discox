@@ -37,6 +37,7 @@ class DesktopRoles(RoleView):
         "FrankenWM",
         "herbstluftwm",
         "i3",
+        "IceWM",
         "LeftWM",
         "Notion",
         "Ratpoison",
