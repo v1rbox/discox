@@ -79,6 +79,8 @@ class Config:
     starboard_channel: int = int(
         os.getenv("DISCOX_STARBOARD_CHANNEL", "0")
     )  # starboard channel
+    minecraft_url: str = os.getenv("MINECRAFT_URL", "minecraft.virbos.xyz")
+    minecraft_port: int = os.getenv("MINECRAFT_PORT", 25565)
 
 
 if __name__ == "__main__":
