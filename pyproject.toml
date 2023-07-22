@@ -18,6 +18,7 @@ colorthief = "0.2.1"
 yarl = "^1.8.2"
 orjson = "^3.8.5"
 aiomysql = "^0.1.1"
+mcstatus = "^11.0.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.12.0"
