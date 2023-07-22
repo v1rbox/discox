@@ -1,12 +1,14 @@
 import discord
 from discord.ext.tasks import loop
+from mcstatus import JavaServer
+
 from bot.base import Task
 from bot.config import Config
-from mcstatus import JavaServer
 
 
 class TaskLoop(Task):
     current = 0
+
     @loop(minutes=10)
     async def execute(self) -> None:
         server = JavaServer.lookup(f"{Config.minecraft_url}:{Config.minecraft_port}")
@@ -18,7 +20,8 @@ class TaskLoop(Task):
         else:
             if status.players.online > 6:
                 activity = discord.Activity(
-                    type=discord.ActivityType.playing, name=f"with {status.players.online} Virbcrafters"
+                    type=discord.ActivityType.playing,
+                    name=f"with {status.players.online} Virbcrafters",
                 )
             else:
                 activity = discord.Activity(

@@ -1,6 +1,7 @@
-from bot.base import Command
-from bot.config import Embed, Config
 from mcstatus import JavaServer
+
+from bot.base import Command
+from bot.config import Config, Embed
 
 
 class cmd(Command):
@@ -9,7 +10,6 @@ class cmd(Command):
     description = "Get the status of the minecraft server"
 
     async def execute(self, arguments, message) -> None:
-
         server = JavaServer.lookup(f"{Config.minecraft_url}:{Config.minecraft_port}")
         status = server.status()
         if Config.minecraft_port == "25565":
@@ -23,7 +23,7 @@ class cmd(Command):
             **VERSION:** ```{status.version.name}```
             **MOTD:** ```{status.motd.to_plain()}```
             **CURRENT PLAYERS:** ```{status.players.online}```
-            """ 
+            """,
         )
         embed.set_color("green")
         await message.channel.send(embed=embed)
