@@ -19,11 +19,11 @@ class cmd(Command):
         embed = Embed(
             title="Minecraft",
             description=f"""
-            **URL:** ```{url}```
-            **VERSION:** ```{status.version.name}```
-            **MOTD:** ```{status.motd.to_plain()}```
-            **CURRENT PLAYERS:** ```{status.players.online}```
-            """,
+**URL:** ```{url}```
+**VERSION:** ```{status.version.name}```
+**MOTD:** ```{status.motd.to_plain()}```
+**CURRENT PLAYERS:** ```{status.players.online}```
+""",
         )
         embed.set_color("green")
         await message.channel.send(embed=embed)
