@@ -16,18 +16,25 @@
             pkgs = nixpkgs.legacyPackages.${system};
           in
           {
-            db = devenv.lib.mkShell {
+            default = devenv.lib.mkShell {
               inherit inputs pkgs;
               modules = [
                 {
+                    packages = with pkgs; [ 
+                        git
+                        python3Full
+                        poetry
+                        gnumake
+                        tmux
+                    ];
                     services.mysql = {
                       enable = true;
                       package = pkgs.mariadb;
-                      initialDatabases = [{ name = "discox"; }];
+                      initialDatabases = [{ name = "discox"; }]; #DB for discox
                       ensureUsers =[
                         {
-                            name = "discox";
-                            password = "YES";
+                            name = "discox"; #User for discox
+                            password = "YES"; #Password for discox user
                             ensurePermissions = {
                                 "discox.*" = "ALL PRIVILEGES"; 
                             };
@@ -41,29 +48,14 @@
                     };
                   };
                   enterShell = ''
-                    devenv up
-                  '';
-                }
-              ];
-            };
-            dev = devenv.lib.mkShell {
-              inherit inputs pkgs;
-              modules = [
-                {
-                  # https://devenv.sh/reference/options/
-                  packages = with pkgs; [ 
-                    git
-                    python3Full
-                    poetry
-                    gnumake
-                  ];
-                  enterShell = ''
-                       make init
-                       clear
-                       echo "Discox Development Environment"
-                       echo "Python packages in environment: "
-                       poetry show
-                       make run
+                    tmux new -d -s mariadb
+                    tmux send-keys -t "mariadb" "devenv up" Enter
+                    make init
+                    clear
+                    echo "Discox Development Environment"
+                    echo "Python packages in environment: "
+                    poetry show
+                    make run
                   '';
                 }
               ];
