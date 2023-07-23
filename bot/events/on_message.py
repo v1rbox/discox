@@ -38,6 +38,25 @@ class event(Event):
                         "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
                         (result[0][1], result[0][0] + 1, message.author.id),
                     )
+                    # Checks if user is an active member
+                    if result[0][1] >= 3:
+                        active_member_name = "Active Member"
+                        active_member_color = discord.Color.blue()
+                        # Checks if role already exits, if not, creates it
+                        if active_member_name not in [
+                            x.name.lower() for x in message.guild.roles
+                        ]:
+                            await message.guild.create_role(
+                                name=active_member_name, colour=active_member_color
+                            )
+
+                        # Adds user to active member role
+                        for role in message.guild.roles:
+                            if role.name.lower() == active_member_name.lower():
+                                await message.author.add_roles(
+                                    role               
+                                )
+                                break
 
                     if result[0][0] + 1 >= result[0][1] * 25 + 100:
                         await self.db.raw_exec_commit(
