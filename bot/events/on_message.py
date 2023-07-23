@@ -24,6 +24,26 @@ class event(Event):
             if self.lastMsgAuthorId != message.author.id:
                 self.lastMsgAuthorId = message.author.id
 
+                async def addToRole(message,role_name,role_color):
+                    # Checks if role already exits, if not, creates it
+                    if role_name.lower() not in [
+                            x.name.lower() for x in message.guild.roles
+                            ]:
+                        await message.guild.create_role(
+                                name=role_name, colour=role_color
+                                )
+                    # Adds user to role
+                    for role in message.guild.roles:
+                        if role.name.lower() == role_name.lower():
+                            await message.author.add_roles(
+                                    role
+                                )
+                            break
+                    # Congradulates user :D
+                    await message.channel.send(
+                            f"Congratulations {message.author.mention}, you are now an {role_name}!"
+                            )
+                    
                 result = await self.db.raw_exec_select(
                     f"SELECT exp, level FROM levels WHERE user_id = '{message.author.id}'"
                 )
@@ -33,18 +53,32 @@ class event(Event):
                         "INSERT INTO levels(exp, level, user_id) VALUES (?,?,?)",
                         (1, 0, message.author.id),
                     )
+                    
                 else:
                     await self.db.raw_exec_commit(
                         "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
                         (result[0][1], result[0][0] + 1, message.author.id),
                     )
+                    # Adds user to member role if they dont already have it
+                    role_name = "Member"
+                    role_color = discord.Color.dark_teal()
+                    # Checks if user has role first
+                    if role_name.lower() not in [x.name.lower() for x in message.author.roles]:
+                        await addToRole(message, role_name, role_color) 
+
+                    # Add user to active member role if level is 3
+                    if result[0][1] >= 3:
+                        role_name = "Active Member"
+                        role_color = discord.Color.blue()
+                        # Checks if user has role first
+                        if role_name.lower() not in [x.name.lower() for x in message.author.roles]:
+                            await addToRole(message, role_name, role_color) 
 
                     if result[0][0] + 1 >= result[0][1] * 25 + 100:
                         await self.db.raw_exec_commit(
                             "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
                             (result[0][1] + 1, 0, message.author.id),
                         )
-
                         await message.channel.send(
                             f"Congratulations {message.author.mention}, you just advanced to level {result[0][1] + 1}!"
                         )
