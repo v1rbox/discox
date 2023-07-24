@@ -59,7 +59,7 @@ class event(Event):
                         "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
                         (result[0][1], result[0][0] + 1, message.author.id),
                     )
-                    # Adds user to member role after first message
+                    # Adds user to member role if they dont already have it
                     role_name = "Member"
                     role_color = discord.Color.dark_teal()
                     # Checks if user has role first
