@@ -38,11 +38,11 @@ class event(Event):
                             await message.author.add_roles(
                                     role
                                 )
-                            # Congradulates user :D
-                            await message.channel.send(
-                                    f"Congratulations {message.author.mention}, you are now a {role.mention}!"
-                                    )
                             break
+                    # Congradulates user :D
+                    await message.channel.send(
+                            f"Congratulations {message.author.mention}, you are now an {role_name}!"
+                            )
                     
                 result = await self.db.raw_exec_select(
                     f"SELECT exp, level FROM levels WHERE user_id = '{message.author.id}'"
