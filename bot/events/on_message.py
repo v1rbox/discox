@@ -59,6 +59,10 @@ class event(Event):
                         "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
                         (result[0][1], result[0][0] + 1, message.author.id),
                     )
+                    # Add user to member role on first message
+                    if result [0][0] == 0 and result[0][1] == 0:
+                        await addToRole(message, "Member", discord.Color.dark_teal())                          
+
                     if result[0][0] + 1 >= result[0][1] * 25 + 100:
                         await self.db.raw_exec_commit(
                             "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
