@@ -60,12 +60,11 @@ class event(Event):
                         (result[0][1], result[0][0] + 1, message.author.id),
                     )
                     # Adds user to member role after first message
-                    if result [0][0] >= 0 and result[0][1] >= 0:
-                        role_name = "Member"
-                        role_color = discord.Color.dark_teal()
-                        # Checks if user has role first
-                        if role_name.lower() not in [x.name.lower() for x in message.author.roles]:
-                            await addToRole(message, role_name, role_color) 
+                    role_name = "Member"
+                    role_color = discord.Color.dark_teal()
+                    # Checks if user has role first
+                    if role_name.lower() not in [x.name.lower() for x in message.author.roles]:
+                        await addToRole(message, role_name, role_color) 
 
                     # Add user to active member role if level is 3
                     if result[0][1] >= 3:
