@@ -59,18 +59,27 @@ class event(Event):
                         "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
                         (result[0][1], result[0][0] + 1, message.author.id),
                     )
-                    # Add user to member role on first message
-                    if result [0][0] == 0 and result[0][1] == 0:
-                        await addToRole(message, "Member", discord.Color.dark_teal())                          
+                    # Adds user to member role after first message
+                    if result [0][0] >= 0 and result[0][1] >= 0:
+                        role_name = "Member"
+                        role_color = discord.Color.dark_teal()
+                        # Checks if user has role first
+                        if role_name.lower() not in [x.name.lower() for x in message.author.roles]:
+                            await addToRole(message, role_name, role_color) 
+
+                    # Add user to active member role if level is 3
+                    if result[0][1] >= 3:
+                        role_name = "Active Member"
+                        role_color = discord.Color.blue()
+                        # Checks if user has role first
+                        if role_name.lower() not in [x.name.lower() for x in message.author.roles]:
+                            await addToRole(message, role_name, role_color) 
 
                     if result[0][0] + 1 >= result[0][1] * 25 + 100:
                         await self.db.raw_exec_commit(
                             "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
                             (result[0][1] + 1, 0, message.author.id),
                         )
-                        # Add user to active member role if level is 3
-                        if result[0][1] + 1 == 3:
-                            await addToRole(message, "Active Member", discord.Color.blue())                          
                         await message.channel.send(
                             f"Congratulations {message.author.mention}, you just advanced to level {result[0][1] + 1}!"
                         )
