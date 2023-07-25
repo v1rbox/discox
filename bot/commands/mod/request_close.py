@@ -13,7 +13,7 @@ class cmd(Command):
 
     name = "request_close"
     usage = "request_close <number_id>"
-    description = "Close the request. Only mod can deal with it"
+    description = "Close a request. Only a mod can use this command."
 
     async def execute(self, arguments, message) -> None:
         """

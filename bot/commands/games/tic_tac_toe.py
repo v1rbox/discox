@@ -6,11 +6,11 @@ from bot.config import Config, Embed
 
 
 class cmd(Command):
-    """Allows us to play tic tac toe with the bot"""
+    """Play a game of tic tac toe with the bot"""
 
     name = "tic-tac-toe"
     usage = "tic-tac-toe <command>"
-    description = "Allows us to play tic tac toe with the bot\nUse 'info' to learn how to play, and use 'single-player' to generate a new board to play against bot, use 'multi-player' to play against a friend"
+    description = "Play a game of tic tac toe with the bot\nUse `info` to learn how to play, then you can use `single-player` to generate a new board to play against the bot, or `multi-player` to play against a friend"
 
     # Takes a character and returns corresponding emoji
     def switch_to_emoji(self, value):

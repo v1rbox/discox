@@ -11,7 +11,7 @@ class cmd(Command):
 
     name = "rank"
     usage = "rank [*user:member]"
-    description = "Check the rank for another user, by default this is the author."
+    description = "Check a user's rank. If no user is specified, shows your rank."
 
     async def get_bg(self, user: int) -> str | None:
         result = await self.db.raw_exec_select(

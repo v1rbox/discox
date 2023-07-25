@@ -9,7 +9,7 @@ class cmd(Command):
 
     name = "help"
     usage = "help [*command]"
-    description = "The command you just ran, shows a help embed."
+    description = "The command you just ran; shows a help embed."
 
     async def category_help(self, message, name="") -> None:
         categories = self.manager.categories

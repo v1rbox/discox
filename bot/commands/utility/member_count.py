@@ -9,7 +9,7 @@ class cmd(Command):
 
     name = "membercount"
     usage = "membercount"
-    description = "Get the current membercount in the server."
+    description = "Get the current amount of members in the server."
 
     async def execute(self, arguments, message) -> None:
         member_count = message.guild.member_count

@@ -9,7 +9,7 @@ from bot.config import Colour, Embed
 
 class cmd(Command):
     name = "create_multiple_option"
-    description = "Create a poll. (Multiple option) Options are seperated by a commas."
+    description = "Create a poll with multiple options. Options are separated by commas."
     usage = "create_multiple_option <question> <is_support_single:bool> <*options>"
 
     bind = [

@@ -12,7 +12,7 @@ class cmd(Command):
 
     name = "gigachad"
     usage = "gigachad"
-    description = "Gigachad random image"
+    description = "Sends a random gigachad"
 
     async def execute(self, arguments, message) -> None:
         # Special thanks to the awesome work of justinlime for the collection of gigachads
