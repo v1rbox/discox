@@ -16,6 +16,8 @@ class cmd(Command):
         query = server.query()
 
         players = ' \n'.join(query.players.names)
+        if len(query.players.names) == 0:
+            players = "Nobody Online :("
         embed = Embed(
             title="Minecraft",
             description=f"""
