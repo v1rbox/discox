@@ -19,8 +19,7 @@ class cmd(Command):
         embed = Embed(
             title="Minecraft",
             description=f"""
-**MAX PLAYERS:** ```{query.players.max}```
-**CURRENT PLAYERS ({query.players.online}):** ```{players}```
+**CURRENTLY ONLINE ({query.players.online}/{query.players.max}):** ```{players}```
 """,
         )
         embed.set_color("green")

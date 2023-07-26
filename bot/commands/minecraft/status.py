@@ -21,7 +21,7 @@ class cmd(Command):
             description=f"""
 **URL:** ```{Config.minecraft_url}:{Config.minecraft_port}```
 **VERSION:** ```{query.software.version}({query.software.brand})```
-**PLAYERS:** ```{query.players.online} online```
+**PLAYERS:** ```{query.players.online}/{query.players.max} Online```
 **PLUGINS:** ```{plugins}```
 """,
         )
