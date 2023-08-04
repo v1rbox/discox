@@ -30,6 +30,7 @@ class DesktopRoles(RoleView):
         "Xmonad",
         "Hyprland",
         "Dwm",
+        "dvtm",
         "Qtile",
         "Wayfire",
         "Sway",
