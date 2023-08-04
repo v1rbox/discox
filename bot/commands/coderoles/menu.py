@@ -57,6 +57,7 @@ class CodeRoles(RoleView):
         "Ruby",
         "Rust",
         "Scala",
+        "Scheme",
         "Shell",
         "Solidity",
         "Swift",
