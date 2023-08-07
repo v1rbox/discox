@@ -11,11 +11,11 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         server = JavaServer.lookup(f"{Config.minecraft_url}:{Config.minecraft_port}")
-# 'query' has to be enabled in a server's server.properties file!
-# It may give more information than a ping, such as a full player list or mod information.
+        # 'query' has to be enabled in a server's server.properties file!
+        # It may give more information than a ping, such as a full player list or mod information.
         query = server.query()
 
-        players = ' \n'.join(query.players.names)
+        players = " \n".join(query.players.names)
         if len(query.players.names) == 0:
             players = "Nobody Online :("
         embed = Embed(

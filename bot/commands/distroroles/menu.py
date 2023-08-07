@@ -65,8 +65,7 @@ class DistroRoles(RoleView):
         "Parrot",
         "Plasma Mobile",
         "Pop!_OS",
-        "Raspbian"
-        "ReactOS",
+        "Raspbian" "ReactOS",
         "RebornOS",
         "Redcore",
         "RedHat",

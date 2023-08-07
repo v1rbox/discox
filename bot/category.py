@@ -173,6 +173,7 @@ class PollsCategory(Category):
     def check_permissions(self, message: discord.Message) -> bool:
         return True
 
+
 class MinecraftCategory(Category):
     """A command category instance."""
 
@@ -182,8 +183,6 @@ class MinecraftCategory(Category):
 
     def check_permissions(self, message: discord.Message) -> bool:
         return True
-
-
 
 
 if __name__ == "__main__":
