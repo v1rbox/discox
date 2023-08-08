@@ -31,9 +31,7 @@ class cmd(Command):
 
     name = "gen_spam"
     usage = "gen_spam <algo> [spam_string]"
-    description = (
-        "Generates spam messages for fun. For more help, use `v!gen_spam ? ?`"
-    )
+    description = "Generates spam messages for fun. For more help, use `v!gen_spam ? ?`"
 
     def general_spam(self, string: str):
         """This function will spam by squaring the string"""
