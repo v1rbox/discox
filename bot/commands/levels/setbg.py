@@ -15,12 +15,12 @@ from .__uis import Confirm
 class cmd(Command):
 
     """
-    Set your own background for your rank card.
+    Set a background for your rank card.
     """
 
     name = "setbg"
     usage = "setbg <url>"
-    description = "Set your own background for your rank card. URL must be a direct link to an image."
+    description = "Set a background for your rank card. The given URL must be a direct link to an image."
 
     def is_valid_url(self, url: str) -> bool:
         try:

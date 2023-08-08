@@ -18,7 +18,7 @@ class cmd(Command):
 
     name = "request_book"
     usage = "request_book <number_id>"
-    description = "List of every requests in order if the <number_id> == 0. Otherwise, just shown up the information in that number_id row"
+    description = "If <number_id> is 0, shows a list of all requests in order. Otherwise, shows the request with the ID specified with <number_id>."
 
     def display_request(self, row: tuple) -> str:
         """

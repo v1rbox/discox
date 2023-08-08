@@ -16,7 +16,7 @@ class cmd(Command):
 
     name = "info"
     usage = "info <distribution>"
-    description = "Shows information about the user entered distro"
+    description = "Shows information about the given distro"
 
     async def execute(self, arguments, message) -> None:
         error_embed = Embed(

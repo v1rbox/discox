@@ -7,11 +7,11 @@ from bot.config import Config, Embed
 
 
 class cmd(Command):
-    """Gets a Random Leet Code Problem"""
+    """Gets a random LeetCode problem"""
 
     name = "leetcode"
     usage = "leetcode <command>"
-    description = "Generates a random leetcode problem, use info to find total number of problem, use gen to generate a new problem"
+    description = "Generates a random leetcode problem (use info to find the total number of problems, or gen to generate a new problem)"
 
     async def execute(self, arguments, message) -> None:
         leet_code_api_url = "https://leetcode.com/api/problems/all"
@@ -23,7 +23,7 @@ class cmd(Command):
         if arguments[0] == "info":
             embed = Embed(
                 title="Leet Code Problem",
-                description=f"Total number of problems generated : {total_problem}.\nRun `{Config.prefix}leetcode gen` to generate random problem. Happy Coding :))",
+                description=f"Total number of problems generated: {total_problem}.\nRun `{Config.prefix}leetcode gen` to generate random problem. Happy Coding :))",
             )
             await message.channel.send(embed=embed)
 

@@ -9,7 +9,7 @@ from bot.config import Colour, Embed
 
 class cmd(Command):
     name = "create_truefalse_option"
-    description = "Create a true false poll. Options are seperated by a commas."
+    description = "Create a true/false poll. Options are separated by commas."
     usage = "create_truefalse_option <question>"
 
     async def execute(self, arguments: list[str], message: discord.Message) -> None:

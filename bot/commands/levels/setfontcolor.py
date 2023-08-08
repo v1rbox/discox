@@ -7,7 +7,7 @@ from .__uis import Confirm
 class cmd(Command):
     name = "setfontcolor"
     usage = "setfontcolor <*rgb>"
-    description = "Set the font color for your rank card. RGB values must be between 0 and 255. If RGB malformed, It errors out."
+    description = "Set the font color for your rank card. RGB values must be between 0 and 255. If the RGB value is malformed, throws an error."
 
     async def execute(self, arguments, message) -> None:
         arguments = arguments[0].split(" ")

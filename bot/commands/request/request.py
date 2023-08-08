@@ -17,7 +17,7 @@ class cmd(Command):
     name = "request"
     usage = "request"
     description = (
-        "Add some recommendation to the server. Support multiple commands to deal with."
+        "Make a recommendation for the server. Supports multiple commands to deal with."
     )
 
     async def execute(self, arguments, message) -> None:

@@ -180,7 +180,7 @@ class cmd(Command):
 
     name = "minesweeper"
     usage = "minesweeper <number of mines>"
-    description = "Minesweeper custom amount of mines"
+    description = "Play a game of Minesweeper, using a custom amount of mines"
 
     async def execute(self, arguments, message) -> None:
         try:

@@ -7,7 +7,7 @@ class cmd(Command):
 
     name = "avatar"
     usage = "avatar [mention:member]"
-    description = "Returns the avatar of the user. If a mention or id is given, returns the avatar of that user"
+    description = "Shows the avatar of a user. If a mention or id is given, returns the avatar of that user. Otherwise, returns your avatar."
 
     async def execute(self, arguments, message) -> None:
         user = message.author if not len(arguments) else arguments[0]

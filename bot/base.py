@@ -393,7 +393,7 @@ class RolesButton(discord.ui.Button):
         self.view.add_item(BackButton())
         embed = Embed(
             title=f"{self.view.cap} {self.action}",
-            description=f"Please select and option",
+            description=f"Please select an option",
         )
         await interaction.message.edit(embed=embed, view=self.view)
         await interaction.response.defer()
