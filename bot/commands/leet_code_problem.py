@@ -17,7 +17,7 @@ class cmd(Command):
         leet_code_api_url = "https://leetcode.com/api/problems/all"
         async with aiohttp.ClientSession() as ses:
             async with ses.get(leet_code_api_url) as resp:
-                problem_data = await resp.json()
+                problem_data = await resp.json(content_type=None)
         total_problem = problem_data["num_total"]
 
         if arguments[0] == "info":
