@@ -39,7 +39,7 @@ class event(Event):
                             break
                     # Congradulates user :D
                     await message.channel.send(
-                        f"Congratulations {message.author.mention}, you are now an {role_name}!"
+                         f"Congratulations {message.author.mention}, you are now {'a' if role_name == 'Member' else 'an'} {role_name}!"
                     )
 
                 result = await self.db.raw_exec_select(
