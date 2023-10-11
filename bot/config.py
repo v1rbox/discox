@@ -8,6 +8,15 @@ import datetime
 import os
 from typing import List
 
+# os.getenv returns an empty string if the value is empty so it doesn't use the second argument
+def getenv(name: str, other: str = None) -> any:
+    """Gets an environment variable
+    [Args]:
+        name (str): The name of the env variable
+        other (str): Will return if name is empty or None
+    """
+    env = os.getenv(name)
+    return env if env or other is None else other
 
 class Embed(DiscordEmbed):
     """Custom implementation of a discord embed object."""
@@ -52,35 +61,36 @@ class Embed(DiscordEmbed):
 
 
 class Config:
-    token: str = os.getenv("DISCOX_TOKEN")  # bot token
-    prefix: str = os.getenv("DISCOX_PREFIX", "v!")  # prefix (default: v!)
-    general_channel: int = int(os.getenv("DISCOX_GENERAL_ID", 1052597661578051666))
+    token: str = getenv("DISCOX_TOKEN")  # bot token
+    prefix: str = getenv("DISCOX_PREFIX", "v!")  # prefix (default: v!)
+    general_channel: int = int(getenv("DISCOX_GENERAL_ID", 1052597661578051666))
     report_channel_id: int = int(
-        os.getenv("DISCOX_REPORT_ID", 1064539181193375784)
+        getenv("DISCOX_REPORT_ID", 1064539181193375784)
     )  # mod role id
+    
     mod_role_id: List[int] = [
-        int(x) for x in os.getenv("DISCOX_MOD_ROLE_ID", "0").split(",")
+        int(x) for x in getenv("DISCOX_MOD_ROLE_ID", "0").split(",")
     ]  # mod role id
-    temp_channel: int = int(os.getenv("DISCOX_TEMP_CHANNEL", "0"))  # temp channel id
-    channel_id: str = os.getenv(
+    temp_channel: int = int(getenv("DISCOX_TEMP_CHANNEL", "0"))  # temp channel id
+    channel_id: str = getenv(
         "DISCOX_CHANNEL_ID", "UCCFVFyadjMuaR5O89yRToew"
     )  # channel id
-    role_channel: int = int(os.getenv("DISCOX_ROLE_CHANNEL", "0"))  # role channel
+    role_channel: int = int(getenv("DISCOX_ROLE_CHANNEL", "0"))  # role channel
     youtube_announcement_id: int = int(
-        os.getenv("DISCOX_YOUTUBE_ANNOUNCEMENT_ID", 1056990617357521009)
+        getenv("DISCOX_YOUTUBE_ANNOUNCEMENT_ID", 1056990617357521009)
     )  # youtube announcement id
-    mysql_host: str = os.getenv("DISCOX_MYSQL_HOST", "localhost")
-    mysql_port: int = int(os.getenv("DISCOX_MYSQL_PORT", 3306))
-    mysql_user: str = os.getenv("DISCOX_MYSQL_USER", "root")
-    mysql_password: str = os.getenv("DISCOX_MYSQL_PASSWORD", "")  # recommendaton :tf:
-    mysql_database: str = os.getenv(
+    mysql_host: str = getenv("DISCOX_MYSQL_HOST", "localhost")
+    mysql_port: int = int(getenv("DISCOX_MYSQL_PORT", 3306))
+    mysql_user: str = getenv("DISCOX_MYSQL_USER", "root")
+    mysql_password: str = getenv("DISCOX_MYSQL_PASSWORD", "")  # recommendaton :tf:
+    mysql_database: str = getenv(
         "DISCOX_MYSQL_DATABASE", "discox"
     )  # HOW THE FUCK ITS DEFAULTING TO DISCOX ALL THE TIME
     starboard_channel: int = int(
-        os.getenv("DISCOX_STARBOARD_CHANNEL", "0")
+        getenv("DISCOX_STARBOARD_CHANNEL", "0")
     )  # starboard channel
-    minecraft_url: str = os.getenv("MINECRAFT_URL", "minecraft.virbos.xyz")
-    minecraft_port: int = os.getenv("MINECRAFT_PORT", 25565)
+    minecraft_url: str = getenv("MINECRAFT_URL", "minecraft.virbos.xyz")
+    minecraft_port: int = getenv("MINECRAFT_PORT", 25565)
 
 
 if __name__ == "__main__":
