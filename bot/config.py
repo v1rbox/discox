@@ -61,8 +61,11 @@ class Embed(DiscordEmbed):
         """Set a color from the default colorlist."""
         self.color = self.colors[color]
 
-
 class Config:
+    testing: dict = {
+        "ignore_db": getenv("TESTING_IGNORE_DB", "False") == "True",
+        "ignored_files": getenv("TESTING_IGNORED_FILES", "").split(", ") # list of files that won't be imported
+    }
     token: str = getenv("DISCOX_TOKEN")  # bot token
     prefix: str = getenv("DISCOX_PREFIX", "v!")  # prefix (default: v!)
     general_channel: int = int(getenv("DISCOX_GENERAL_ID", 1052597661578051666))
