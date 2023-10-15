@@ -240,7 +240,11 @@ async def parse_types(
 def main() -> None:
     """Main setup function."""
 
-    db = SQLParser("bot/assets/main.db", CREATE_STATEMENTS) if not config.testing["ignore_db"] else SQLParser
+    db = (
+        SQLParser("bot/assets/main.db", CREATE_STATEMENTS)
+        if not config.testing["ignore_db"]
+        else SQLParser
+    )
     bot = discord.Client(intents=discord.Intents.all())
 
     bot.manager = CommandsManager(bot, db)
@@ -278,7 +282,8 @@ def main() -> None:
                 for cmd in [
                     i.split(".")[0]
                     for i in os.listdir(os.path.join("bot", "commands", entry))
-                    if not i.startswith("__") and not i in config.testing["ignored_files"]
+                    if not i.startswith("__")
+                    and not i in config.testing["ignored_files"]
                 ]:
                     bot.manager.register(
                         __import__(

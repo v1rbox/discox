@@ -39,6 +39,9 @@ class cmd(Command):
             .strip()
             .split("\n")[1]
         )
-        
-        embed = Embed(title="Latest commits", description=f"*{diff_message[15:].capitalize()}*\n{commits}")
+
+        embed = Embed(
+            title="Latest commits",
+            description=f"*{diff_message[15:].capitalize()}*\n{commits}",
+        )
         await message.channel.send(embed=embed)
