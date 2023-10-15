@@ -32,7 +32,7 @@ class cmd(Command):
         ).stdout.decode()
         commit_diff = int(
             subprocess.run(
-                ["git", "rev-list", "--count", "origin/main..HEAD"],
+                ["git", "rev-list", "--count", "HEAD..origin/main"],
                 capture_output=True,
             )
             .stdout.decode()
