@@ -8,6 +8,7 @@ import datetime
 import os
 from typing import List
 
+
 # os.getenv returns an empty string if the value is empty so it doesn't use the second argument
 def getenv(name: str, other: str = None) -> any:
     """Gets an environment variable
@@ -17,6 +18,7 @@ def getenv(name: str, other: str = None) -> any:
     """
     env = os.getenv(name)
     return env if env or other is None else other
+
 
 class Embed(DiscordEmbed):
     """Custom implementation of a discord embed object."""
@@ -67,7 +69,7 @@ class Config:
     report_channel_id: int = int(
         getenv("DISCOX_REPORT_ID", 1064539181193375784)
     )  # mod role id
-    
+
     mod_role_id: List[int] = [
         int(x) for x in getenv("DISCOX_MOD_ROLE_ID", "0").split(",")
     ]  # mod role id
