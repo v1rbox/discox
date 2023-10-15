@@ -240,7 +240,7 @@ async def parse_types(
 def main() -> None:
     """Main setup function."""
 
-    db = SQLParser("bot/assets/main.db", CREATE_STATEMENTS)
+    db = SQLParser("bot/assets/main.db", CREATE_STATEMENTS) if not config.testing["ignore_db"] else SQLParser
     bot = discord.Client(intents=discord.Intents.all())
 
     bot.manager = CommandsManager(bot, db)
@@ -262,7 +262,7 @@ def main() -> None:
         entries = [
             i
             for i in os.listdir(os.path.join("bot", "commands"))
-            if not i.startswith("__")
+            if not i.startswith("__") and not i in config.testing["ignored_files"]
         ]
         for entry in entries:
             cmd = entry.split(".")[0]
@@ -278,7 +278,7 @@ def main() -> None:
                 for cmd in [
                     i.split(".")[0]
                     for i in os.listdir(os.path.join("bot", "commands", entry))
-                    if not i.startswith("__")
+                    if not i.startswith("__") and not i in config.testing["ignored_files"]
                 ]:
                     bot.manager.register(
                         __import__(
@@ -296,7 +296,7 @@ def main() -> None:
         entries = [
             i.split(".")[0]
             for i in os.listdir(os.path.join("bot", "events"))
-            if not i.startswith("__")
+            if not i.startswith("__") and not i in config.testing["ignored_files"]
         ]
         for idx, entry in zip(range(1, len(entries) + 1, 1), entries):
             event = __import__(
@@ -308,7 +308,7 @@ def main() -> None:
         entries = [
             i.split(".")[0]
             for i in os.listdir(os.path.join("bot", "tasks"))
-            if not i.startswith("__")
+            if not i.startswith("__") and not i in config.testing["ignored_files"]
         ]
         for idx, entry in zip(range(1, len(entries) + 1, 1), entries):
             imp = __import__(f"bot.tasks.{entry}", globals(), locals(), ["*"], 0)
@@ -321,8 +321,8 @@ def main() -> None:
     @bot.event
     async def on_ready():
         """When the bot is connected."""
-
-        await db.initialise()
+        if not config.testing["ignore_db"]:
+            await db.initialise()
 
         if bot.user is None:
             raise RuntimeError("Bot user is None")
