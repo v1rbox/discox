@@ -1,6 +1,6 @@
 import asyncio
 
-from bot.base import Command
+from bot.base import Command, Logger
 from bot.config import Config, Embed
 
 
@@ -155,14 +155,14 @@ class cmd(Command):
             except KeyError:
                 try:
                     cmdobj = [
-                        [c for c in i.commands if c.name == command]
-                        for i in bot.manager.categories
+                        [c for c in i.commands if c.name == args[0]]
+                        for i in self.manager.categories
                         if i.prefix is None
                     ]
                     cmdobj = [i for i in cmdobj if len(i) != 0][0][0]
-                    return self.command_help(message, cmdobj)
+                    return await self.command_help(message, cmdobj)
                 except IndexError:
-                    return await logger.send_error(
-                        f"Command '{command}' not found", message
+                    return await Logger.send_error(
+                        f"Command '{args[0]}' not found", message
                     )
             return await self.command_help(message, cmdobj)
