@@ -21,10 +21,11 @@ endif
 .PHONY: init run add remove beautify install-beautifier
 
 init:
+	nimble buildRelease
 	poetry install
 
 run:
-	$(PYTHON) -m bot
+	./init
 
 install-beautifier:
 	@pip install black isort

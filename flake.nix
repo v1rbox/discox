@@ -58,10 +58,11 @@
                     gnumake
                   ];
                   enterShell = ''
+		       nimble buildBinary
                        make init
                        clear
                        echo "Discox Development Environment"
-                       echo "Python packages in environment: "
+                       echo "Python packages in environment:"
                        poetry show
                        make run
                   '';
