@@ -361,7 +361,8 @@ def main() -> None:
             or not bot.is_ready()
             or message.channel.id == config.general_channel
         ):
-            await bot.event_manager.event_map()["on_message"].execute(message)
+            if not "on_message.py" in Config.testing["ignored_files"]:
+                await bot.event_manager.event_map()["on_message"].execute(message)
             return
 
         command, arguments = parse_user_input(message.content[len(config.prefix) :])
