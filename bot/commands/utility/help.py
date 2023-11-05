@@ -3,7 +3,6 @@ import asyncio
 from bot.base import Command
 from bot.config import Config, Embed
 
-
 class cmd(Command):
     """Help command."""
 
@@ -45,7 +44,7 @@ class cmd(Command):
                 title=f"{name} - Page {page+1} / {len(categories)+1}",
                 description=f"List of all commands and their description\nRun `{Config.prefix}{self.usage}` to get information about a specific command (still wip).\n\n",
             )
-            embed.set_author(name=f"Help menu")
+            embed.set_author(name="Help menu")
 
             for idx, command in zip(range(len(commands)), commands):
                 print(command, idx)
@@ -68,7 +67,7 @@ class cmd(Command):
                 ]
 
             try:
-                reaction, user = await self.bot.wait_for(
+                reaction, _ = await self.bot.wait_for(
                     "reaction_add", timeout=120.0, check=check
                 )
             except asyncio.TimeoutError:
@@ -107,7 +106,7 @@ class cmd(Command):
                     return user == message.author and str(reaction.emoji) in ["↩️"]
 
                 try:
-                    reaction, user = await self.bot.wait_for(
+                    reaction, _ = await self.bot.wait_for(
                         "reaction_add", timeout=120.0, check=check
                     )
                 except asyncio.TimeoutError:
@@ -145,8 +144,8 @@ class cmd(Command):
                     i.prefix: i for i in self.manager.categories if i.prefix is not None
                 }[args[0]].commands_map()[args[1]]
                 return await self.command_help(message, cmdobj)
-            except KeyError:
-                raise KeyError(f"Command {args[0]} {args[1]} not found")
+            except KeyError as exc:
+                raise KeyError(f"Command {args[0]} {args[1]} not found") from exc
             except IndexError:
                 return await self.category_help(message, args[0])
         else:
@@ -155,14 +154,12 @@ class cmd(Command):
             except KeyError:
                 try:
                     cmdobj = [
-                        [c for c in i.commands if c.name == command]
-                        for i in bot.manager.categories
+                        [c for c in i.commands if c.name == args[0]]
+                        for i in self.manager.categories
                         if i.prefix is None
                     ]
                     cmdobj = [i for i in cmdobj if len(i) != 0][0][0]
-                    return self.command_help(message, cmdobj)
-                except IndexError:
-                    return await logger.send_error(
-                        f"Command '{command}' not found", message
-                    )
+                    return await self.command_help(message, cmdobj)
+                except IndexError as exc:
+                    raise IndexError(f"Command '{args[0]}' not found") from exc
             return await self.command_help(message, cmdobj)
