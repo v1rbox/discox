@@ -3,6 +3,7 @@ import asyncio
 from bot.base import Command
 from bot.config import Config, Embed
 
+
 class cmd(Command):
     """Help command."""
 
