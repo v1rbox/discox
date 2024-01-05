@@ -97,6 +97,9 @@ class Config:
     starboard_channel: int = int(
         getenv("DISCOX_STARBOARD_CHANNEL", "0")
     )  # starboard channel
+    welcome_channel: int = int(
+        getenv("SERVER_WELCOME_CHANNEL", "1056171331059732541")
+    )  # welcome channel
     minecraft_url: str = getenv("MINECRAFT_URL", "minecraft.virbos.xyz")
     minecraft_port: int = getenv("MINECRAFT_PORT", 25565)
 

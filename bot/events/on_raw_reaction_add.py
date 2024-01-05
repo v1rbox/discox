@@ -77,6 +77,8 @@ class event(Event):
         starboard = await self.bot.fetch_channel(Config.starboard_channel)
         #if payload.emoji.name != REACTION:
         #    return
+        if payload.channel_id == Config.welcome_channel:
+            return
         channelObj = await self.bot.fetch_channel(payload.channel_id)
         messageObj = await channelObj.fetch_message(payload.message_id)
         if messageObj.author.id == self.bot.user.id:
