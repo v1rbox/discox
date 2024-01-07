@@ -75,7 +75,7 @@ class event(Event):
         IMAGE_REGEX = "http(s)?:([\/|.|\w|\s]|-)*\.(?:jpg|gif|png|jpeg)(\?(.[^\s]*))?"
         REACTION = "⭐"
         starboard = await self.bot.fetch_channel(Config.starboard_channel)
-        #if payload.emoji.name != REACTION:
+        # if payload.emoji.name != REACTION:
         #    return
         if payload.channel_id == Config.welcome_channel:
             return
@@ -84,8 +84,8 @@ class event(Event):
         if messageObj.author.id == self.bot.user.id:
             return
         for reaction in messageObj.reactions:
-            if reaction.emoji != REACTION:
-                continue
+            # if reaction.emoji != REACTION:
+            #    continue
             if reaction.count >= 5:
                 already = await self.db.raw_exec_select(
                     "SELECT message_id FROM starboard WHERE message_id = ?",
