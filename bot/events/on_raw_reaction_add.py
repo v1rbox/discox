@@ -84,8 +84,8 @@ class event(Event):
         if messageObj.author.id == self.bot.user.id:
             return
         for reaction in messageObj.reactions:
-            if reaction.emoji != REACTION:
-                continue
+            #if reaction.emoji != REACTION:
+            #    continue
             if reaction.count >= 5:
                 already = await self.db.raw_exec_select(
                     "SELECT message_id FROM starboard WHERE message_id = ?",
