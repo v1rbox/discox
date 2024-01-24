@@ -31,7 +31,6 @@ class DesktopRoles(RoleView):
         "Hyprland",
         "Dwm",
         "dvtm",
-        "Qtile",
         "Wayfire",
         "Sway",
         "bspwm",
