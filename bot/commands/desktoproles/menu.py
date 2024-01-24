@@ -57,6 +57,7 @@ class DesktopRoles(RoleView):
         "Openbox",
         "QTile",
         "EXWM",
+        "Budgie",
     ]
 
 
