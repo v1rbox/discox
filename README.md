@@ -5,6 +5,7 @@
 Virbox Discord Bot community project ^\_^
 
 Written in ~~blazingly fast~~ **effective** Python.
+Written in blazingly fast Nim as well!
 
 Documentation and installation guide can be found at our [wiki](https://github.com/v1rbox/discox/wiki).
 
