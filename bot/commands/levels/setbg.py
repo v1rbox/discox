@@ -13,7 +13,6 @@ from .__uis import Confirm
 
 
 class cmd(Command):
-
     """
     Set a background for your rank card.
     """

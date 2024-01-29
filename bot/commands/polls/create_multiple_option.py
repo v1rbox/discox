@@ -53,9 +53,11 @@ class cmd(Command):
             text=f"Poll created by {message.author} and when {message.created_at}"
         )
         embed.set_thumbnail(
-            url=message.author.avatar.url
-            if message.author.avatar
-            else message.author.default_avatar.url
+            url=(
+                message.author.avatar.url
+                if message.author.avatar
+                else message.author.default_avatar.url
+            )
         )
         a = await message.channel.send(embed=embed)
         for i in range(len(options)):
