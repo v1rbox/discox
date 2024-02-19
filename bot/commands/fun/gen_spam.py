@@ -7,7 +7,7 @@ from bot.base import Command
 from bot.config import Embed
 
 
-def contains_mention(string: str) -> Tuple[bool, List[int]]:
+def contains_mention(string: str) -> List[int]:
     """Checks if a string (discord message) contains a ping
 
     [Args]:
@@ -20,7 +20,7 @@ def contains_mention(string: str) -> Tuple[bool, List[int]]:
     """
 
     pinged_people: List[int] = [found for found in re.findall("<@[0-9]+>", string)]
-    return bool(pinged_people), pinged_people
+    return pinged_people
 
 
 class cmd(Command):
@@ -140,8 +140,7 @@ class cmd(Command):
 
     async def execute(self, arguments, message) -> None:
         if contains_mention(message.content):
-            return
-
+            raise Warning("You can't mention someone!")
         if arguments[0] == "?" and arguments[1] == "?":
             await message.channel.send(
                 """ ```Usage: v!gen_spam <algo> <spam_string>
