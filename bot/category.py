@@ -87,7 +87,7 @@ class PresenceCategory(Category):
 
     def check_permissions(self, message: discord.Message) -> bool:
         # Check for a specific role in the member
-        return any([i.id == config.mod_role_id for i in message.author.roles])
+        return any([i.id in config.mod_role_id for i in message.author.roles])
 
 
 class ModCategory(Category):
