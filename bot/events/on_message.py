@@ -37,7 +37,7 @@ class event(Event):
                         if role.name.lower() == role_name.lower():
                             await message.author.add_roles(role)
                             break
-                    # Congradulates user :D
+                    # Congratulates user :D
                     await message.channel.send(
                         f"Congratulations {message.author.mention}, you are now {'a' if role_name[0].lower() not in 'aeiou' else 'an'} {role_name}!"
                     )
@@ -57,14 +57,6 @@ class event(Event):
                         "UPDATE levels SET level = ?, exp = ? WHERE user_id = ?",
                         (result[0][1], result[0][0] + 1, message.author.id),
                     )
-                    # Adds user to member role if they dont already have it
-                    role_name = "Member"
-                    role_color = discord.Color.dark_teal()
-                    # Checks if user has role first
-                    if role_name.lower() not in [
-                        x.name.lower() for x in message.author.roles
-                    ]:
-                        await addToRole(message, role_name, role_color)
 
                     # Add user to active member role if level is 3
                     if result[0][1] >= 3:
