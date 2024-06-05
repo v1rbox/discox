@@ -108,6 +108,34 @@ class cmd(Command):
 
         return output
 
+    def tray_spam(self, string: str):
+        # Tray's silly spam algorithm
+        # Works by reversing the string, and doing random scheisse till an abomination is created.
+        pass1: str = ""
+        final: str = ""
+
+        for xc in string:
+            for yc in string[::-1]:
+                oxc = ord(xc)
+                oyc = ord(yc)
+
+                sum = oxc + oyc
+                xord = oxc ^ oyc
+                shr = oxc >> oyc
+                shl = oyc << oxc
+
+                pass1 += chr(
+                    sum + xord - shr * shl
+                )
+
+        for p in pass1:
+            if random.randint(0, ord(random.choice(pass1))) % 2 == 0:
+                final += p
+
+        length = int(ord(random.choice(string)) / 8)
+        final = final * length
+        return final
+
     def literal_spam(self, string: str):
         # Generate spam till the end of the universe (message length limit)
         output = ""
@@ -156,6 +184,7 @@ This method supports a variety of cool algorithms you can choose:
                 e.g: v!gen_spam addict_spam hi
     4. Literal spam: spam till the end of message limit (algo input: literal_spam)
                 e.g: v!gen_spam literal_spam Hehehe```
+    5. Tray spam: this is an even more insane spamming algorithm. (algo input: tray_spam)
                     """
             )
             return
@@ -174,7 +203,9 @@ This method supports a variety of cool algorithms you can choose:
         elif arguments[0] == "literal_spam":
             output = self.literal_spam(arguments[1])
             await message.channel.send(output)
-
+        elif arguments[0] == "tray_spam":
+            output = self.tray_spam(arguments[1])
+            await message.channel.send(output)
         else:
             embed = Embed(title="Invalid argument detected!")
             embed.set_color("red")
