@@ -7,6 +7,8 @@ from bot.base import Command
 
 
 class Calculator:
+    valid_chars = ("+", "-", "*", "/", "(", ")", " ", "\t")
+
     def __init__(self, src):
         # Initializes a calculator with the source "code"
         self.idx = 0
@@ -113,7 +115,24 @@ class Calculator:
                 expr = expr * right_expr
 
             else:
-                break
+                # There might be a nasty bug here.
+                # An example is: 2a2
+                # This little expression is invalid, but it sneakily
+                # gets past validity checks in our beloved calculator.
+                # The issue is here. We should handle this case gracefully
+                # by checking if the current character we are on is valid.
+                if (
+                    self.char is None
+                    or self.char.isdigit()
+                    or self.char in self.valid_chars
+                ):
+
+                    # Allow it
+                    break
+
+                else:
+                    # There you are, you disgruntled monster!
+                    self.error()
 
         return expr
 
@@ -162,3 +181,21 @@ class cmd(Command):
 
         # Send the result:
         await message.channel.send(f"_{expression}_ = **{result:g}**")
+
+
+# Terminal testcase
+if __name__ == "__main__":
+    print("calc.py command terminal testcase. Press ^C to quit.")
+    while True:
+        expression = input(">> ")
+        # The thing that will calculate our expression:
+        calculator = Calculator(expression)
+
+        # Avoid terminating if an error is encountered
+        result = None
+        try:
+            result = calculator.expr()
+        except Exception as e:
+            print(f"An error occured: \n{e}")
+
+        print(f"=> {result}")
